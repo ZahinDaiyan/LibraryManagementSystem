@@ -18,7 +18,8 @@ if (isset($_SESSION['role'])) {
       
     } elseif ($role === 'librarian') {
 
-      // librarian controller
+      header("Location: Controllers/LibrarianDashboardController.php");
+      exit();
 
     } elseif ($role === 'member') {
 
