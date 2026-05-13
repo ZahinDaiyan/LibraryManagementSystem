@@ -21,7 +21,7 @@ session_start();
 <br><br>
 
 <form
-    action="../../controllers/LoginController.php"
+    action="../Controllers/LoginController.php"
     method="POST"
     onsubmit="return validateLogin(this)"
     novalidate

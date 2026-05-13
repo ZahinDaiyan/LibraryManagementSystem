@@ -14,7 +14,7 @@ if ($email == "" || $password == "") {
 
     $_SESSION['error'] = "Please fill all fields";
 
-    header('Location: ../views/auth/LoginView.php');
+    header('Location: ../views/LoginView.php');
     die();
 }
 
@@ -36,7 +36,7 @@ if ($user) {
 
     $_SESSION['error'] = "Invalid Credentials";
 
-    header('Location: ../views/auth/LoginView.php');
+    header('Location: ../views/LoginView.php');
 
 }
 ?>

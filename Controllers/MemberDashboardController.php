@@ -14,6 +14,6 @@ if ($_SESSION['role'] != 'member') {
     exit();
 }
 
-header('Location: ../views/member/dashboard.php');
+header('Location: ../views/Member/dashboardView.php');
 
 ?>
