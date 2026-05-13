@@ -6,44 +6,60 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     exit();
 }
 
-$books = isset($_SESSION['books']) ? $_SESSION['books'] : [];
+$book = $_SESSION['book'];
+$availability = $_SESSION['availability'];
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Book Catalog</title>
+    <title>Book Details</title>
 </head>
+
 <body>
 
-<h2>Books</h2>
+<h2>Book Details</h2>
 
-<a href="dashboard.php">Back</a>
+<a href="book_catalog.php">← Back</a>
+
+<hr>
+
+<h3><?= $book['title'] ?></h3>
+
+<p><b>Author:</b> <?= $book['author'] ?></p>
+<p><b>ISBN:</b> <?= $book['isbn'] ?></p>
+<p><b>Publisher:</b> <?= $book['publisher'] ?></p>
+<p><b>Year:</b> <?= $book['published_year'] ?></p>
+<p><b>Description:</b> <?= $book['description'] ?></p>
+
+<hr>
+
+<h3>Availability by Branch</h3>
 
 <table border="1">
 
 <tr>
-    <th>ID</th>
-    <th>Title</th>
-    <th>Author</th>
-    <th>ISBN</th>
-    <th>Year</th>
+    <th>Branch</th>
+    <th>Total Copies</th>
+    <th>Available</th>
     <th>Action</th>
 </tr>
 
-<?php foreach ($books as $book) { ?>
+<?php foreach ($availability as $a) { ?>
 
 <tr>
-    <td><?= $book['id'] ?></td>
-    <td><?= $book['title'] ?></td>
-    <td><?= $book['author'] ?></td>
-    <td><?= $book['isbn'] ?></td>
-    <td><?= $book['published_year'] ?></td>
+    <td><?= $a['branch_name'] ?></td>
+    <td><?= $a['total_copies'] ?></td>
+    <td><?= $a['available_copies'] ?></td>
 
     <td>
-        <a href="../../controllers/BookDetailsController.php?id=<?= $book['id'] ?>">
-            View Details
-        </a>
+        <?php if ($a['available_copies'] > 0) { ?>
+            <a href="../../controllers/BorrowRequestController.php?book_id=<?= $book['id'] ?>&branch_id=<?= $a['branch_id'] ?>">
+                Request Borrow
+            </a>
+        <?php } else { ?>
+            <span style="color:red;">Not Available</span>
+        <?php } ?>
     </td>
 </tr>
 
