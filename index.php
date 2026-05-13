@@ -1,20 +1,34 @@
-<?php 
+<?php
+
 session_start();
-$role = $_SESSION['role']
-  if (isset($role)) {
-    if (role === 'admin') {
-      // redirect to admin controller
+
+if (isset($_SESSION['role'])) {
+
+    $role = $_SESSION['role'];
+
+    if ($role === 'admin') {
+
+        header("Location: controllers/AdminController.php");
+        exit();
+
+    } elseif ($role === 'branch_manager') {
+
+      //manager controller
+      
+      
+    } elseif ($role === 'librarian') {
+
+      // librarian controller
+
+    } elseif ($role === 'member') {
+
+        header("Location: controllers/MemberController.php");
+        exit();
     }
-    if (role === 'branch-manager') {
-      // redirect to manager controller
-    }
-    if (role === 'librariyan') {
-      // redirect to librariyan controller
-    }
-    if (role === 'member') {
-      // redirect to member controller
-    }
-  } else {
-    // redirect to loginview 
-  }
+
+} else {
+
+    header("Location: views/LoginView.php");
+    exit();
+}
 ?>
