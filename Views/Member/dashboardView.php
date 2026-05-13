@@ -42,7 +42,7 @@ if ($_SESSION['role'] != 'member') {
 <ul>
 
     <li>
-        <a href="../../controllers/BookCatalogController.php">
+        <a href="../../controllers/BookIndexController.php">
             Browse Books
         </a>
     </li>
