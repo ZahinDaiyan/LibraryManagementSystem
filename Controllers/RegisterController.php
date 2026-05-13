@@ -25,7 +25,7 @@ if (
 
     $_SESSION['error'] = "Please fill all fields";
 
-    header('Location: ../views/auth/RegisterView.php');
+    header('Location: ../views/RegisterView.php');
     die();
 }
 
@@ -33,7 +33,7 @@ if ($password != $confirmPassword) {
 
     $_SESSION['error'] = "Passwords do not match";
 
-    header('Location: ../views/auth/RegisterView.php');
+    header('Location: ../views/RegisterView.php');
     die();
 }
 
@@ -47,7 +47,7 @@ if ($user) {
 
     Close($conn);
 
-    header('Location: ../views/auth/RegisterView.php');
+    header('Location: ../views/RegisterView.php');
     die();
 }
 
@@ -66,6 +66,6 @@ Close($conn);
 
 $_SESSION['msg'] = "Registration Successful";
 
-header('Location: ../views/auth/LoginView.php');
+header('Location: ../views/LoginView.php');
 
 ?>

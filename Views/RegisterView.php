@@ -21,7 +21,7 @@ session_start();
 <br><br>
 
 <form
-    action="../../controllers/RegisterController.php"
+    action="../Controllers/RegisterController.php"
     method="POST"
     onsubmit="return validateRegister(this)"
     novalidate

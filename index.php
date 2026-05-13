@@ -22,7 +22,7 @@ if (isset($_SESSION['role'])) {
 
     } elseif ($role === 'member') {
 
-        header("Location: Controllers/DashboardController.php");
+        header("Location: Controllers/MemberDashboardController.php");
         exit();
     }
 
