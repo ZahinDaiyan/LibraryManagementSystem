@@ -96,6 +96,16 @@ function updateUser(
     return mysqli_query($conn, $sql);
 }
 
+
+function getUserByEmail($conn, $email)
+{
+    $sql = "SELECT * FROM users WHERE email='$email'";
+
+    $result = mysqli_query($conn, $sql);
+
+    return mysqli_fetch_assoc($result);
+}
+
 function deleteUser($conn, $id)
 {
     $sql = "DELETE FROM users WHERE id='$id'";
