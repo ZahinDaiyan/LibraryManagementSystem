@@ -31,6 +31,9 @@ $availability = $_SESSION['availability'];
 <p><b>Publisher:</b> <?= $book['publisher'] ?></p>
 <p><b>Year:</b> <?= $book['published_year'] ?></p>
 <p><b>Description:</b> <?= $book['description'] ?></p>
+<a href="../../controllers/BorrowRequestController.php?book_id=<?= $book['id'] ?>&branch_id=1">
+    Request Borrow
+</a>
 
 <hr>
 
