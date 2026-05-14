@@ -22,18 +22,18 @@ if ($action === 'create' || $action === 'update') {
     $branch_id = $_POST['branch_id'];
     $id = $_POST['id'] ?? null;
 
-    // Validation
+    // Field-level Validation
     if (empty($name)) $errors['name'] = "Name is required";
     if (empty($email)) $errors['email'] = "Email is required";
-    if (empty($phone)) $errors['phone'] = "Phone is required";
+    if (empty($phone)) $errors['phone'] = "Phone number is required";
     
     if ($action === 'create') {
         $password = $_POST['password'];
-        if (empty($password)) $errors['password'] = "Password is required";
+        if (empty($password)) $errors['password'] = "Password is required for new accounts";
         
-        // Check email uniqueness
-        $existing = getUserByEmail($conn, $email);
-        if ($existing) $errors['email'] = "Email already registered";
+        // Email uniqueness check
+        $check = mysqli_query($conn, "SELECT id FROM users WHERE email = '$email'");
+        if (mysqli_num_rows($check) > 0) $errors['email'] = "This email is already in use";
     }
 
     if (!empty($errors)) {
@@ -44,21 +44,36 @@ if ($action === 'create' || $action === 'update') {
     }
 
     if ($action === 'create') {
-        createUser($conn, $name, $email, $password, $phone, $role, '', $branch_id);
-        $_SESSION['msg'] = "User created successfully";
-    } else {
-        // Updated updateUser in UserModel to handle role and branch
-        $sql = "UPDATE users SET name = '$name', email = '$email', phone = '$phone', role = '$role', branch_id = " . ($branch_id == '' ? "NULL" : "'$branch_id'") . " WHERE id = '$id'";
+        // Direct creation of staff/member
+        $storedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $branch_val = $branch_id == '' ? "NULL" : "'$branch_id'";
+        $sql = "INSERT INTO users (name, email, password_hash, phone, role, branch_id, is_active, created_at) 
+                VALUES ('$name', '$email', '$storedPassword', '$phone', '$role', $branch_val, 1, NOW())";
         mysqli_query($conn, $sql);
-        $_SESSION['msg'] = "User updated successfully";
+        $_SESSION['msg'] = "Account for $name ($role) created successfully";
+    } else {
+        // Update user
+        $branch_val = $branch_id == '' ? "NULL" : "'$branch_id'";
+        $sql = "UPDATE users 
+                SET name = '$name', email = '$email', phone = '$phone', role = '$role', branch_id = $branch_val 
+                WHERE id = '$id'";
+        mysqli_query($conn, $sql);
+        $_SESSION['msg'] = "User $name updated successfully";
     }
+
+} elseif ($action === 'change_role') {
+    $id = $_POST['id'];
+    $new_role = $_POST['role'];
+    mysqli_query($conn, "UPDATE users SET role = '$new_role' WHERE id = '$id'");
+    $_SESSION['msg'] = "Role updated successfully";
 
 } elseif ($action === 'toggle_status') {
     $id = $_GET['id'];
-    $user = getUserById($conn, $id);
+    $res = mysqli_query($conn, "SELECT is_active FROM users WHERE id = '$id'");
+    $user = mysqli_fetch_assoc($res);
     $new_status = $user['is_active'] ? 0 : 1;
     mysqli_query($conn, "UPDATE users SET is_active = '$new_status' WHERE id = '$id'");
-    $_SESSION['msg'] = "User status updated";
+    $_SESSION['msg'] = "User status toggled successfully";
 }
 
 Close($conn);
