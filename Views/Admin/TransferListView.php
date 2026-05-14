@@ -21,7 +21,7 @@ $status_filter = $_GET['status_filter'] ?? '';
 <a href="dashboardView.php">← Back to Dashboard</a>
 <hr>
 
-<form action="../../Controllers/AdminTransferController.php" method="GET">
+<form novalidate action="../../Controllers/AdminTransferController.php" method="GET">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Transfers</option>
@@ -72,3 +72,4 @@ $status_filter = $_GET['status_filter'] ?? '';
 
 </body>
 </html>
+

@@ -38,7 +38,7 @@ if (!$c) {
 <hr>
 
 <h3>Admin Action</h3>
-<form action="../../Controllers/AdminComplaintActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminComplaintActionController.php" method="POST">
     <input type="hidden" name="id" value="<?= $c['id'] ?>">
 
     <p>
@@ -63,3 +63,4 @@ if (!$c) {
 
 </body>
 </html>
+

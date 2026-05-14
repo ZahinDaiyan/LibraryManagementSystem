@@ -27,7 +27,7 @@ $title = $book ? "Edit Book Details" : "Add New Book to Master Catalog";
 <a href="BookCatalogView.php">← Back to Catalog</a>
 <hr>
 
-<form action="../../Controllers/AdminBookActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminBookActionController.php" method="POST">
     <input type="hidden" name="action" value="<?= $book ? 'update' : 'create' ?>">
     <?php if ($book): ?>
         <input type="hidden" name="id" value="<?= $book['id'] ?>">
@@ -101,3 +101,4 @@ $title = $book ? "Edit Book Details" : "Add New Book to Master Catalog";
 
 </body>
 </html>
+

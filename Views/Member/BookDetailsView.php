@@ -107,7 +107,7 @@ if (!$book) {
         <small><?= $r['created_at'] ?></small>
         
         <?php if ($r['member_id'] == $_SESSION['id']) { ?>
-            <form action="../../Controllers/BookReviewController.php" method="POST" style="display:inline;">
+            <form novalidate action="../../Controllers/BookReviewController.php" method="POST" style="display:inline;">
                 <input type="hidden" name="action" value="delete_review">
                 <input type="hidden" name="review_id" value="<?= $r['id'] ?>">
                 <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
@@ -122,7 +122,7 @@ if (!$book) {
 <hr>
 
 <h3>Write a Review</h3>
-<form action="../../Controllers/BookReviewController.php" method="POST">
+<form novalidate action="../../Controllers/BookReviewController.php" method="POST">
     <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
     <input type="hidden" name="action" value="submit_review">
     
@@ -147,3 +147,4 @@ if (!$book) {
 
 </body>
 </html>
+

@@ -41,7 +41,7 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
 
 <hr>
 
-<form action="../../Controllers/LibrarianProfileUpdateController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianProfileUpdateController.php" method="POST">
 
     <label for="name">Name:</label>
     <input type="text" name="name" id="name" value="<?php echo isset($profile['name']) ? $profile['name'] : ''; ?>">

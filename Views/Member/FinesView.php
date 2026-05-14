@@ -50,7 +50,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
         <td><?= $f['id'] ?></td>
         <td>Unpaid</td>
         <td>
-            <form action="../../Controllers/FineActionController.php" method="POST">
+            <form novalidate action="../../Controllers/FineActionController.php" method="POST">
                 <input type="hidden" name="action" value="confirm_payment">
                 <input type="hidden" name="fine_id" value="<?= $f['id'] ?>">
                 <button type="submit">Mark as Paid (Demo)</button>
@@ -87,3 +87,4 @@ unset($_SESSION['msg'], $_SESSION['error']);
 
 </body>
 </html>
+

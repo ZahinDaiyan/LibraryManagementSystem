@@ -32,7 +32,7 @@ function getVal($key, $settings, $old_data) {
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form action="../../Controllers/AdminSettingsActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminSettingsActionController.php" method="POST">
     <input type="hidden" name="action" value="update_settings">
 
     <h3>Platform Configuration</h3>
@@ -79,3 +79,4 @@ function getVal($key, $settings, $old_data) {
 
 </body>
 </html>
+

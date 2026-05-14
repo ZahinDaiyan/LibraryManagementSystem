@@ -30,7 +30,7 @@ $selected_year = $_GET['year'] ?? '';
 
 <hr>
 
-<form action="../../Controllers/BookIndexController.php" method="GET">
+<form novalidate action="../../Controllers/BookIndexController.php" method="GET">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     
     <select name="genre_id">
@@ -90,3 +90,4 @@ $selected_year = $_GET['year'] ?? '';
 
 </body>
 </html>
+

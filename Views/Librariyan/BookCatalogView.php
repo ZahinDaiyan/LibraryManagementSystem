@@ -74,14 +74,14 @@ $books = isset($_SESSION['catalog_books']) ? $_SESSION['catalog_books'] : array(
                 <a href="../../Controllers/LibrarianBookFormController.php?mode=edit&id=<?php echo $book['id']; ?>">Edit</a>
 
                 <?php if ($book['status_label'] === 'Retired/Unavailable') { ?>
-                    <form action="../../Controllers/LibrarianBookRestoreController.php" method="POST" style="display:inline;">
+                    <form novalidate action="../../Controllers/LibrarianBookRestoreController.php" method="POST" style="display:inline;">
                         <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
                         <label for="copies_<?php echo $book['id']; ?>">Copies:</label>
                         <input type="number" id="copies_<?php echo $book['id']; ?>" name="copies" value="1" min="1" style="width:60px;">
                         <button type="submit">Make Available</button>
                     </form>
                 <?php } else { ?>
-                    <form action="../../Controllers/LibrarianBookRetireController.php" method="POST" style="display:inline;">
+                    <form novalidate action="../../Controllers/LibrarianBookRetireController.php" method="POST" style="display:inline;">
                         <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
                         <button type="submit">Mark Unavailable</button>
                     </form>
