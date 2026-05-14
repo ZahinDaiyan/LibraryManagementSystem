@@ -38,7 +38,7 @@ if (!$c) {
 <hr>
 
 <h3>Admin Action</h3>
-<form novalidate action="../../Controllers/AdminComplaintActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminComplaintActionController.php" method="POST" onsubmit="return validateComplaintResponse(this)">
     <input type="hidden" name="id" value="<?= $c['id'] ?>">
 
     <p>
@@ -61,6 +61,7 @@ if (!$c) {
     <button type="submit">Submit Response & Update Status</button>
 </form>
 
+<script src="../../js/admin_validation.js"></script>
 </body>
 </html>
 

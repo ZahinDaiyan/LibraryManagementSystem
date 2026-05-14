@@ -41,7 +41,7 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
 
 <hr>
 
-<form novalidate action="../../Controllers/LibrarianProfileUpdateController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianProfileUpdateController.php" method="POST" onsubmit="return validateProfileUpdate(this)">
 
     <label for="name">Name:</label>
     <input type="text" name="name" id="name" value="<?php echo isset($profile['name']) ? $profile['name'] : ''; ?>">
@@ -72,5 +72,6 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
 
 </form>
 
+<script src="../../js/member_validation.js"></script>
 </body>
 </html>

@@ -122,7 +122,7 @@ if (!$book) {
 <hr>
 
 <h3>Write a Review</h3>
-<form novalidate action="../../Controllers/BookReviewController.php" method="POST">
+<form novalidate action="../../Controllers/BookReviewController.php" method="POST" onsubmit="return validateReviewForm(this)">
     <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
     <input type="hidden" name="action" value="submit_review">
     
@@ -145,6 +145,7 @@ if (!$book) {
     <button type="submit">Submit Review</button>
 </form>
 
+<script src="../../js/member_validation.js"></script>
 </body>
 </html>
 

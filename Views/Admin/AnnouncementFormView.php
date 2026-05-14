@@ -27,7 +27,7 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
 <a href="AnnouncementListView.php">← Back to List</a>
 <hr>
 
-<form novalidate action="../../Controllers/AdminAnnouncementActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminAnnouncementActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="<?= $a ? 'update' : 'create' ?>">
     <?php if ($a): ?>
         <input type="hidden" name="id" value="<?= $a['id'] ?>">
@@ -64,6 +64,7 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
     <button type="submit"><?= $a ? 'Update Announcement' : 'Post Announcement' ?></button>
 </form>
 
+<script src="../../js/admin_validation.js"></script>
 </body>
 </html>
 

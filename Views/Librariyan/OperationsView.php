@@ -41,7 +41,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Genres</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
     <input type="hidden" name="action" value="create_genre">
     <input type="text" name="name" placeholder="New genre name">
     <button type="submit">Add Genre</button>
@@ -52,7 +52,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
         <tr>
             <td><?php echo $genre['name']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
                     <input type="hidden" name="action" value="rename_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <input type="text" name="name" value="<?php echo $genre['name']; ?>">
@@ -152,7 +152,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Issue Manual Fine</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
     <input type="hidden" name="action" value="issue_fine">
     <input type="number" name="borrow_record_id" placeholder="Borrow record ID">
     <input type="number" name="member_id" placeholder="Member ID">
@@ -277,7 +277,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Announcements</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="create_announcement">
     <input type="number" name="branch_id" placeholder="Branch ID or leave blank">
     <input type="text" name="title" placeholder="Title">
@@ -325,5 +325,6 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <?php } ?>
 </table>
 
+<script src="../../js/librarian_validation.js"></script>
 </body>
 </html>

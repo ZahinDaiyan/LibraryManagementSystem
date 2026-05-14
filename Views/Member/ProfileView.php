@@ -33,7 +33,7 @@ if (!$user) {
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
 <h3>Personal Information</h3>
-<form novalidate action="../../Controllers/ProfileUpdateController.php" method="POST" enctype="multipart/form-data">
+<form novalidate action="../../Controllers/ProfileUpdateController.php" method="POST" enctype="multipart/form-data" onsubmit="return validateProfileUpdate(this)">
     <input type="hidden" name="action" value="update_profile">
     
     <p>
@@ -73,7 +73,7 @@ if (!$user) {
 <hr>
 
 <h3>Change Password</h3>
-<form novalidate action="../../Controllers/ProfileUpdateController.php" method="POST">
+<form novalidate action="../../Controllers/ProfileUpdateController.php" method="POST" onsubmit="return validatePasswordChange(this)">
     <input type="hidden" name="action" value="change_password">
     <p>
         <label>Current Password:</label><br>
@@ -90,6 +90,7 @@ if (!$user) {
     <button type="submit">Change Password</button>
 </form>
 
+<script src="../../js/member_validation.js"></script>
 </body>
 </html>
 

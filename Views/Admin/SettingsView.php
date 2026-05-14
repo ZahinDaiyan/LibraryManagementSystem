@@ -32,7 +32,7 @@ function getVal($key, $settings, $old_data) {
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form novalidate action="../../Controllers/AdminSettingsActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminSettingsActionController.php" method="POST" onsubmit="return validateSettingsForm(this)">
     <input type="hidden" name="action" value="update_settings">
 
     <h3>Platform Configuration</h3>
@@ -77,6 +77,7 @@ function getVal($key, $settings, $old_data) {
     <button type="submit">Save Global Settings</button>
 </form>
 
+<script src="../../js/admin_validation.js"></script>
 </body>
 </html>
 

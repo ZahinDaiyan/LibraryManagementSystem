@@ -22,7 +22,7 @@ unset($_SESSION['form_errors'], $_SESSION['old_data']);
 <a href="../../Controllers/MemberComplaintController.php">← Back to List</a>
 <hr>
 
-<form novalidate action="../../Controllers/MemberComplaintActionController.php" method="POST">
+<form novalidate action="../../Controllers/MemberComplaintActionController.php" method="POST" onsubmit="return validateComplaintForm(this)">
     <p>
         <label>Complaint Title:</label><br>
         <input type="text" name="title" value="<?= htmlspecialchars($old_data['title'] ?? '') ?>" style="width: 400px;">
@@ -42,5 +42,6 @@ unset($_SESSION['form_errors'], $_SESSION['old_data']);
     <button type="submit">Submit Complaint</button>
 </form>
 
+<script src="../../js/member_validation.js"></script>
 </body>
 </html>
