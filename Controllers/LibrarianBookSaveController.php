@@ -9,6 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
 
 require_once '../Models/DB.php';
 require_once '../Models/LibrarianModel.php';
+require_once '../Models/LibrarianWorkflowModel.php';
 
 $_SESSION['error'] = '';
 $_SESSION['msg'] = '';
@@ -22,6 +23,7 @@ $genreId = isset($_POST['genre_id']) ? $_POST['genre_id'] : '';
 $publisher = htmlspecialchars($_POST['publisher']);
 $publishedYear = isset($_POST['published_year']) ? $_POST['published_year'] : '';
 $description = htmlspecialchars($_POST['description']);
+$quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
 $existingCover = isset($_POST['current_cover_image_path']) ? $_POST['current_cover_image_path'] : '';
 
 if ($title == '' || $author == '') {
@@ -59,7 +61,33 @@ if ($mode === 'edit' && $bookId != '') {
         $coverImagePath
     );
 
-    $_SESSION['msg'] = $result ? 'Book updated successfully' : 'Book update failed';
+    if ($result) {
+        // Update branch inventory quantity for librarian's branch if provided
+        $branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);
+        if ($branchInfo && isset($branchInfo['branch_id']) && $branchInfo['branch_id'] != '') {
+            $branchId = $branchInfo['branch_id'];
+            $copies = $quantity > 0 ? $quantity : 0;
+            $existingInv = getBranchInventoryRow($conn, $branchId, $bookId);
+            if ($existingInv) {
+                $existingAvailable = intval($existingInv['available_copies']);
+                $newAvailable = $copies;
+                if ($existingAvailable > $copies) {
+                    $newAvailable = $copies; // cannot have available > total
+                } elseif ($existingAvailable <= $copies) {
+                    // keep existing available if less than or equal to new total
+                    $newAvailable = $existingAvailable;
+                }
+            } else {
+                $newAvailable = $copies;
+            }
+
+            saveBranchInventory($conn, $branchId, $bookId, $copies, $newAvailable);
+        }
+
+        $_SESSION['msg'] = 'Book updated successfully';
+    } else {
+        $_SESSION['msg'] = 'Book update failed';
+    }
 } else {
     $result = createBook(
         $conn,
@@ -73,7 +101,21 @@ if ($mode === 'edit' && $bookId != '') {
         $coverImagePath
     );
 
-    $_SESSION['msg'] = $result ? 'Book added successfully' : 'Book add failed';
+    if ($result) {
+        // Get new book id and add inventory for the librarian's branch if possible
+        $newBookId = mysqli_insert_id($conn);
+        $branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);
+        if ($branchInfo && isset($branchInfo['branch_id']) && $branchInfo['branch_id'] != '') {
+            $branchId = $branchInfo['branch_id'];
+            $copies = $quantity > 0 ? $quantity : 1;
+            saveBranchInventory($conn, $branchId, $newBookId, $copies, $copies);
+            $_SESSION['msg'] = 'Book added successfully and inventory updated for your branch';
+        } else {
+            $_SESSION['msg'] = 'Book added successfully. Add inventory for branches from Operations.';
+        }
+    } else {
+        $_SESSION['msg'] = 'Book add failed';
+    }
 }
 
 Close($conn);

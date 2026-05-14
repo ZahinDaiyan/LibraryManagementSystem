@@ -121,4 +121,21 @@ function retireBook($conn, $id)
     return mysqli_query($conn, $sql);
 }
 
+function makeBookAvailable($conn, $id, $copies = 1)
+{
+    $copies_int = intval($copies) > 0 ? intval($copies) : 1;
+
+    // If there are existing inventory rows for this book, restore copies there.
+    $sql = "UPDATE branch_inventory
+            SET total_copies = $copies_int,
+                available_copies = $copies_int
+            WHERE book_id = '$id'";
+
+    $res = mysqli_query($conn, $sql);
+
+    // If no rows were updated (no inventory records yet), do nothing and return false.
+    // Librarian can add inventory for branches from the Operations view.
+    return $res;
+}
+
 ?>

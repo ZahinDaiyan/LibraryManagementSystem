@@ -59,9 +59,22 @@ if ($action === 'create_genre') {
     $body = htmlspecialchars($_POST['body']);
     $message = createAnnouncement($conn, $targetBranch, $_SESSION['id'], $title, $body) ? 'Announcement posted' : 'Announcement post failed';
 } elseif ($action === 'update_transfer') {
-    $requestId = (int)$_POST['request_id'];
-    $status = htmlspecialchars($_POST['status']);
-    $message = updateInterBranchRequestStatus($conn, $requestId, $status) ? 'Transfer updated' : 'Transfer update failed';
+    $requestId = isset($_POST['request_id']) ? $_POST['request_id'] : 0;
+    $status = isset($_POST['status']) ? $_POST['status'] : '';
+    $res = updateInterBranchRequestStatus($conn, $requestId, $status);
+    if (is_array($res)) {
+        if ($res['success']) {
+            if (isset($res['affected']) && $res['affected'] > 0) {
+                $message = 'Transfer updated';
+            } else {
+                $message = 'No transfer record updated (maybe status already set)';
+            }
+        } else {
+            $message = 'Transfer update failed: ' . $res['error'];
+        }
+    } else {
+        $message = 'Transfer update failed: unknown error';
+    }
 }
 
 Close($conn);

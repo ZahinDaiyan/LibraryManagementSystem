@@ -88,6 +88,21 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
 
     <br><br>
 
+    <?php
+        // Show quantity input for both add and edit (pre-fill on edit)
+        $quantityVal = '';
+        if ($mode === 'edit') {
+            $quantityVal = isset($book['quantity']) ? intval($book['quantity']) : '';
+        } else {
+            $quantityVal = 1;
+        }
+    ?>
+    <label for="quantity">Quantity (copies) for your branch:</label>
+    <input type="number" name="quantity" id="quantity" min="1" value="<?php echo $quantityVal; ?>">
+    <br><br>
+
+    <br><br>
+
     <?php if (isset($book['cover_image_path']) && $book['cover_image_path'] != '') { ?>
         <p>Current Cover:</p>
         <img src="../../<?php echo $book['cover_image_path']; ?>" width="120" alt="Current Cover">
