@@ -14,25 +14,12 @@ function hashPasswordIfNeeded($password)
 function getAllUsers($conn)
 {
     $sql = "SELECT id, name, email, phone, role, branch_id, is_active FROM users";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_execute($stmt);
-
-    $result = mysqli_stmt_get_result($stmt);
+    $result = mysqli_query($conn, $sql);
+    
     $users = array();
-
     while ($row = mysqli_fetch_assoc($result)) {
-        $users[] = array(
-            'id' => $row['id'],
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'phone' => $row['phone'],
-            'role' => $row['role'],
-            'branch_id' => $row['branch_id'],
-            'is_active' => $row['is_active']
-        );
+        $users[] = $row;
     }
-
-    mysqli_stmt_close($stmt);
 
     return $users;
 }
@@ -49,40 +36,21 @@ function createUser(
 )
 {
     $storedPassword = hashPasswordIfNeeded($password_hash);
+    $branch_val = $branch_id == '' ? "NULL" : "'$branch_id'";
+    
     $sql = "INSERT INTO users
             (name, email, password_hash, phone, role, profile_pic, branch_id, is_active, created_at)
             VALUES
-            (?, ?, ?, ?, ?, ?, NULLIF(?, ''), 1, NOW())";
+            ('$name', '$email', '$storedPassword', '$phone', '$role', '$profile_pic', $branch_val, 1, NOW())";
 
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param(
-        $stmt,
-        'sssssss',
-        $name,
-        $email,
-        $storedPassword,
-        $phone,
-        $role,
-        $profile_pic,
-        $branch_id
-    );
-
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    return $result;
+    return mysqli_query($conn, $sql);
 }
 
 function login($conn, $email, $password)
 {
-    $sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $email);
-    mysqli_stmt_execute($stmt);
-
-    $result = mysqli_stmt_get_result($stmt);
+    $sql = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
+    $result = mysqli_query($conn, $sql);
     $user = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
 
     if ($user) {
         $storedPassword = $user['password_hash'];
@@ -90,7 +58,6 @@ function login($conn, $email, $password)
         if ($storedPassword === $password || password_verify($password, $storedPassword)) {
             return $user;
         }
-
     }
 
     return false;
@@ -99,16 +66,9 @@ function login($conn, $email, $password)
 
 function getUserById($conn, $id)
 {
-    $sql = "SELECT * FROM users WHERE id = ? LIMIT 1";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'i', $id);
-    mysqli_stmt_execute($stmt);
-
-    $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-
-    return $user;
+    $sql = "SELECT * FROM users WHERE id = '$id' LIMIT 1";
+    $result = mysqli_query($conn, $sql);
+    return mysqli_fetch_assoc($result);
 }
 
 function getUserWithBranchById($conn, $id)
@@ -116,18 +76,11 @@ function getUserWithBranchById($conn, $id)
     $sql = "SELECT u.id, u.name, u.email, u.phone, u.role, u.profile_pic, u.branch_id, u.is_active, b.name AS branch_name, b.city AS branch_city, b.address AS branch_address
             FROM users u
             LEFT JOIN branches b ON b.id = u.branch_id
-            WHERE u.id = ?
+            WHERE u.id = '$id'
             LIMIT 1";
 
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'i', $id);
-    mysqli_stmt_execute($stmt);
-
-    $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-
-    return $user;
+    $result = mysqli_query($conn, $sql);
+    return mysqli_fetch_assoc($result);
 }
 
 function updateUser(
@@ -135,60 +88,44 @@ function updateUser(
     $id,
     $name,
     $email,
-    $phone
+    $phone,
+    $profile_pic = null
 )
 {
+    $pic_sql = "";
+    if ($profile_pic !== null) {
+        $pic_sql = ", profile_pic = '$profile_pic'";
+    }
+
     $sql = "UPDATE users
-            SET name = ?,
-                email = ?,
-                phone = ?
-            WHERE id = ?";
+            SET name = '$name',
+                email = '$email',
+                phone = '$phone'
+                $pic_sql
+            WHERE id = '$id'";
 
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'sssi', $name, $email, $phone, $id);
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    return $result;
+    return mysqli_query($conn, $sql);
 }
 
 function updateUserPassword($conn, $id, $password)
 {
     $storedPassword = hashPasswordIfNeeded($password);
-    $sql = "UPDATE users SET password_hash = ? WHERE id = ?";
-
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'si', $storedPassword, $id);
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    return $result;
+    $sql = "UPDATE users SET password_hash = '$storedPassword' WHERE id = '$id'";
+    return mysqli_query($conn, $sql);
 }
 
 
 function getUserByEmail($conn, $email)
 {
-    $sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $email);
-    mysqli_stmt_execute($stmt);
-
-    $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
-    mysqli_stmt_close($stmt);
-
-    return $user;
+    $sql = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
+    $result = mysqli_query($conn, $sql);
+    return mysqli_fetch_assoc($result);
 }
 
 function deleteUser($conn, $id)
 {
-    $sql = "DELETE FROM users WHERE id = ?";
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'i', $id);
-    $result = mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    return $result;
+    $sql = "DELETE FROM users WHERE id = '$id'";
+    return mysqli_query($conn, $sql);
 }
 
 ?>

@@ -2,18 +2,26 @@
 
 session_start();
 
-if (!isset($_SESSION['role'])) {
-
-    header('Location: /LibraryManagementSystem/Views/LoginView.php');
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
+    header("Location: /LibraryManagementSystem/Views/LoginView.php");
     exit();
 }
 
-if ($_SESSION['role'] != 'member') {
+require_once '../models/DB.php';
+require_once '../models/UserModel.php';
+require_once '../models/AnnouncementModel.php';
+require_once '../models/NotificationModel.php';
 
-    header('Location: /LibraryManagementSystem/index.php');
-    exit();
-}
+$conn = Connect();
+$user = getUserById($conn, $_SESSION['id']);
+$branch_id = $user['branch_id'];
 
-header('Location: /LibraryManagementSystem/Views/Member/dashboardView.php');
+$announcements = getAnnouncements($conn, $branch_id);
+$notifications = getNotifications($conn, $_SESSION['id']);
+Close($conn);
 
-?>
+$_SESSION['announcements'] = $announcements;
+$_SESSION['notifications'] = $notifications;
+
+header("Location: /LibraryManagementSystem/Views/Member/dashboardView.php");
+exit();
