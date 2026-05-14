@@ -4,6 +4,6 @@ session_start();
 
 session_destroy();
 
-header('Location: ../views/auth/LoginView.php');
+header('Location: ../views/LoginView.php');
 
 ?>

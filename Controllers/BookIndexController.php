@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: ../views/LoginView.php");
+    header("Location: /LibraryManagementSystem/Views/LoginView.php");
     exit();
 }
 
@@ -16,7 +16,7 @@ Close($conn);
 
 $_SESSION['books'] = $books;
 
-header("Location: ../views/Member/book_catalog.php");
+header("Location: /LibraryManagementSystem/Views/Member/BookIndexView.php");
 exit();
 
 ?>
