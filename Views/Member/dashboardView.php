@@ -55,6 +55,7 @@ $notifications = $_SESSION['notifications'] ?? [];
             <li><a href="../../controllers/ReadingListController.php">Reading List</a></li>
             <li><a href="../../controllers/ProfileController.php">My Profile</a></li>
             <li><a href="../../controllers/FineController.php">My Fines</a></li>
+            <li><a href="../../controllers/MemberComplaintController.php">Support & Complaints</a></li>
         </ul>
         <br>
         <a href="../../controllers/LogoutController.php"><button>Logout</button></a>
