@@ -8,7 +8,7 @@ if (isset($_SESSION['role'])) {
 
     if ($role === 'admin') {
 
-        header("Location: controllers/AdminController.php");
+        header("Location: Controllers/AdminDashboardController.php");
         exit();
 
     } elseif ($role === 'branch_manager') {
