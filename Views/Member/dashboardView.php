@@ -3,7 +3,7 @@ session_start();
 
 if (!isset($_SESSION['role'])) {
 
-    header('Location: ../auth/LoginView.php');
+    header('Location: ../LoginView.php');
     exit();
 }
 

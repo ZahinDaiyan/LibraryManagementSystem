@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: ../views/LoginView.php");
+    header("Location: /LibraryManagementSystem/Views/LoginView.php");
     exit();
 }
 
@@ -25,7 +25,7 @@ $row = mysqli_fetch_assoc($result);
 
 if (!$row || $row['available_copies'] <= 0) {
     $_SESSION['error'] = "Book not available";
-    header("Location: ../controllers/BookDetailsController.php?id=$book_id");
+    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php?id=$book_id");
     exit();
 }
 
@@ -39,7 +39,7 @@ $check = mysqli_query($conn, $sql2);
 
 if (mysqli_num_rows($check) > 0) {
     $_SESSION['error'] = "Already requested";
-    header("Location: ../controllers/BookDetailsController.php?id=$book_id");
+    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php?id=$book_id");
     exit();
 }
 
@@ -55,6 +55,6 @@ Close($conn);
 
 $_SESSION['msg'] = "Borrow request submitted";
 
-header("Location: ../controllers/MemberDashboardController.php");
+header("Location: /LibraryManagementSystem/Controllers/MemberDashboardController.php");
 
 ?>

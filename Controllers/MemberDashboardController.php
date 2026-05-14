@@ -4,16 +4,16 @@ session_start();
 
 if (!isset($_SESSION['role'])) {
 
-    header('Location: ../views/auth/LoginView.php');
+    header('Location: /LibraryManagementSystem/Views/LoginView.php');
     exit();
 }
 
 if ($_SESSION['role'] != 'member') {
 
-    header('Location: ../index.php');
+    header('Location: /LibraryManagementSystem/index.php');
     exit();
 }
 
-header('Location: ../views/Member/dashboardView.php');
+header('Location: /LibraryManagementSystem/Views/Member/dashboardView.php');
 
 ?>

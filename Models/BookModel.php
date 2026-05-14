@@ -31,7 +31,7 @@ function getBookAvailabilityByBranches($conn, $book_id)
     bi.available_copies
 FROM branch_inventory bi
 JOIN branches b ON b.id = bi.branch_id
-WHERE bi.book_id = ?
+WHERE bi.book_id = '$book_id'
     ";
 
     $result = mysqli_query($conn, $sql);

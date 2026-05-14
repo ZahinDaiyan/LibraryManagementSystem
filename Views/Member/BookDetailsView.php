@@ -2,12 +2,17 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: ../auth/LoginView.php");
+    header("Location: ../LoginView.php");
     exit();
 }
 
-$book = $_SESSION['book'];
-$availability = $_SESSION['availability'];
+$book = isset($_SESSION['book']) ? $_SESSION['book'] : null;
+$availability = isset($_SESSION['availability']) ? $_SESSION['availability'] : [];
+
+if (!$book) {
+    header("Location: BookIndexView.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +25,7 @@ $availability = $_SESSION['availability'];
 
 <h2>Book Details</h2>
 
-<a href="book_catalog.php">← Back</a>
+<a href="BookIndexView.php">← Back to Catalog</a>
 
 <hr>
 
@@ -31,20 +36,18 @@ $availability = $_SESSION['availability'];
 <p><b>Publisher:</b> <?= $book['publisher'] ?></p>
 <p><b>Year:</b> <?= $book['published_year'] ?></p>
 <p><b>Description:</b> <?= $book['description'] ?></p>
-<a href="../../controllers/BorrowRequestController.php?book_id=<?= $book['id'] ?>&branch_id=1">
-    Request Borrow
-</a>
 
 <hr>
 
 <h3>Availability by Branch</h3>
 
-<table border="1">
+<table border="1" cellpadding="10">
 
 <tr>
     <th>Branch</th>
     <th>Total Copies</th>
     <th>Available</th>
+    <th>Action</th>
 </tr>
 
 <?php foreach ($availability as $a) { ?>
@@ -53,6 +56,15 @@ $availability = $_SESSION['availability'];
     <td><?= $a['branch_name'] ?></td>
     <td><?= $a['total_copies'] ?></td>
     <td><?= $a['available_copies'] ?></td>
+    <td>
+        <?php if ($a['available_copies'] > 0) { ?>
+            <a href="../../Controllers/BorrowRequestController.php?book_id=<?= $book['id'] ?>&branch_id=<?= $a['branch_id'] ?>">
+                Request Borrow
+            </a>
+        <?php } else { ?>
+            <span style="color:red;">Not Available</span>
+        <?php } ?>
+    </td>
 </tr>
 
 <?php } ?>
