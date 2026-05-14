@@ -59,6 +59,8 @@ $stats = $_SESSION['admin_stats'] ?? [];
     <li><a href="../../Controllers/AdminBookCatalogController.php">Master Book Catalog</a></li>
     <li><a href="../../Controllers/AdminBranchController.php">Manage Branches</a></li>
     <li><a href="../../Controllers/AdminTransferController.php">Inter-Branch Transfers</a></li>
+    <li><a href="../../Controllers/AdminComplaintController.php">Member Complaints</a></li>
+    <li><a href="../../Controllers/AdminAuditLogController.php">Platform Audit Logs</a></li>
     <li><a href="../../Controllers/AdminSettingsController.php">Global System Settings</a></li>
     <li><a href="../../Controllers/AdminReportController.php">Platform Reports</a></li>
 </ul>

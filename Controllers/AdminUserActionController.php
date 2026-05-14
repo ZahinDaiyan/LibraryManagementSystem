@@ -35,14 +35,16 @@ if ($action === 'create' || $action === 'update') {
         $check = mysqli_query($conn, "SELECT id FROM users WHERE email = '$email'");
         if (mysqli_num_rows($check) > 0) $errors['email'] = "This email is already in use";
     }
+require_once '../Models/UserModel.php';
+require_once '../Models/AuditModel.php';
 
-    if (!empty($errors)) {
-        $_SESSION['form_errors'] = $errors;
-        $_SESSION['old_data'] = $_POST;
-        header('Location: AdminUserFormController.php' . ($id ? "?id=$id" : ""));
-        exit();
-    }
+$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$conn = Connect();
+$errors = [];
+$admin_id = $_SESSION['id'];
 
+if ($action === 'create' || $action === 'update') {
+    // ... validation code ...
     if ($action === 'create') {
         // Direct creation of staff/member
         $storedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -50,6 +52,8 @@ if ($action === 'create' || $action === 'update') {
         $sql = "INSERT INTO users (name, email, password_hash, phone, role, branch_id, is_active, created_at) 
                 VALUES ('$name', '$email', '$storedPassword', '$phone', '$role', $branch_val, 1, NOW())";
         mysqli_query($conn, $sql);
+        $new_id = mysqli_insert_id($conn);
+        logAction($conn, $admin_id, "Created User", "users", $new_id, "Role: $role, Email: $email");
         $_SESSION['msg'] = "Account for $name ($role) created successfully";
     } else {
         // Update user
@@ -58,6 +62,7 @@ if ($action === 'create' || $action === 'update') {
                 SET name = '$name', email = '$email', phone = '$phone', role = '$role', branch_id = $branch_val 
                 WHERE id = '$id'";
         mysqli_query($conn, $sql);
+        logAction($conn, $admin_id, "Updated User Info", "users", $id, "Updated $name");
         $_SESSION['msg'] = "User $name updated successfully";
     }
 
@@ -65,16 +70,19 @@ if ($action === 'create' || $action === 'update') {
     $id = $_POST['id'];
     $new_role = $_POST['role'];
     mysqli_query($conn, "UPDATE users SET role = '$new_role' WHERE id = '$id'");
+    logAction($conn, $admin_id, "Changed User Role", "users", $id, "New Role: $new_role");
     $_SESSION['msg'] = "Role updated successfully";
 
 } elseif ($action === 'toggle_status') {
     $id = $_GET['id'];
-    $res = mysqli_query($conn, "SELECT is_active FROM users WHERE id = '$id'");
+    $res = mysqli_query($conn, "SELECT name, is_active FROM users WHERE id = '$id'");
     $user = mysqli_fetch_assoc($res);
     $new_status = $user['is_active'] ? 0 : 1;
     mysqli_query($conn, "UPDATE users SET is_active = '$new_status' WHERE id = '$id'");
+    logAction($conn, $admin_id, "Toggled User Status", "users", $id, "Target: " . $user['name'] . ", New Status: " . ($new_status ? 'Active' : 'Inactive'));
     $_SESSION['msg'] = "User status toggled successfully";
 }
+
 
 Close($conn);
 header('Location: AdminUserController.php');
