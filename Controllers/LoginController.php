@@ -1,42 +1,38 @@
 <?php
-
-require_once '../models/DB.php';
-require_once '../models/UserModel.php';
-
 session_start();
+require_once "../config/Database.php";
 
-$_SESSION['error'] = "";
+if(isset($_POST['login'])) {
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
-$email = htmlspecialchars($_POST['email']);
-$password = htmlspecialchars($_POST['password']);
+    $db = new Database();
+    $conn = $db->getConnection();
 
-if ($email == "" || $password == "") {
+    $stmt = $conn->prepare("SELECT id, password_hash, role FROM users WHERE email = ? AND role = 'branch_manager' AND is_active = 1");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
 
-    $_SESSION['error'] = "Please fill all fields";
-
-    header('Location: ../views/LoginView.php');
-    die();
-}
-
-$conn = Connect();
-
-$user = login($conn, $email, $password);
-
-Close($conn);
-
-if ($user) {
-
-    $_SESSION['id'] = $user['id'];
-    $_SESSION['name'] = $user['name'];
-    $_SESSION['role'] = $user['role'];
-
-    header('Location: ../index.php');
-
-} else {
-
-    $_SESSION['error'] = "Invalid Credentials";
-
-    header('Location: ../views/LoginView.php');
-
+    if($stmt->num_rows == 1) {
+        $stmt->bind_result($id, $password_hash, $role);
+        $stmt->fetch();
+        if(password_verify($password, $password_hash)) {
+            $_SESSION['user_id'] = $id;
+            $_SESSION['role'] = $role;
+            header("Location: DashboardController.php");
+            exit;
+        } else {
+            header("Location: ../views/login.php?error=Incorrect+password");
+            exit;
+        }
+    } else {
+        header("Location: ../views/login.php?error=No+active+Branch+Manager+found");
+        exit;
+    }
+} elseif(isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: ../views/login.php");
+    exit;
 }
 ?>
