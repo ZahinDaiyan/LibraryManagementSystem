@@ -30,7 +30,7 @@ $role_filter = $_GET['role_filter'] ?? '';
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
-<form action="../../Controllers/AdminUserController.php" method="GET">
+<form novalidate action="../../Controllers/AdminUserController.php" method="GET">
     <input type="text" name="search" placeholder="Search name, email, phone..." value="<?= htmlspecialchars($search) ?>">
     
     <select name="role_filter">
@@ -67,7 +67,7 @@ $role_filter = $_GET['role_filter'] ?? '';
         <td><?= $u['name'] ?></td>
         <td><?= $u['email'] ?></td>
         <td>
-            <form action="../../Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
+            <form novalidate action="../../Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
                 <input type="hidden" name="action" value="change_role">
                 <input type="hidden" name="id" value="<?= $u['id'] ?>">
                 <select name="role" onchange="this.form.submit()">

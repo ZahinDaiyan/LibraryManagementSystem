@@ -15,7 +15,10 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Active Loans</title>
+    <link rel="stylesheet" href="../css/member.css">
 </head>
 <body>
 
@@ -53,7 +56,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
             <?= $overdue ? "Overdue by " . abs($loan['days_remaining']) . " days" : $loan['days_remaining'] . " days remaining" ?>
         </td>
         <td>
-            <form action="../../Controllers/LoanActionController.php" method="POST">
+            <form novalidate action="../../Controllers/LoanActionController.php" method="POST">
                 <input type="hidden" name="action" value="renew">
                 <input type="hidden" name="loan_id" value="<?= $loan['id'] ?>">
                 <button type="submit" <?= $overdue ? 'disabled' : '' ?>>Request Renewal</button>
@@ -65,3 +68,4 @@ unset($_SESSION['msg'], $_SESSION['error']);
 
 </body>
 </html>
+

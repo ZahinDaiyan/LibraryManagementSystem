@@ -24,7 +24,10 @@ if (!$book) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Book Details</title>
+    <link rel="stylesheet" href="../css/member.css">
 </head>
 
 <body>
@@ -107,7 +110,7 @@ if (!$book) {
         <small><?= $r['created_at'] ?></small>
         
         <?php if ($r['member_id'] == $_SESSION['id']) { ?>
-            <form action="../../Controllers/BookReviewController.php" method="POST" style="display:inline;">
+            <form novalidate action="../../Controllers/BookReviewController.php" method="POST" style="display:inline;">
                 <input type="hidden" name="action" value="delete_review">
                 <input type="hidden" name="review_id" value="<?= $r['id'] ?>">
                 <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
@@ -122,7 +125,7 @@ if (!$book) {
 <hr>
 
 <h3>Write a Review</h3>
-<form action="../../Controllers/BookReviewController.php" method="POST">
+<form novalidate action="../../Controllers/BookReviewController.php" method="POST" onsubmit="return validateReviewForm(this)">
     <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
     <input type="hidden" name="action" value="submit_review">
     
@@ -145,5 +148,7 @@ if (!$book) {
     <button type="submit">Submit Review</button>
 </form>
 
+<script src="../js/member_validation.js"></script>
 </body>
 </html>
+

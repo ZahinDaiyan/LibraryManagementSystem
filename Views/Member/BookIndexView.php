@@ -19,7 +19,10 @@ $selected_year = $_GET['year'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Book Catalog</title>
+    <link rel="stylesheet" href="../css/member.css">
 </head>
 
 <body>
@@ -30,7 +33,7 @@ $selected_year = $_GET['year'] ?? '';
 
 <hr>
 
-<form action="../../Controllers/BookIndexController.php" method="GET">
+<form novalidate action="../../Controllers/BookIndexController.php" method="GET">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     
     <select name="genre_id">
@@ -90,3 +93,4 @@ $selected_year = $_GET['year'] ?? '';
 
 </body>
 </html>
+

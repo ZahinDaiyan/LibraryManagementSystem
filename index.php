@@ -13,9 +13,9 @@ if (isset($_SESSION['role'])) {
 
     } elseif ($role === 'branch_manager') {
 
-      //manager controller
-      
-      
+      header("Location: Controllers/BranchManagerDashboardController.php");
+      exit();
+
     } elseif ($role === 'librarian') {
 
       header("Location: Controllers/LibrarianDashboardController.php");

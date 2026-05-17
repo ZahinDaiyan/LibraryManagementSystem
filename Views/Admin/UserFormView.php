@@ -27,7 +27,7 @@ $title = $user ? "Edit User" : "Add New User";
 <a href="UserListView.php">← Back to List</a>
 <hr>
 
-<form action="../../Controllers/AdminUserActionController.php" method="POST">
+<form novalidate action="../../Controllers/AdminUserActionController.php" method="POST" onsubmit="return validateUserForm(this)">
     <input type="hidden" name="action" value="<?= $user ? 'update' : 'create' ?>">
     <?php if ($user): ?>
         <input type="hidden" name="id" value="<?= $user['id'] ?>">
@@ -92,5 +92,6 @@ $title = $user ? "Edit User" : "Add New User";
     <button type="submit"><?= $user ? 'Update User' : 'Create User' ?></button>
 </form>
 
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>

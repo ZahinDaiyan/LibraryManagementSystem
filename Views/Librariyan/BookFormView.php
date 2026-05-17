@@ -34,7 +34,7 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
 
 <hr>
 
-<form action="../../Controllers/LibrarianBookSaveController.php" method="POST" enctype="multipart/form-data">
+<form novalidate action="../../Controllers/LibrarianBookSaveController.php" method="POST" enctype="multipart/form-data" onsubmit="return validateBookForm(this)">
 
     <input type="hidden" name="mode" value="<?php echo $mode; ?>">
     <input type="hidden" name="book_id" value="<?php echo isset($book['id']) ? $book['id'] : ''; ?>">
@@ -114,5 +114,6 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
 
 </form>
 
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>

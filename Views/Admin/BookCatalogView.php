@@ -28,7 +28,7 @@ $search = $_GET['search'] ?? '';
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form action="../../Controllers/AdminBookCatalogController.php" method="GET">
+<form novalidate action="../../Controllers/AdminBookCatalogController.php" method="GET">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     <button type="submit">Search Catalog</button>
     <a href="../../Controllers/AdminBookCatalogController.php">Clear</a>
@@ -69,3 +69,4 @@ $search = $_GET['search'] ?? '';
 
 </body>
 </html>
+

@@ -25,7 +25,7 @@ unset($_SESSION['msg']);
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form action="../../Controllers/AdminComplaintController.php" method="GET">
+<form novalidate action="../../Controllers/AdminComplaintController.php" method="GET">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Complaints</option>
@@ -71,3 +71,4 @@ unset($_SESSION['msg']);
 
 </body>
 </html>
+
