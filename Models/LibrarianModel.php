@@ -111,31 +111,53 @@ function updateBook(
     return mysqli_query($conn, $sql);
 }
 
-function retireBook($conn, $id)
+function retireBook($conn, $id, $branchId = null)
 {
+    $branchFilter = $branchId === null || $branchId === '' ? '' : " AND branch_id = '$branchId'";
+
     $sql = "UPDATE branch_inventory
             SET total_copies = 0,
                 available_copies = 0
-            WHERE book_id = '$id'";
+            WHERE book_id = '$id'" . $branchFilter;
 
     return mysqli_query($conn, $sql);
 }
 
-function makeBookAvailable($conn, $id, $copies = 1)
+function makeBookAvailable($conn, $id, $copies = 1, $branchId = null)
 {
     $copies_int = intval($copies) > 0 ? intval($copies) : 1;
 
-    // If there are existing inventory rows for this book, restore copies there.
-    $sql = "UPDATE branch_inventory
-            SET total_copies = $copies_int,
-                available_copies = $copies_int
-            WHERE book_id = '$id'";
+    if (empty($branchId)) {
+        $branchSql = "SELECT id FROM branches ORDER BY id ASC LIMIT 1";
+        $branchResult = mysqli_query($conn, $branchSql);
+        $branchRow = mysqli_fetch_assoc($branchResult);
+        $branchId = $branchRow && isset($branchRow['id']) ? $branchRow['id'] : null;
+    }
 
-    $res = mysqli_query($conn, $sql);
+    if (empty($branchId)) {
+        $sql = "UPDATE branch_inventory
+                SET total_copies = $copies_int,
+                    available_copies = $copies_int
+                WHERE book_id = '$id'";
 
-    // If no rows were updated (no inventory records yet), do nothing and return false.
-    // Librarian can add inventory for branches from the Operations view.
-    return $res;
+        return mysqli_query($conn, $sql);
+    }
+
+    $checkSql = "SELECT id FROM branch_inventory WHERE book_id = '$id' AND branch_id = '$branchId' LIMIT 1";
+    $checkResult = mysqli_query($conn, $checkSql);
+    $existing = mysqli_fetch_assoc($checkResult);
+
+    if ($existing) {
+        $sql = "UPDATE branch_inventory
+                SET total_copies = $copies_int,
+                    available_copies = $copies_int
+                WHERE id = '{$existing['id']}'";
+        return mysqli_query($conn, $sql);
+    }
+
+        $sql = "INSERT INTO branch_inventory (book_id, branch_id, total_copies, available_copies)
+            VALUES ('$id', '$branchId', $copies_int, $copies_int)";
+    return mysqli_query($conn, $sql);
 }
 
 ?>

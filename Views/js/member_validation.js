@@ -18,6 +18,8 @@ function validateProfileUpdate(form) {
     let name = form.name.value.trim();
     let email = form.email.value.trim();
     let phone = form.phone.value.trim();
+    let newPassword = form.new_password ? form.new_password.value.trim() : "";
+    let confirmPassword = form.confirm_password ? form.confirm_password.value.trim() : "";
     let isValid = true;
 
     if (name === "") {
@@ -29,6 +31,19 @@ function validateProfileUpdate(form) {
     } else if (phone === "") {
         alert("Phone number is required");
         isValid = false;
+    }
+
+    if (isValid && (newPassword !== "" || confirmPassword !== "")) {
+        if (newPassword === "") {
+            alert("New password is required");
+            isValid = false;
+        } else if (newPassword.length < 6) {
+            alert("New password must be at least 6 characters");
+            isValid = false;
+        } else if (newPassword !== confirmPassword) {
+            alert("Passwords do not match");
+            isValid = false;
+        }
     }
 
     // --- Profile Picture Validation ---
