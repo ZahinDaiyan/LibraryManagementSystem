@@ -72,6 +72,6 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
 
 </form>
 
-<script src="../../js/member_validation.js"></script>
+<script src="../js/member_validation.js"></script>
 </body>
 </html>

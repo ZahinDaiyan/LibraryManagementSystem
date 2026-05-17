@@ -325,6 +325,6 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <?php } ?>
 </table>
 
-<script src="../../js/librarian_validation.js"></script>
+<script src="../js/librarian_validation.js"></script>
 </body>
 </html>

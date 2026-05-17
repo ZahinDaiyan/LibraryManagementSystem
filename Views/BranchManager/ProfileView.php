@@ -64,6 +64,6 @@ unset($_SESSION['msg'], $_SESSION['error']);
     <button type="submit">Update Profile</button>
 </form>
 
-<script src="../../js/branch_manager.js"></script>
+<script src="../js/branch_manager.js"></script>
 </body>
 </html>

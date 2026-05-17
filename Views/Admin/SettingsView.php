@@ -77,7 +77,7 @@ function getVal($key, $settings, $old_data) {
     <button type="submit">Save Global Settings</button>
 </form>
 
-<script src="../../js/admin_validation.js"></script>
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>
 

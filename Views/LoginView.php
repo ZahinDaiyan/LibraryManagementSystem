@@ -59,7 +59,7 @@ echo isset($_SESSION['msg']) ? $_SESSION['msg'] : "";
 
 </p>
 
-<script src="../js/auth.js"></script>
+<script src="js/auth.js"></script>
 
 </body>
 </html>

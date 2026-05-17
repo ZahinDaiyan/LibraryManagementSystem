@@ -14,7 +14,10 @@ unset($_SESSION['form_errors'], $_SESSION['old_data']);
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Submit Complaint</title>
+    <link rel="stylesheet" href="../css/member.css">
 </head>
 <body>
 
@@ -42,6 +45,6 @@ unset($_SESSION['form_errors'], $_SESSION['old_data']);
     <button type="submit">Submit Complaint</button>
 </form>
 
-<script src="../../js/member_validation.js"></script>
+<script src="../js/member_validation.js"></script>
 </body>
 </html>

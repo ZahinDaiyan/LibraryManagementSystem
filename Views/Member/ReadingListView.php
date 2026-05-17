@@ -15,7 +15,10 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Reading List</title>
+    <link rel="stylesheet" href="../css/member.css">
 </head>
 <body>
 

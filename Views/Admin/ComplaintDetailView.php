@@ -61,7 +61,7 @@ if (!$c) {
     <button type="submit">Submit Response & Update Status</button>
 </form>
 
-<script src="../../js/admin_validation.js"></script>
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>
 

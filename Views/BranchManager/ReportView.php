@@ -221,6 +221,6 @@ $selectedMonth = $_GET['month'] ?? date('Y-m');
     </tbody>
 </table>
 
-<script src="../../js/branch_manager.js"></script>
+<script src="../js/branch_manager.js"></script>
 </body>
 </html>

@@ -21,7 +21,10 @@ if (!$user) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Profile</title>
+    <link rel="stylesheet" href="../css/member.css">
 </head>
 <body>
 
@@ -90,7 +93,7 @@ if (!$user) {
     <button type="submit">Change Password</button>
 </form>
 
-<script src="../../js/member_validation.js"></script>
+<script src="../js/member_validation.js"></script>
 </body>
 </html>
 

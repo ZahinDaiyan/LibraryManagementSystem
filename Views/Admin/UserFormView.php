@@ -92,6 +92,6 @@ $title = $user ? "Edit User" : "Add New User";
     <button type="submit"><?= $user ? 'Update User' : 'Create User' ?></button>
 </form>
 
-<script src="../../js/admin_validation.js"></script>
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>

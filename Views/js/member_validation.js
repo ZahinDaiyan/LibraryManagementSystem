@@ -31,6 +31,25 @@ function validateProfileUpdate(form) {
         isValid = false;
     }
 
+    // --- Profile Picture Validation ---
+    if (isValid && form.profile_pic && form.profile_pic.files.length > 0) {
+        var file = form.profile_pic.files[0];
+        var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        var allowedExtensions = /\.(jpg|jpeg|png|gif|webp)$/i;
+        var maxSize = 2 * 1024 * 1024; // 2MB
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.");
+            isValid = false;
+        } else if (!allowedExtensions.test(file.name)) {
+            alert("Invalid file extension. Allowed: jpg, jpeg, png, gif, webp");
+            isValid = false;
+        } else if (file.size > maxSize) {
+            alert("File is too large. Maximum size is 2MB.");
+            isValid = false;
+        }
+    }
+
     return isValid;
 }
 

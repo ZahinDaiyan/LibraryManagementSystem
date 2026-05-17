@@ -64,7 +64,7 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
     <button type="submit"><?= $a ? 'Update Announcement' : 'Post Announcement' ?></button>
 </form>
 
-<script src="../../js/admin_validation.js"></script>
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>
 

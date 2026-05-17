@@ -114,6 +114,6 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
 
 </form>
 
-<script src="../../js/admin_validation.js"></script>
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>

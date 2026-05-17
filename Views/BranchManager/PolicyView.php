@@ -56,6 +56,6 @@ unset($_SESSION['msg'], $_SESSION['error']);
     </div>
 <?php endforeach; ?>
 
-<script src="../../js/branch_manager.js"></script>
+<script src="../js/branch_manager.js"></script>
 </body>
 </html>

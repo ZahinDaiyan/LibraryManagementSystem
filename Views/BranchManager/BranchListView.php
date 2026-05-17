@@ -101,6 +101,6 @@ $title = $editBranch ? 'Edit Branch' : 'Add Branch';
     <?php endforeach; ?>
 </table>
 
-<script src="../../js/branch_manager.js"></script>
+<script src="../js/branch_manager.js"></script>
 </body>
 </html>

@@ -99,7 +99,7 @@ $title = $book ? "Edit Book Details" : "Add New Book to Master Catalog";
     <button type="submit"><?= $book ? 'Update Book' : 'Add to Catalog' ?></button>
 </form>
 
-<script src="../../js/admin_validation.js"></script>
+<script src="../js/admin_validation.js"></script>
 </body>
 </html>
 
