@@ -8,24 +8,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once '../Models/DB.php';
+require_once '../Models/AnnouncementModel.php';
 
 $conn = Connect();
-
-$sql = "SELECT a.*, b.name AS branch_name, u.name AS author_name 
-        FROM announcements a
-        LEFT JOIN branches b ON a.branch_id = b.id
-        JOIN users u ON a.author_id = u.id
-        ORDER BY a.published_at DESC";
-
-$result = mysqli_query($conn, $sql);
-$announcements = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $announcements[] = $row;
-}
-
+$_SESSION['admin_announcements'] = getAllAnnouncements($conn);
 Close($conn);
-
-$_SESSION['admin_announcements'] = $announcements;
 
 header('Location: ../Views/Admin/AnnouncementListView.php');
 exit();

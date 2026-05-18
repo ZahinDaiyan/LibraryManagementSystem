@@ -8,6 +8,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once '../Models/DB.php';
+require_once '../Models/AnnouncementModel.php';
 require_once '../Models/AuditModel.php';
 
 $action = $_POST['action'] ?? $_POST['action'] ?? '';
@@ -30,33 +31,36 @@ if ($action === 'create' || $action === 'update') {
         if ($id) {
             $_SESSION['admin_announcement_form_id'] = $id;
         }
+        Close($conn);
         header('Location: AdminAnnouncementFormController.php');
         exit();
     }
 
-    $branch_val = $branch_id == '' ? "NULL" : "'$branch_id'";
-
     if ($action === 'create') {
-        $sql = "INSERT INTO announcements (title, body, branch_id, author_id, published_at) 
-                VALUES ('$title', '$body', $branch_val, '$admin_id', NOW())";
-        mysqli_query($conn, $sql);
-        $new_id = mysqli_insert_id($conn);
-        logAction($conn, $admin_id, "Created Announcement", "announcements", $new_id, "Title: $title");
-        $_SESSION['msg'] = "Announcement posted successfully.";
+        if (createAnnouncement($conn, $title, $body, $branch_id, $admin_id)) {
+            $new_id = mysqli_insert_id($conn);
+            logAction($conn, $admin_id, "Created Announcement", "announcements", $new_id, "Title: $title");
+            $_SESSION['msg'] = "Announcement posted successfully.";
+        } else {
+            $_SESSION['error'] = "Failed to post announcement.";
+        }
     } else {
-        $sql = "UPDATE announcements 
-                SET title = '$title', body = '$body', branch_id = $branch_val 
-                WHERE id = '$id'";
-        mysqli_query($conn, $sql);
-        logAction($conn, $admin_id, "Updated Announcement", "announcements", $id, "Title: $title");
-        $_SESSION['msg'] = "Announcement updated successfully.";
+        if (updateAnnouncement($conn, $id, $title, $body, $branch_id)) {
+            logAction($conn, $admin_id, "Updated Announcement", "announcements", $id, "Title: $title");
+            $_SESSION['msg'] = "Announcement updated successfully.";
+        } else {
+            $_SESSION['error'] = "Failed to update announcement.";
+        }
     }
 
 } elseif ($action === 'delete') {
     $id = $_POST['id'];
-    mysqli_query($conn, "DELETE FROM announcements WHERE id = '$id'");
-    logAction($conn, $admin_id, "Deleted Announcement", "announcements", $id);
-    $_SESSION['msg'] = "Announcement deleted.";
+    if (deleteAnnouncement($conn, $id)) {
+        logAction($conn, $admin_id, "Deleted Announcement", "announcements", $id);
+        $_SESSION['msg'] = "Announcement deleted.";
+    } else {
+        $_SESSION['error'] = "Failed to delete announcement.";
+    }
 }
 
 Close($conn);
