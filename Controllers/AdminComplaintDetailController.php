@@ -8,19 +8,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once '../Models/DB.php';
+require_once '../Models/ComplaintModel.php';
 
 $id = $_POST['id'] ?? $_SESSION['admin_complaint_detail_id'] ?? '';
 unset($_SESSION['admin_complaint_detail_id']);
 $conn = Connect();
 
-$sql = "SELECT c.*, u.name AS member_name, u.email AS member_email 
-        FROM complaints c
-        JOIN users u ON c.member_id = u.id
-        WHERE c.id = '$id'
-        LIMIT 1";
-
-$result = mysqli_query($conn, $sql);
-$complaint = mysqli_fetch_assoc($result);
+$complaint = getComplaintById($conn, $id);
 
 Close($conn);
 

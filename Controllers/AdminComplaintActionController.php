@@ -8,6 +8,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once '../Models/DB.php';
+require_once '../Models/ComplaintModel.php';
 
 $id = $_POST['id'] ?? '';
 $status = $_POST['status'] ?? '';
@@ -26,11 +27,8 @@ if (!empty($errors)) {
 }
 
 $conn = Connect();
-$sql = "UPDATE complaints 
-        SET status = '$status', admin_response = '$admin_response', updated_at = NOW() 
-        WHERE id = '$id'";
 
-if (mysqli_query($conn, $sql)) {
+if (updateComplaintStatusAndResponse($conn, $id, $status, $admin_response)) {
     $_SESSION['msg'] = "Complaint updated successfully.";
 } else {
     $_SESSION['error'] = "Failed to update complaint.";
