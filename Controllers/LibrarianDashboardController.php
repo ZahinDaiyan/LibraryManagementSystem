@@ -22,7 +22,7 @@ if (!$librarian) {
 
 $_SESSION['librarian'] = $librarian;
 
-header('Location: ../Views/Librariyan/DemoView.php');
+header('Location: ../Views/Librariyan/LibrarianDashboardView.php');
 exit();
 
 ?>
