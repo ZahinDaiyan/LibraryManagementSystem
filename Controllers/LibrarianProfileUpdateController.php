@@ -17,6 +17,7 @@ $id = $_SESSION['id'];
 $name = htmlspecialchars($_POST['name']);
 $email = htmlspecialchars($_POST['email']);
 $phone = htmlspecialchars($_POST['phone']);
+$currentPassword = isset($_POST['current_password']) ? $_POST['current_password'] : '';
 $newPassword = isset($_POST['new_password']) ? $_POST['new_password'] : '';
 $confirmPassword = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
 
@@ -27,7 +28,24 @@ if ($name == '' || $email == '' || $phone == '') {
 }
 
 $conn = Connect();
+$currentUser = getUserById($conn, $id);
 $existingUser = getUserByEmail($conn, $email);
+
+if ($newPassword != '' || $confirmPassword != '') {
+    if ($currentPassword == '') {
+        Close($conn);
+        $_SESSION['error'] = 'Current password is required to change your password';
+        header('Location: ../Controllers/LibrarianProfileController.php');
+        exit();
+    }
+
+    if (!$currentUser || !isset($currentUser['password_hash']) || !password_verify($currentPassword, $currentUser['password_hash'])) {
+        Close($conn);
+        $_SESSION['error'] = 'Current password is incorrect';
+        header('Location: ../Controllers/LibrarianProfileController.php');
+        exit();
+    }
+}
 
 if ($existingUser && $existingUser['id'] != $id) {
     Close($conn);

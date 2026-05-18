@@ -58,6 +58,11 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
 
     <br><br>
 
+    <label for="current_password">Current Password:</label>
+    <input type="password" name="current_password" id="current_password">
+
+    <br><br>
+
     <label for="new_password">New Password:</label>
     <input type="password" name="new_password" id="new_password">
 
@@ -72,6 +77,6 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
 
 </form>
 
-<script src="../js/member_validation.js"></script>
+<script src="../js/librarian_validation.js"></script>
 </body>
 </html>

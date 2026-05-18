@@ -9,6 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
 
 require_once '../Models/DB.php';
 require_once '../Models/LibrarianModel.php';
+require_once '../Models/LibrarianWorkflowModel.php';
 
 $bookId = isset($_POST['book_id']) ? $_POST['book_id'] : '';
 $copies = isset($_POST['copies']) ? $_POST['copies'] : 1;
@@ -20,7 +21,9 @@ if ($bookId == '') {
 }
 
 $conn = Connect();
-$result = makeBookAvailable($conn, $bookId, $copies);
+$branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);
+$branchId = isset($branchInfo['branch_id']) ? $branchInfo['branch_id'] : null;
+$result = makeBookAvailable($conn, $bookId, $copies, $branchId);
 Close($conn);
 
 if ($result) {

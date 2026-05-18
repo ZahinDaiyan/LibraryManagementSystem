@@ -40,6 +40,10 @@ function validateBookForm(form) {
     let title = form.title.value.trim();
     let author = form.author.value.trim();
     let isbn = form.isbn.value.trim();
+    let genreId = form.genre_id.value.trim();
+    let publisher = form.publisher.value.trim();
+    let publishedYear = form.published_year.value.trim();
+    let quantity = form.quantity ? String(form.quantity.value).trim() : "";
     let isValid = true;
 
     if (title === "") {
@@ -51,7 +55,34 @@ function validateBookForm(form) {
     } else if (isbn === "") {
         alert("ISBN is required");
         isValid = false;
+    } else if (!/^[0-9]+$/.test(isbn)) {
+        alert("ISBN must contain only numbers");
+        isValid = false;
+    } else if (genreId === "") {
+        alert("Genre is required");
+        isValid = false;
+    } else if (publisher === "") {
+        alert("Publisher is required");
+        isValid = false;
+    } else if (publishedYear === "") {
+        alert("Published year is required");
+        isValid = false;
+    } else if (isNaN(publishedYear) || publishedYear < 1800 || publishedYear > new Date().getFullYear()) {
+        alert("Published year must be a valid year");
+        isValid = false;
     }
+
+    if (isValid && form.quantity) {
+        if (quantity === "") {
+            alert("Quantity is required");
+            isValid = false;
+        } else if (isNaN(quantity) || Number(quantity) < 1) {
+            alert("Quantity must be a valid number greater than 0");
+            isValid = false;
+        }
+    }
+
+    // Description is optional on purpose.
 
     return isValid;
 }
