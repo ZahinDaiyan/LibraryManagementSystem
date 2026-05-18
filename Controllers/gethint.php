@@ -11,7 +11,7 @@ if (!isset($_SESSION['role'])) {
     exit();
 }
 
-$q = isset($_GET['q']) ? trim($_GET['q']) : '';
+$q = isset($_POST['q']) ? trim($_POST['q']) : '';
 if ($q === '') { echo ''; exit(); }
 
 $conn = Connect();
