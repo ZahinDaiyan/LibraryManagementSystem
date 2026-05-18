@@ -10,7 +10,7 @@ $books = $_SESSION['admin_books'] ?? [];
 $msg = $_SESSION['msg'] ?? '';
 unset($_SESSION['msg']);
 
-$search = $_GET['search'] ?? '';
+$search = $_SESSION['admin_book_search'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +28,7 @@ $search = $_GET['search'] ?? '';
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form novalidate action="../../Controllers/AdminBookCatalogController.php" method="GET">
+<form novalidate action="../../Controllers/AdminBookCatalogController.php" method="POST">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     <button type="submit">Search Catalog</button>
     <a href="../../Controllers/AdminBookCatalogController.php">Clear</a>
@@ -60,8 +60,8 @@ $search = $_GET['search'] ?? '';
         <td><?= $b['total_stock'] ?? 0 ?></td>
         <td><?= $b['total_available'] ?? 0 ?></td>
         <td>
-            <a href="../../Controllers/AdminBookFormController.php?id=<?= $b['id'] ?>">Edit Details</a> | 
-            <a href="../../Controllers/AdminBookActionController.php?action=delete&id=<?= $b['id'] ?>" onclick="return confirm('Permanently delete this book from the global catalog? This action cannot be undone.')" style="color:red;">Delete</a>
+            <form method="POST" action="../../Controllers/AdminBookFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">Edit Details</button></form> | 
+            <form method="POST" action="../../Controllers/AdminBookActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit"  onclick="return confirm('Permanently delete this book from the global catalog? This action cannot be undone.')"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; color:red;">Delete</button></form>
         </td>
     </tr>
     <?php endforeach; ?>

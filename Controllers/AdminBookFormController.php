@@ -10,7 +10,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 require_once '../Models/DB.php';
 require_once '../Models/BookModel.php';
 
-$id = $_GET['id'] ?? null;
+$id = $_POST['id'] ?? $_SESSION['admin_book_form_id'] ?? null;
+unset($_SESSION['admin_book_form_id']);
 $conn = Connect();
 
 if ($id) {

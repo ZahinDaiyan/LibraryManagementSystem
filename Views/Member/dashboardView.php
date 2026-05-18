@@ -37,7 +37,7 @@ $notifications = $_SESSION['notifications'] ?? [];
             <?php foreach ($notifications as $n): ?>
                 <li>
                     <?= $n['message'] ?> 
-                    <a href="../../Controllers/NotificationActionController.php?id=<?= $n['id'] ?>">[Mark as Read]</a>
+                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">[Mark as Read]</button></form>
                 </li>
             <?php endforeach; ?>
         </ul>

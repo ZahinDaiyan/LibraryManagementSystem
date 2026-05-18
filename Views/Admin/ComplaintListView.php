@@ -7,7 +7,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $complaints = $_SESSION['admin_complaints'] ?? [];
-$status_filter = $_GET['status_filter'] ?? '';
+$status_filter = $_SESSION['admin_complaint_status_filter'] ?? '';
 $msg = $_SESSION['msg'] ?? '';
 unset($_SESSION['msg']);
 ?>
@@ -25,7 +25,7 @@ unset($_SESSION['msg']);
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form novalidate action="../../Controllers/AdminComplaintController.php" method="GET">
+<form novalidate action="../../Controllers/AdminComplaintController.php" method="POST">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Complaints</option>
@@ -63,7 +63,7 @@ unset($_SESSION['msg']);
         </td>
         <td><?= date('M d, Y', strtotime($c['created_at'])) ?></td>
         <td>
-            <a href="../../Controllers/AdminComplaintDetailController.php?id=<?= $c['id'] ?>">View & Respond</a>
+            <form method="POST" action="../../Controllers/AdminComplaintDetailController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $c['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View & Respond</button></form>
         </td>
     </tr>
     <?php endforeach; ?>

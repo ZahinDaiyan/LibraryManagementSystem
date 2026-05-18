@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 require_once '../Models/DB.php';
 require_once '../Models/AuditModel.php';
 
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$action = $_POST['action'] ?? $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
 $admin_id = $_SESSION['id'];
@@ -27,7 +27,10 @@ if ($action === 'create' || $action === 'update') {
     if (!empty($errors)) {
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_data'] = $_POST;
-        header('Location: AdminAnnouncementFormController.php' . ($id ? "?id=$id" : ""));
+        if ($id) {
+            $_SESSION['admin_announcement_form_id'] = $id;
+        }
+        header('Location: AdminAnnouncementFormController.php');
         exit();
     }
 
@@ -50,7 +53,7 @@ if ($action === 'create' || $action === 'update') {
     }
 
 } elseif ($action === 'delete') {
-    $id = $_GET['id'];
+    $id = $_POST['id'];
     mysqli_query($conn, "DELETE FROM announcements WHERE id = '$id'");
     logAction($conn, $admin_id, "Deleted Announcement", "announcements", $id);
     $_SESSION['msg'] = "Announcement deleted.";

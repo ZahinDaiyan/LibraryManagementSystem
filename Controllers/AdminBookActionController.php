@@ -9,7 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 require_once '../Models/DB.php';
 
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$action = $_POST['action'] ?? $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
 
@@ -38,7 +38,10 @@ if ($action === 'create' || $action === 'update') {
     if (!empty($errors)) {
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_data'] = $_POST;
-        header('Location: AdminBookFormController.php' . ($id ? "?id=$id" : ""));
+        if ($id) {
+            $_SESSION['admin_book_form_id'] = $id;
+        }
+        header('Location: AdminBookFormController.php');
         exit();
     }
 
@@ -60,7 +63,7 @@ if ($action === 'create' || $action === 'update') {
     }
 
 } elseif ($action === 'delete') {
-    $id = $_GET['id'];
+    $id = $_POST['id'];
     
     // Safety check: Don't delete if there are active loans
     $check_sql = "SELECT id FROM borrow_records WHERE book_id = '$id' AND status IN ('pending', 'active')";

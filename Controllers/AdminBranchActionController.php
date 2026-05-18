@@ -9,8 +9,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 require_once '../Models/DB.php';
 
-$action = $_GET['action'] ?? '';
-$id = $_GET['id'] ?? '';
+$action = $_POST['action'] ?? '';
+$id = $_POST['id'] ?? '';
 $conn = Connect();
 
 if ($action === 'toggle_status') {

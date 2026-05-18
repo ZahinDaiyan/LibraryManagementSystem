@@ -47,8 +47,8 @@ unset($_SESSION['msg'], $_SESSION['error']);
         <td><?= $item['author'] ?></td>
         <td><?= $item['isbn'] ?></td>
         <td>
-            <a href="../../Controllers/BookDetailsController.php?id=<?= $item['book_id'] ?>">View</a> |
-            <a href="../../Controllers/ReadingListActionController.php?action=remove&book_id=<?= $item['book_id'] ?>" onclick="return confirm('Remove from list?')">Remove</a>
+            <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $item['book_id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View</button></form> |
+            <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $item['book_id'] ?>"><button type="submit"  onclick="return confirm('Remove from list?')" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">Remove</button></form>
         </td>
     </tr>
     <?php } ?>

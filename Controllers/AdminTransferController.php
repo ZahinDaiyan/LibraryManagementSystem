@@ -9,7 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 require_once '../Models/DB.php';
 
-$status_filter = $_GET['status_filter'] ?? '';
+$status_filter = $_POST['status_filter'] ?? '';
 $conn = Connect();
 
 $where_sql = "";
@@ -38,6 +38,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 Close($conn);
 
 $_SESSION['admin_transfers'] = $transfers;
+$_SESSION['admin_transfer_status_filter'] = $status_filter;
 
-header('Location: ../Views/Admin/TransferListView.php?status_filter=' . urlencode($status_filter));
+header('Location: ../Views/Admin/TransferListView.php');
 exit();

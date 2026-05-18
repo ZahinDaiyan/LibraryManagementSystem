@@ -10,8 +10,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
 require_once '../models/DB.php';
 
 $member_id = $_SESSION['id'];
-$book_id = $_GET['book_id'];
-$branch_id = $_GET['branch_id'];
+$book_id = $_POST['book_id'];
+$branch_id = $_POST['branch_id'];
 
 $conn = Connect();
 
@@ -25,7 +25,8 @@ $row = mysqli_fetch_assoc($result);
 
 if (!$row || $row['available_copies'] <= 0) {
     $_SESSION['error'] = "Book not available";
-    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php?id=$book_id");
+    $_SESSION['book_details_id'] = $book_id;
+    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php");
     exit();
 }
 
@@ -39,7 +40,8 @@ $check = mysqli_query($conn, $sql2);
 
 if (mysqli_num_rows($check) > 0) {
     $_SESSION['error'] = "Already requested";
-    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php?id=$book_id");
+    $_SESSION['book_details_id'] = $book_id;
+    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php");
     exit();
 }
 

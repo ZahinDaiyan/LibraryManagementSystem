@@ -11,7 +11,7 @@ require_once '../Models/DB.php';
 require_once '../Models/UserModel.php';
 require_once '../Models/AuditModel.php';
 
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$action = $_POST['action'] ?? $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
 $admin_id = $_SESSION['id'];
@@ -51,9 +51,10 @@ if ($action === 'create' || $action === 'update') {
     if (count($errors) > 0) {
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_data'] = $_POST;
-        $redirect = "AdminUserFormController.php";
-        if ($id) $redirect .= "?id=$id";
-        header("Location: $redirect");
+        if ($id) {
+            $_SESSION['admin_user_form_id'] = $id;
+        }
+        header("Location: AdminUserFormController.php");
         exit();
     }
 
@@ -95,7 +96,7 @@ if ($action === 'create' || $action === 'update') {
     }
 
 } elseif ($action === 'toggle_status') {
-    $id = mysqli_real_escape_string($conn, $_GET['id']);
+    $id = mysqli_real_escape_string($conn, $_POST['id']);
     $res = mysqli_query($conn, "SELECT name, is_active FROM users WHERE id = '$id'");
     $user = mysqli_fetch_assoc($res);
     

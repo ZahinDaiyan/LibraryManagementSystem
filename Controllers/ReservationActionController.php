@@ -10,13 +10,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
 require_once '../models/DB.php';
 require_once '../models/ReservationModel.php';
 
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$action = $_POST['action'] ?? $_POST['action'] ?? '';
 $member_id = $_SESSION['id'];
 $conn = Connect();
 
 if ($action === 'reserve') {
-    $book_id = $_GET['book_id'];
-    $branch_id = $_GET['branch_id'];
+    $book_id = $_POST['book_id'];
+    $branch_id = $_POST['branch_id'];
     $result = reserveBook($conn, $member_id, $book_id, $branch_id);
     
     if ($result['success']) {
@@ -25,7 +25,7 @@ if ($action === 'reserve') {
         $_SESSION['error'] = $result['message'];
     }
 } elseif ($action === 'cancel') {
-    $reservation_id = $_GET['id'];
+    $reservation_id = $_POST['id'];
     if (cancelReservation($conn, $reservation_id, $member_id)) {
         $_SESSION['msg'] = "Reservation cancelled";
     } else {

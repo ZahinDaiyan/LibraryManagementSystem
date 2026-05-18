@@ -57,7 +57,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
             <?php endif; ?>
         </td>
         <td>
-            <a href="../../Controllers/ReservationActionController.php?action=cancel&id=<?= $r['id'] ?>" onclick="return confirm('Cancel reservation?')">Cancel</a>
+            <form method="POST" action="../../Controllers/ReservationActionController.php" style="display:inline;"><input type="hidden" name="action" value="cancel"><input type="hidden" name="id" value="<?= $r['id'] ?>"><button type="submit"  onclick="return confirm('Cancel reservation?')" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">Cancel</button></form>
         </td>
     </tr>
     <?php } ?>

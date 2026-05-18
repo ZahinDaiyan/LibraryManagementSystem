@@ -52,9 +52,9 @@ unset($_SESSION['msg']);
             </b>
         </td>
         <td>
-            <a href="../../Controllers/AdminBranchActionController.php?action=toggle_status&id=<?= $b['id'] ?>" onclick="return confirm('Toggle status for this branch?')">
+            <form method="POST" action="../../Controllers/AdminBranchActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit"  onclick="return confirm('Toggle status for this branch?')" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
                 <?= $b['is_active'] ? 'Deactivate' : 'Activate' ?>
-            </a>
+            </button></form>
         </td>
     </tr>
     <?php endforeach; ?>

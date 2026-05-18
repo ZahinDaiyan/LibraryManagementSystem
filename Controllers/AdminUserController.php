@@ -11,8 +11,8 @@ require_once '../Models/DB.php';
 require_once '../Models/UserModel.php';
 require_once '../Models/BookModel.php'; // For getBranches
 
-$search = $_GET['search'] ?? '';
-$role_filter = $_GET['role_filter'] ?? '';
+$search = $_POST['search'] ?? '';
+$role_filter = $_POST['role_filter'] ?? '';
 
 $conn = Connect();
 
@@ -44,6 +44,8 @@ while ($row = mysqli_fetch_assoc($result)) {
 Close($conn);
 
 $_SESSION['admin_users'] = $users;
+$_SESSION['admin_user_search'] = $search;
+$_SESSION['admin_user_role_filter'] = $role_filter;
 
-header('Location: ../Views/Admin/UserListView.php?search=' . urlencode($search) . '&role_filter=' . urlencode($role_filter));
+header('Location: ../Views/Admin/UserListView.php');
 exit();

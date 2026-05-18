@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 require_once '../Models/DB.php';
 require_once '../Models/BookModel.php';
 
-$search = $_GET['search'] ?? '';
+$search = $_POST['search'] ?? '';
 
 $conn = Connect();
 
@@ -36,6 +36,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 Close($conn);
 
 $_SESSION['admin_books'] = $books;
+$_SESSION['admin_book_search'] = $search;
 
-header('Location: ../Views/Admin/BookCatalogView.php?search=' . urlencode($search));
+header('Location: ../Views/Admin/BookCatalogView.php');
 exit();

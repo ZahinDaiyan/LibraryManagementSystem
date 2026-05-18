@@ -11,7 +11,8 @@ require_once '../Models/DB.php';
 require_once '../Models/UserModel.php';
 require_once '../Models/BookModel.php';
 
-$id = $_GET['id'] ?? null;
+$id = $_POST['id'] ?? $_SESSION['admin_user_form_id'] ?? null;
+unset($_SESSION['admin_user_form_id']);
 $conn = Connect();
 
 if ($id) {

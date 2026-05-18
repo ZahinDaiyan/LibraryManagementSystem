@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
 require_once '../Models/DB.php';
 require_once '../Models/LibrarianWorkflowModel.php';
 
-$q = isset($_GET['q']) ? trim($_GET['q']) : '';
+$q = isset($_POST['q']) ? trim($_POST['q']) : '';
 
 $conn = Connect();
 $branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);

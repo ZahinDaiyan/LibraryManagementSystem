@@ -20,7 +20,8 @@ if (empty($admin_response) && $status === 'resolved') {
 
 if (!empty($errors)) {
     $_SESSION['form_errors'] = $errors;
-    header("Location: AdminComplaintDetailController.php?id=$id");
+    $_SESSION['admin_complaint_detail_id'] = $id;
+    header("Location: AdminComplaintDetailController.php");
     exit();
 }
 

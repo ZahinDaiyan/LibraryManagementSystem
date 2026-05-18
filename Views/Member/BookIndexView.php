@@ -10,10 +10,10 @@ $books = $_SESSION['books'] ?? [];
 $genres = $_SESSION['genres'] ?? [];
 $branches = $_SESSION['branches'] ?? [];
 
-$search = $_GET['search'] ?? '';
-$selected_genre = $_GET['genre_id'] ?? '';
-$selected_branch = $_GET['branch_id'] ?? '';
-$selected_year = $_GET['year'] ?? '';
+$search = $_SESSION['book_search'] ?? '';
+$selected_genre = $_SESSION['book_genre_id'] ?? '';
+$selected_branch = $_SESSION['book_branch_id'] ?? '';
+$selected_year = $_SESSION['book_year'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +33,7 @@ $selected_year = $_GET['year'] ?? '';
 
 <hr>
 
-<form novalidate action="../../Controllers/BookIndexController.php" method="GET">
+<form novalidate action="../../Controllers/BookIndexController.php" method="POST">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     
     <select name="genre_id">
@@ -84,7 +84,7 @@ $selected_year = $_GET['year'] ?? '';
         <td><?= $book['isbn'] ?></td>
         <td><?= $book['published_year'] ?></td>
         <td>
-            <a href="../../Controllers/BookDetailsController.php?id=<?= $book['id'] ?>">View Details</a>
+            <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View Details</button></form>
         </td>
     </tr>
     <?php } ?>

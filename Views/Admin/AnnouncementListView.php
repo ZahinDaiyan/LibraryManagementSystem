@@ -48,8 +48,8 @@ unset($_SESSION['msg']);
         <td><?= htmlspecialchars($a['author_name']) ?></td>
         <td><?= date('M d, Y H:i', strtotime($a['published_at'])) ?></td>
         <td>
-            <a href="../../Controllers/AdminAnnouncementFormController.php?id=<?= $a['id'] ?>">Edit</a> | 
-            <a href="../../Controllers/AdminAnnouncementActionController.php?action=delete&id=<?= $a['id'] ?>" onclick="return confirm('Delete this announcement?')" style="color:red;">Delete</a>
+            <form method="POST" action="../../Controllers/AdminAnnouncementFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $a['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">Edit</button></form> | 
+            <form method="POST" action="../../Controllers/AdminAnnouncementActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $a['id'] ?>"><button type="submit"  onclick="return confirm('Delete this announcement?')"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; color:red;">Delete</button></form>
         </td>
     </tr>
     <?php endforeach; ?>

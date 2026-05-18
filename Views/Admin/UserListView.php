@@ -11,8 +11,8 @@ $msg = $_SESSION['msg'] ?? '';
 $error = $_SESSION['error'] ?? '';
 unset($_SESSION['msg'], $_SESSION['error']);
 
-$search = $_GET['search'] ?? '';
-$role_filter = $_GET['role_filter'] ?? '';
+$search = $_SESSION['admin_user_search'] ?? '';
+$role_filter = $_SESSION['admin_user_role_filter'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +30,7 @@ $role_filter = $_GET['role_filter'] ?? '';
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
-<form novalidate action="../../Controllers/AdminUserController.php" method="GET">
+<form novalidate action="../../Controllers/AdminUserController.php" method="POST">
     <input type="text" name="search" placeholder="Search name, email, phone..." value="<?= htmlspecialchars($search) ?>">
     
     <select name="role_filter">
@@ -86,10 +86,10 @@ $role_filter = $_GET['role_filter'] ?? '';
         </td>
         <td><?= date('M d, Y', strtotime($u['created_at'])) ?></td>
         <td>
-            <a href="../../Controllers/AdminUserFormController.php?id=<?= $u['id'] ?>">Edit Info</a> | 
-            <a href="../../Controllers/AdminUserActionController.php?action=toggle_status&id=<?= $u['id'] ?>" onclick="return confirm('Toggle status for this user?')">
+            <form method="POST" action="../../Controllers/AdminUserFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">Edit Info</button></form> | 
+            <form method="POST" action="../../Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit"  onclick="return confirm('Toggle status for this user?')" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
                 <?= $u['is_active'] ? 'Deactivate' : 'Activate' ?>
-            </a>
+            </button></form>
         </td>
     </tr>
     <?php endforeach; ?>

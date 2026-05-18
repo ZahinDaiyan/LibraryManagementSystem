@@ -44,13 +44,13 @@ if (!$book) {
 <h3><?= $book['title'] ?></h3>
 
 <?php if (isset($_SESSION['in_reading_list']) && $_SESSION['in_reading_list']): ?>
-    <a href="../../Controllers/ReadingListActionController.php?action=remove&book_id=<?= $book['id'] ?>&redirect=details">
+    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
         [ Remove from Reading List ]
-    </a>
+    </button></form>
 <?php else: ?>
-    <a href="../../Controllers/ReadingListActionController.php?action=add&book_id=<?= $book['id'] ?>&redirect=details">
+    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
         [ Add to Reading List ]
-    </a>
+    </button></form>
 <?php endif; ?>
 
 <p><b>Average Rating:</b> <?= number_format($rating_info['avg_rating'], 1) ?> / 5 (<?= $rating_info['review_count'] ?> reviews)</p>
@@ -83,14 +83,14 @@ if (!$book) {
     <td><?= $a['available_copies'] ?></td>
     <td>
         <?php if ($a['available_copies'] > 0) { ?>
-            <a href="../../Controllers/BorrowRequestController.php?book_id=<?= $book['id'] ?>&branch_id=<?= $a['branch_id'] ?>">
+            <form method="POST" action="../../Controllers/BorrowRequestController.php" style="display:inline;"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
                 Request Borrow
-            </a>
+            </button></form>
         <?php } else { ?>
             <span style="color:red;">Not Available</span> | 
-            <a href="../../Controllers/ReservationActionController.php?action=reserve&book_id=<?= $book['id'] ?>&branch_id=<?= $a['branch_id'] ?>">
+            <form method="POST" action="../../Controllers/ReservationActionController.php" style="display:inline;"><input type="hidden" name="action" value="reserve"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
                 Join Waitlist
-            </a>
+            </button></form>
         <?php } ?>
     </td>
 </tr>

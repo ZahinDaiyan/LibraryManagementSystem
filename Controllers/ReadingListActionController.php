@@ -10,8 +10,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
 require_once '../models/DB.php';
 require_once '../models/ReadingListModel.php';
 
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
-$book_id = $_POST['book_id'] ?? $_GET['book_id'] ?? '';
+$action = $_POST['action'] ?? $_POST['action'] ?? '';
+$book_id = $_POST['book_id'] ?? $_POST['book_id'] ?? '';
 $member_id = $_SESSION['id'];
 
 $conn = Connect();
@@ -32,8 +32,9 @@ if ($action === 'add') {
 
 Close($conn);
 
-if (isset($_GET['redirect']) && $_GET['redirect'] === 'details') {
-    header("Location: BookDetailsController.php?id=$book_id");
+if (isset($_POST['redirect']) && $_POST['redirect'] === 'details') {
+    $_SESSION['book_details_id'] = $book_id;
+    header("Location: BookDetailsController.php");
 } else {
     header("Location: ReadingListController.php");
 }

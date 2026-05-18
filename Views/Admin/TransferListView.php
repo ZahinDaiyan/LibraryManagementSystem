@@ -7,7 +7,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $transfers = $_SESSION['admin_transfers'] ?? [];
-$status_filter = $_GET['status_filter'] ?? '';
+$status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +21,7 @@ $status_filter = $_GET['status_filter'] ?? '';
 <a href="dashboardView.php">← Back to Dashboard</a>
 <hr>
 
-<form novalidate action="../../Controllers/AdminTransferController.php" method="GET">
+<form novalidate action="../../Controllers/AdminTransferController.php" method="POST">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Transfers</option>

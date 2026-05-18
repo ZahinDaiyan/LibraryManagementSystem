@@ -10,7 +10,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
 require_once '../models/DB.php';
 require_once '../models/NotificationModel.php';
 
-$id = $_GET['id'];
+$id = $_POST['id'];
 $member_id = $_SESSION['id'];
 
 $conn = Connect();

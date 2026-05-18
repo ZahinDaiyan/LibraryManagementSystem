@@ -9,7 +9,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 require_once '../Models/DB.php';
 
-$id = $_GET['id'] ?? '';
+$id = $_POST['id'] ?? $_SESSION['admin_complaint_detail_id'] ?? '';
+unset($_SESSION['admin_complaint_detail_id']);
 $conn = Connect();
 
 $sql = "SELECT c.*, u.name AS member_name, u.email AS member_email 

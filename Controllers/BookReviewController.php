@@ -34,5 +34,6 @@ if ($action === 'submit_review') {
 }
 
 Close($conn);
-header("Location: BookDetailsController.php?id=$book_id");
+$_SESSION['book_details_id'] = $book_id;
+header("Location: BookDetailsController.php");
 exit();

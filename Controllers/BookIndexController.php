@@ -10,10 +10,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
 require_once '../models/DB.php';
 require_once '../models/BookModel.php';
 
-$query = $_GET['search'] ?? '';
-$genre_id = $_GET['genre_id'] ?? '';
-$branch_id = $_GET['branch_id'] ?? '';
-$year = $_GET['year'] ?? '';
+$query = $_POST['search'] ?? '';
+$genre_id = $_POST['genre_id'] ?? '';
+$branch_id = $_POST['branch_id'] ?? '';
+$year = $_POST['year'] ?? '';
 
 $conn = Connect();
 $books = searchBooks($conn, $query, $genre_id, $branch_id, $year);
@@ -24,6 +24,11 @@ Close($conn);
 $_SESSION['books'] = $books;
 $_SESSION['genres'] = $genres;
 $_SESSION['branches'] = $branches;
+
+$_SESSION['book_search'] = $query;
+$_SESSION['book_genre_id'] = $genre_id;
+$_SESSION['book_branch_id'] = $branch_id;
+$_SESSION['book_year'] = $year;
 
 header("Location: /LibraryManagementSystem/Views/Member/BookIndexView.php");
 exit();
