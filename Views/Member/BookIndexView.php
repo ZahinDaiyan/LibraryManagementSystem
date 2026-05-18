@@ -33,10 +33,10 @@ $selected_year = $_SESSION['book_year'] ?? '';
 
 <hr>
 
-<form novalidate action="../../Controllers/BookIndexController.php" method="POST">
-    <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
+<form novalidate action="../../Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
+    <input type="text" id="bookSearch" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchBooks()">
     
-    <select name="genre_id">
+    <select id="bookGenre" name="genre_id" onchange="ajaxSearchBooks()">
         <option value="">All Genres</option>
         <?php foreach ($genres as $genre) { ?>
             <option value="<?= $genre['id'] ?>" <?= $selected_genre == $genre['id'] ? 'selected' : '' ?>>
@@ -45,7 +45,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
         <?php } ?>
     </select>
 
-    <select name="branch_id">
+    <select id="bookBranch" name="branch_id" onchange="ajaxSearchBooks()">
         <option value="">All Branches</option>
         <?php foreach ($branches as $branch) { ?>
             <option value="<?= $branch['id'] ?>" <?= $selected_branch == $branch['id'] ? 'selected' : '' ?>>
@@ -54,7 +54,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
         <?php } ?>
     </select>
 
-    <input type="number" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" style="width: 80px;">
+    <input type="number" id="bookYear" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" style="width: 80px;" onkeyup="ajaxSearchBooks()" onchange="ajaxSearchBooks()">
 
     <button type="submit">Search</button>
     <a href="../../Controllers/BookIndexController.php">Clear</a>
@@ -63,33 +63,39 @@ $selected_year = $_SESSION['book_year'] ?? '';
 <hr>
 
 <table border="1" cellpadding="10">
-    <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Genre</th>
-        <th>ISBN</th>
-        <th>Year</th>
-        <th>Action</th>
-    </tr>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>ISBN</th>
+            <th>Year</th>
+            <th>Action</th>
+        </tr>
+    </thead>
 
-    <?php if (empty($books)): ?>
-        <tr><td colspan="6">No books found.</td></tr>
-    <?php endif; ?>
+    <tbody id="bookTableBody">
+        <?php if (empty($books)): ?>
+            <tr><td colspan="6">No books found.</td></tr>
+        <?php endif; ?>
 
-    <?php foreach ($books as $book) { ?>
-    <tr>
-        <td><?= $book['title'] ?></td>
-        <td><?= $book['author'] ?></td>
-        <td><?= $book['genre_name'] ?? 'N/A' ?></td>
-        <td><?= $book['isbn'] ?></td>
-        <td><?= $book['published_year'] ?></td>
-        <td>
-            <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View Details</button></form>
-        </td>
-    </tr>
-    <?php } ?>
+        <?php foreach ($books as $book) { ?>
+        <tr>
+            <td><?= $book['title'] ?></td>
+            <td><?= $book['author'] ?></td>
+            <td><?= $book['genre_name'] ?? 'N/A' ?></td>
+            <td><?= $book['isbn'] ?></td>
+            <td><?= $book['published_year'] ?></td>
+            <td>
+                <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View Details</button></form>
+            </td>
+        </tr>
+        <?php } ?>
+    </tbody>
 
 </table>
+
+<script src="../js/book_search.js"></script>
 
 </body>
 </html>
