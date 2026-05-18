@@ -106,7 +106,7 @@ if (!$book) {
 <?php foreach ($reviews as $r) { ?>
     <div style="border-bottom: 1px solid #ccc; padding: 10px;">
         <p><b><?= $r['member_name'] ?></b> rated it <b><?= $r['rating'] ?>/5</b></p>
-        <p><?= $r['comment'] ?></p>
+        <p><?= $r['review_text'] ?></p>
         <small><?= $r['created_at'] ?></small>
         
         <?php if ($r['member_id'] == $_SESSION['id']) { ?>
