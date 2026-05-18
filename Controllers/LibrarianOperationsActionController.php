@@ -46,7 +46,23 @@ if ($action === 'create_genre') {
     $memberId = (int)$_POST['member_id'];
     $amount = (float)$_POST['amount'];
     $reason = htmlspecialchars($_POST['reason']);
-    $message = issueManualFine($conn, $borrowRecordId, $memberId, $branchId, $amount, $reason) ? 'Fine issued' : 'Fine issue failed';
+
+    // Server-side guard: verify borrow record exists and belongs to this branch and member
+    $brSql = "SELECT member_id, branch_id FROM borrow_records WHERE id = '$borrowRecordId' LIMIT 1";
+    $brRes = mysqli_query($conn, $brSql);
+    $brRow = $brRes ? mysqli_fetch_assoc($brRes) : null;
+
+    if (!$brRow) {
+        $message = 'Borrow record not found';
+    } elseif ((int)$brRow['branch_id'] !== (int)$branchId) {
+        $message = 'Cannot issue fine: borrow record is not for your branch';
+    } elseif ((int)$brRow['member_id'] !== (int)$memberId) {
+        $message = 'Member ID does not match the borrow record';
+    } elseif ($amount <= 0) {
+        $message = 'Invalid fine amount';
+    } else {
+        $message = issueManualFine($conn, $borrowRecordId, $memberId, $branchId, $amount, $reason) ? 'Fine issued' : 'Fine issue failed';
+    }
 } elseif ($action === 'pay_fine') {
     $fineId = (int)$_POST['fine_id'];
     $message = markFineAsPaid($conn, $fineId) ? 'Fine marked as paid' : 'Unable to mark fine paid';
