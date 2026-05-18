@@ -18,3 +18,4 @@ $_SESSION['active_loans'] = $loans;
 
 header("Location: /LibraryManagementSystem/Views/Member/MyLoansView.php");
 exit();
+?>
