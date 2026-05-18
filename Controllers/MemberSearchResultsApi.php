@@ -39,7 +39,12 @@ foreach ($members as $member) {
     echo '<td>' . $name . '</td>';
     echo '<td>' . $email . '</td>';
     echo '<td>' . $phone . '</td>';
-    echo '<td><a href="../../Controllers/LibrarianOperationsController.php?member_id=' . $id . '">View History</a></td>';
+    echo '<td>';
+    echo '<form action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">';
+    echo '<input type="hidden" name="member_id" value="' . $id . '">';
+    echo '<button type="submit">View History</button>';
+    echo '</form>';
+    echo '</td>';
     echo '</tr>';
 }
 
