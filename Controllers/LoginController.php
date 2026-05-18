@@ -28,7 +28,7 @@ if ($user) {
 
     $_SESSION['id'] = $user['id'];
     $_SESSION['name'] = $user['name'];
-    $_SESSION['role'] = $user['role'];
+    $_SESSION['role'] = $user['role'] === 'manager' ? 'branch_manager' : $user['role'];
 
     header('Location: ../index.php');
 
