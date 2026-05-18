@@ -128,4 +128,105 @@ function deleteUser($conn, $id)
     return mysqli_query($conn, $sql);
 }
 
+function searchUsersWithBranch($conn, $search = '', $role_filter = '')
+{
+    $where_clauses = [];
+    if (!empty($search)) {
+        $escaped_search = mysqli_real_escape_string($conn, $search);
+        $where_clauses[] = "(u.name LIKE '%$escaped_search%' OR u.email LIKE '%$escaped_search%' OR u.phone LIKE '%$escaped_search%')";
+    }
+    if (!empty($role_filter)) {
+        $escaped_role = mysqli_real_escape_string($conn, $role_filter);
+        $where_clauses[] = "u.role = '$escaped_role'";
+    }
+    
+    $where_sql = "";
+    if (count($where_clauses) > 0) {
+        $where_sql = "WHERE " . implode(' AND ', $where_clauses);
+    }
+    
+    $sql = "SELECT u.*, b.name AS branch_name 
+            FROM users u 
+            LEFT JOIN branches b ON u.branch_id = b.id 
+            $where_sql 
+            ORDER BY u.created_at DESC";
+            
+    $result = mysqli_query($conn, $sql);
+    $users = [];
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $users[] = $row;
+        }
+    }
+    return $users;
+}
+
+function isEmailTakenByOtherUser($conn, $email, $current_id = null)
+{
+    $escaped_email = mysqli_real_escape_string($conn, $email);
+    $sql = "SELECT id FROM users WHERE email = '$escaped_email'";
+    if ($current_id !== null) {
+        $escaped_id = mysqli_real_escape_string($conn, $current_id);
+        $sql .= " AND id != '$escaped_id'";
+    }
+    $result = mysqli_query($conn, $sql);
+    return ($result && mysqli_num_rows($result) > 0);
+}
+
+function createAdminUser($conn, $name, $email, $password, $phone, $role, $branch_id)
+{
+    $name = mysqli_real_escape_string($conn, $name);
+    $email = mysqli_real_escape_string($conn, $email);
+    $phone = mysqli_real_escape_string($conn, $phone);
+    $role = mysqli_real_escape_string($conn, $role);
+    
+    $storedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $branch_val = empty($branch_id) ? "NULL" : "'" . mysqli_real_escape_string($conn, $branch_id) . "'";
+    
+    $sql = "INSERT INTO users (name, email, password_hash, phone, role, branch_id, is_active, created_at) 
+            VALUES ('$name', '$email', '$storedPassword', '$phone', '$role', $branch_val, 1, NOW())";
+    return mysqli_query($conn, $sql);
+}
+
+function updateAdminUser($conn, $id, $name, $email, $phone, $role, $branch_id)
+{
+    $id = mysqli_real_escape_string($conn, $id);
+    $name = mysqli_real_escape_string($conn, $name);
+    $email = mysqli_real_escape_string($conn, $email);
+    $phone = mysqli_real_escape_string($conn, $phone);
+    $role = mysqli_real_escape_string($conn, $role);
+    
+    $branch_val = empty($branch_id) ? "NULL" : "'" . mysqli_real_escape_string($conn, $branch_id) . "'";
+    
+    $sql = "UPDATE users 
+            SET name = '$name', email = '$email', phone = '$phone', role = '$role', branch_id = $branch_val 
+            WHERE id = '$id'";
+    return mysqli_query($conn, $sql);
+}
+
+function updateUserRole($conn, $id, $new_role)
+{
+    $id = mysqli_real_escape_string($conn, $id);
+    $new_role = mysqli_real_escape_string($conn, $new_role);
+    $sql = "UPDATE users SET role = '$new_role' WHERE id = '$id'";
+    return mysqli_query($conn, $sql);
+}
+
+function toggleUserStatus($conn, $id)
+{
+    $id = mysqli_real_escape_string($conn, $id);
+    $res = mysqli_query($conn, "SELECT name, is_active FROM users WHERE id = '$id'");
+    $user = $res ? mysqli_fetch_assoc($res) : null;
+    if (!$user) {
+        return false;
+    }
+    $new_status = $user['is_active'] ? 0 : 1;
+    $sql = "UPDATE users SET is_active = '$new_status' WHERE id = '$id'";
+    if (mysqli_query($conn, $sql)) {
+        $user['new_status'] = $new_status;
+        return $user; // Return user array so caller has name/status for audit logging
+    }
+    return false;
+}
+
 ?>
