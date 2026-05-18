@@ -8,19 +8,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once '../Models/DB.php';
+require_once '../Models/AdminModel.php';
 
 $conn = Connect();
-
-$sql = "SELECT * FROM system_settings";
-$result = mysqli_query($conn, $sql);
-$settings = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $settings[$row['setting_key']] = $row;
-}
-
+$_SESSION['system_settings'] = getSystemSettings($conn);
 Close($conn);
-
-$_SESSION['system_settings'] = $settings;
 
 header('Location: ../Views/Admin/SettingsView.php');
 exit();

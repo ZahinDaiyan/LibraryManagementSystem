@@ -8,6 +8,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 require_once '../Models/DB.php';
+require_once '../Models/AdminModel.php';
 
 $action = $_POST['action'] ?? '';
 $conn = Connect();
@@ -27,6 +28,7 @@ if ($action === 'update_settings') {
     if (!empty($errors)) {
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_data'] = $_POST;
+        Close($conn);
         header('Location: AdminSettingsController.php');
         exit();
     }
@@ -39,12 +41,11 @@ if ($action === 'update_settings') {
         'default_max_books_per_member' => $max_books
     ];
 
-    foreach ($updates as $key => $value) {
-        $sql = "UPDATE system_settings SET setting_value = '$value' WHERE setting_key = '$key'";
-        mysqli_query($conn, $sql);
+    if (updateSystemSettings($conn, $updates)) {
+        $_SESSION['msg'] = "Global system settings updated successfully";
+    } else {
+        $_SESSION['error'] = "Failed to update global system settings";
     }
-
-    $_SESSION['msg'] = "Global system settings updated successfully";
 }
 
 Close($conn);
