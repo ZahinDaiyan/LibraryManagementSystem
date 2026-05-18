@@ -37,11 +37,12 @@ body.librarian-dashboard-page {
 }
 
 .profile-shell {
-    width: min(100%, 560px);
+    width: min(100%, 480px);
+    padding: 8px;
 }
 
 .tools-panel {
-    width: min(100%, 560px);
+    width: min(100%, 480px);
 }
 
 .tools-panel ul {
@@ -176,14 +177,14 @@ button:disabled { opacity: 0.4; cursor: not-allowed; }
 /* --- Form Elements --- */
 input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="file"], select, textarea {
     font-family: 'Inter', sans-serif;
-    width: 100%; max-width: 480px;
-    padding: 10px 14px; font-size: 0.9rem;
+    width: 100%; max-width: 420px;
+    padding: 8px 12px; font-size: 0.9rem;
     color: #e8eaf0; background: #1a1d2e;
-    border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; outline: none;
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; outline: none;
 }
 input:focus, select:focus, textarea:focus { border-color: #f59e0b; background: #1e2235; }
 
-textarea { resize: vertical; min-height: 100px; }
+textarea { resize: vertical; min-height: 80px; }
 label { display: inline-block; font-size: 0.85rem; font-weight: 500; color: #9a9fbf; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
 
 /* Error / Success messages */
@@ -198,7 +199,7 @@ td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); font-s
 tr:hover td { background: rgba(245,158,11,0.04); }
 
 /* --- Cards & Forms --- */
-form { background: #1e2235; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 24px; max-width: 560px; }
+form { background: #1e2235; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; margin-bottom: 16px; max-width: 480px; }
 
 /* Inline forms inside tables (action buttons, small inline actions) */
 td form,
@@ -220,7 +221,9 @@ form[style*="display:inline"] button {
 }
 
 /* Profile picture */
-img[alt="Profile Picture"] { width: 100px; height: 100px; object-fit: cover; border-radius: 9999px; border: 3px solid #f59e0b; margin-bottom: 16px; }
+img[alt="Profile Picture"] { width: 80px; height: 80px; object-fit: cover; border-radius: 9999px; border: 3px solid #f59e0b; margin-bottom: 12px; }
+
+.profile-shell h2 { font-size: 1.4rem; margin-bottom: 6px; }
 
 /* Small utilities */
 .muted { color: #636a8a; font-size: 0.9rem; }
