@@ -19,6 +19,7 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title><?= $title_text ?></title>
 </head>
 <body>

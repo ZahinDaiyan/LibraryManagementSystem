@@ -22,6 +22,7 @@ function getVal($key, $settings, $old_data) {
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Global System Settings</title>
 </head>
 <body>

@@ -16,6 +16,7 @@ $search = $_SESSION['admin_book_search'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Master Book Catalog</title>
 </head>
 <body>

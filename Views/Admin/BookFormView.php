@@ -19,6 +19,7 @@ $title = $book ? "Edit Book Details" : "Add New Book to Master Catalog";
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title><?= $title ?></title>
 </head>
 <body>

@@ -19,6 +19,7 @@ if (!$c) {
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Complaint Details</title>
 </head>
 <body>

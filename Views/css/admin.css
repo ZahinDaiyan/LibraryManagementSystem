@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MEMBER ROLE CSS — High-Visibility Dark Amber Theme
+   ADMIN ROLE CSS — High-Visibility Dark Amber Theme
    ========================================================================== */
 
 /* --- Google Font Import --- */
@@ -339,7 +339,7 @@ div[style*="border-bottom: 1px solid #eee"] {
     margin-bottom: 24px !important;
 }
 
-/* --- Review Cards (BookDetailsView) --- */
+/* --- Review Cards --- */
 div[style*="border-bottom: 1px solid #ccc"] {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     padding: 16px !important;
@@ -412,7 +412,7 @@ span[style*="color: red"] {
     font-weight: 600;
 }
 
-/* --- Forms (Profile, Complaint) --- */
+/* --- Forms --- */
 form {
     background: #1e2235;
     border: 1px solid rgba(255, 255, 255, 0.15);

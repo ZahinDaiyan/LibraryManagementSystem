@@ -1,0 +1,150 @@
+/* ==========================================================================
+   AUTH CSS — Login & Register Views (High Visibility Dark Amber Theme)
+   ========================================================================== */
+
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- Global Reset & Base --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #0f111a;
+    color: #e8eaf0;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 480px;
+    background: #1e2235;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 32px;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #f0f2ff;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+a {
+    display: block;
+    text-align: center;
+    color: #f59e0b;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+}
+
+a:hover {
+    color: #fbbf24;
+}
+
+button,
+button[type="submit"] {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #f59e0b;
+    color: #fff;
+    margin-top: 12px;
+}
+
+button:hover,
+button[type="submit"]:hover {
+    background: #fbbf24;
+}
+
+/* --- Form Elements --- */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    color: #e8eaf0;
+    background: #1a1d2e;
+    border: 1px solid #4b5563; /* High visibility border */
+    border-radius: 8px;
+    outline: none;
+    margin-top: 4px;
+}
+
+input:focus,
+select:focus {
+    border-color: #f59e0b;
+    background: #1e2235;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #9a9fbf;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 16px;
+}
+
+span[id*="Err"] {
+    color: #ef4444 !important;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: block;
+    margin-top: 4px;
+}
+
+p#error {
+    color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.12);
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 4px solid #ef4444;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-top: 20px;
+    text-align: center;
+}
+
+p#error:empty {
+    display: none;
+}
+
+p#msg {
+    color: #22c55e !important;
+    background: rgba(34, 197, 94, 0.12);
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 4px solid #22c55e;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-top: 20px;
+    text-align: center;
+}
+
+p#msg:empty {
+    display: none;
+}

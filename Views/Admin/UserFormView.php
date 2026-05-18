@@ -19,6 +19,7 @@ $title = $user ? "Edit User" : "Add New User";
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title><?= $title ?></title>
 </head>
 <body>

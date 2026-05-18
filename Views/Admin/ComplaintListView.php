@@ -15,6 +15,7 @@ unset($_SESSION['msg']);
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Member Complaints</title>
 </head>
 <body>

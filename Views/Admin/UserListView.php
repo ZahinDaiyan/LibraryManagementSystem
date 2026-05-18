@@ -18,6 +18,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Manage All Users</title>
 </head>
 <body>

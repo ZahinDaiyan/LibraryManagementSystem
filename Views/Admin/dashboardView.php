@@ -12,6 +12,7 @@ $stats = $_SESSION['admin_stats'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Admin Dashboard</title>
 </head>
 <body>

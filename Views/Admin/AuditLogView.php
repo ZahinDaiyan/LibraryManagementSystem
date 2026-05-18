@@ -12,6 +12,7 @@ $logs = $_SESSION['audit_logs'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Platform Audit Logs</title>
 </head>
 <body>

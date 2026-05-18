@@ -14,6 +14,7 @@ unset($_SESSION['msg']);
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Manage Announcements</title>
 </head>
 <body>

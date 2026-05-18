@@ -12,6 +12,7 @@ $reports = $_SESSION['admin_reports'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Platform Reports</title>
     <style>
         .report-section { margin-bottom: 40px; }

@@ -13,6 +13,7 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Inter-Branch Transfers</title>
 </head>
 <body>
