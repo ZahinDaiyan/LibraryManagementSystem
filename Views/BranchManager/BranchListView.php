@@ -21,6 +21,7 @@ $title = $editBranch ? 'Edit Branch' : 'Add Branch';
 <html>
 <head>
     <title>Manage Branches</title>
+    <link rel="stylesheet" href="../css/manager.css">
 </head>
 <body>
 

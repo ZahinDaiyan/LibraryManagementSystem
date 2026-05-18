@@ -18,6 +18,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <html>
 <head>
     <title>Assign Librarians</title>
+    <link rel="stylesheet" href="../css/manager.css">
 </head>
 <body>
 

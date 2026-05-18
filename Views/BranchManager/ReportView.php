@@ -25,6 +25,7 @@ $selectedMonth = $_GET['month'] ?? date('Y-m');
 <html>
 <head>
     <title>Branch Manager Reports</title>
+    <link rel="stylesheet" href="../css/manager.css">
 </head>
 <body>
 

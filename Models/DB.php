@@ -5,7 +5,7 @@ function Connect(){
   $servername = "localhost";
   $username = "root";
   $password ="";
-  $dbname ="librarydb";
+  $dbname ="library_management";
 
   $conn = mysqli_connect(
     $servername,
