@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
     header('Location: ../LoginView.php');
@@ -29,20 +31,20 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian Operations</title>
-    <link rel="stylesheet" href="../css/librarian.css">
+    <link rel="stylesheet" href="/LibraryManagementSystem/Views/css/librarian.css">
 </head>
 <body>
 
 <h2>Librarian Operations</h2>
 <p>Branch: <?php echo isset($branch['branch_name']) ? $branch['branch_name'] : 'Unassigned'; ?></p>
-<a href="../../Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
+<a href="/LibraryManagementSystem/Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
 
 <?php if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?><p><?php echo $_SESSION['error']; ?></p><?php } ?>
 <?php if (isset($_SESSION['msg']) && $_SESSION['msg'] != '') { ?><p><?php echo $_SESSION['msg']; ?></p><?php } ?>
 
 <hr>
 <h3>Genres</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
     <input type="hidden" name="action" value="create_genre">
     <input type="text" name="name" placeholder="New genre name">
     <button type="submit">Add Genre</button>
@@ -53,7 +55,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
         <tr>
             <td><?php echo $genre['name']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
                     <input type="hidden" name="action" value="rename_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <input type="text" name="name" value="<?php echo $genre['name']; ?>">
@@ -61,7 +63,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
                 </form>
             </td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="delete_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <button type="submit">Delete</button>
@@ -80,7 +82,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><?php echo $row['title']; ?></td>
             <td><?php echo $row['isbn']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="save_inventory">
                     <input type="hidden" name="book_id" value="<?php echo $row['book_id']; ?>">
                     <input type="number" name="total_copies" value="<?php echo $row['total_copies']; ?>">
@@ -108,13 +110,13 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><?php echo $request['member_name']; ?></td>
             <td><?php echo $request['book_title']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="approve">
                     <button type="submit">Approve</button>
                 </form>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="reject">
@@ -127,12 +129,13 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Process Returns</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsController.php" method="GET">
-    <input type="text" name="return_query" placeholder="Borrow record ID or member name">
-    <button type="submit">Search</button>
+<form id="return_search_form" novalidate action="javascript:void(0);" method="POST">
+    <input type="text" id="return_query" name="return_query" placeholder="Borrow record ID or member name">
+    <button type="button" id="return_search_btn" onclick="searchReturnsAjax(document.getElementById('return_query').value)">Search</button>
 </form>
 <table border="1" cellpadding="6" cellspacing="0">
     <tr><th>Record</th><th>Member</th><th>Book</th><th>Status</th><th>Due</th><th>Action</th></tr>
+    <tbody id="returnResultsBody">
     <?php foreach ($returnMatches as $record) { ?>
         <tr>
             <td><?php echo $record['id']; ?></td>
@@ -141,7 +144,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><?php echo $record['status']; ?></td>
             <td><?php echo $record['due_date']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="process_return">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $record['id']; ?>">
                     <button type="submit">Mark Returned</button>
@@ -149,11 +152,12 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             </td>
         </tr>
     <?php } ?>
+    </tbody>
 </table>
 
 <hr>
 <h3>Issue Manual Fine</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
     <input type="hidden" name="action" value="issue_fine">
     <input type="number" name="borrow_record_id" placeholder="Borrow record ID">
     <input type="number" name="member_id" placeholder="Member ID">
@@ -163,7 +167,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 </form>
 
 <h3>Confirm Fine Payments</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
     <input type="hidden" name="action" value="pay_fine">
     <input type="number" name="fine_id" placeholder="Fine ID">
     <button type="submit">Mark Paid</button>
@@ -171,7 +175,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Active Loans</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsController.php" method="GET">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST">
     <select name="loan_filter">
         <option value="">All</option>
         <option value="overdue">Overdue</option>
@@ -195,7 +199,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Search Members</h3>
-<form id="member_search_form" novalidate action="javascript:void(0);" method="GET">
+<form id="member_search_form" novalidate action="javascript:void(0);" method="POST">
     <input type="text" id="member_query" name="member_query" placeholder="Name, email, or phone" autocomplete="off" onkeyup="showHint(this.value); searchMembersAjax(this.value);">
     <button type="button" id="member_search_btn" onclick="searchMembersAjax(document.getElementById('member_query').value)">Search</button>
     <div id="txtHint" style="margin-top:8px;"></div>
@@ -208,7 +212,12 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><?php echo $member['name']; ?></td>
             <td><?php echo $member['email']; ?></td>
             <td><?php echo $member['phone']; ?></td>
-            <td><a href="../../Controllers/LibrarianOperationsController.php?member_id=<?php echo $member['id']; ?>">View History</a></td>
+            <td>
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="member_id" value="<?php echo $member['id']; ?>">
+                    <button type="submit">View History</button>
+                </form>
+            </td>
         </tr>
     <?php } ?>
     </tbody>
@@ -248,7 +257,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><?php echo $reservation['member_name']; ?></td>
             <td><?php echo $reservation['book_title']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="fulfill_reservation">
                     <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                     <button type="submit">Fulfil</button>
@@ -281,7 +290,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Announcements</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="create_announcement">
     <input type="number" name="branch_id" placeholder="Branch ID or leave blank">
     <input type="text" name="title" placeholder="Title">
@@ -306,19 +315,19 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><?php echo $transfer['to_branch_name']; ?></td>
             <td><?php echo $transfer['status']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="update_transfer">
                     <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
                     <input type="hidden" name="status" value="approved">
                     <button type="submit">Approve</button>
                 </form>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="update_transfer">
                     <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
                     <input type="hidden" name="status" value="rejected">
                     <button type="submit">Reject</button>
                 </form>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="update_transfer">
                     <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
                     <input type="hidden" name="status" value="completed">
@@ -329,7 +338,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <?php } ?>
 </table>
 
-<script src="../js/librarian_validation.js"></script>
+<script src="/LibraryManagementSystem/Views/js/librarian_validation.js"></script>
 <script>
 function selectMemberSuggestion(name) {
     document.getElementById('member_query').value = name;
@@ -350,8 +359,9 @@ function showHint(str) {
             txt.innerHTML = this.responseText;
         }
     };
-    xmlhttp.open("GET", "../../Controllers/gethint.php?q=" + encodeURIComponent(str), true);
-    xmlhttp.send();
+    xmlhttp.open("POST", "/LibraryManagementSystem/Controllers/gethint.php", true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    xmlhttp.send("q=" + encodeURIComponent(str));
 }
 
 function searchMembersAjax(str) {
@@ -364,8 +374,24 @@ function searchMembersAjax(str) {
             tbody.innerHTML = this.responseText;
         }
     };
-    xmlhttp.open("GET", "../../Controllers/MemberSearchResultsApi.php?q=" + encodeURIComponent(str), true);
-    xmlhttp.send();
+    xmlhttp.open("POST", "/LibraryManagementSystem/Controllers/MemberSearchResultsApi.php", true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    xmlhttp.send("q=" + encodeURIComponent(str));
+}
+
+function searchReturnsAjax(str) {
+    var tbody = document.getElementById('returnResultsBody');
+    if (!tbody) return;
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            tbody.innerHTML = this.responseText;
+        }
+    };
+    xmlhttp.open("POST", "/LibraryManagementSystem/Controllers/ReturnSearchApi.php", true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    xmlhttp.send("q=" + encodeURIComponent(str));
 }
 </script>
 </body>
