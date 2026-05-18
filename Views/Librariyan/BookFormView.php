@@ -20,6 +20,7 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title><?php echo $formTitle; ?></title>
+    <link rel="stylesheet" href="../css/librarian.css">
 </head>
 
 <body>

@@ -6,7 +6,12 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     exit();
 }
 
-$history = $_SESSION['borrow_history'] ?? [];
+require_once '../../models/DB.php';
+require_once '../../models/LoanModel.php';
+
+$conn = Connect();
+$history = getBorrowHistory($conn, $_SESSION['id']);
+Close($conn);
 ?>
 
 <!DOCTYPE html>

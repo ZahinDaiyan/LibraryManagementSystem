@@ -17,6 +17,7 @@ $books = isset($_SESSION['catalog_books']) ? $_SESSION['catalog_books'] : array(
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Book Catalog</title>
+    <link rel="stylesheet" href="../css/librarian.css">
 </head>
 
 <body>

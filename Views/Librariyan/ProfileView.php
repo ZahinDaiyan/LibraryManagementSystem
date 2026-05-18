@@ -17,9 +17,12 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Librarian Profile</title>
+    <link rel="stylesheet" href="../css/librarian.css">
 </head>
 
-<body>
+<body class="librarian-profile-page">
+
+<div class="profile-shell">
 
 <h2>Librarian Profile</h2>
 
@@ -76,6 +79,8 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
     <button type="submit">Update Profile</button>
 
 </form>
+
+</div>
 
 <script src="../js/librarian_validation.js"></script>
 </body>

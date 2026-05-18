@@ -29,6 +29,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian Operations</title>
+    <link rel="stylesheet" href="../css/librarian.css">
 </head>
 <body>
 
@@ -194,12 +195,14 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 
 <hr>
 <h3>Search Members</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsController.php" method="GET">
-    <input type="text" name="member_query" placeholder="Name, email, or phone">
-    <button type="submit">Search</button>
+<form id="member_search_form" novalidate action="javascript:void(0);" method="GET">
+    <input type="text" id="member_query" name="member_query" placeholder="Name, email, or phone" autocomplete="off" onkeyup="showHint(this.value); searchMembersAjax(this.value);">
+    <button type="button" id="member_search_btn" onclick="searchMembersAjax(document.getElementById('member_query').value)">Search</button>
+    <div id="txtHint" style="margin-top:8px;"></div>
 </form>
 <table border="1" cellpadding="6" cellspacing="0">
     <tr><th>Member</th><th>Email</th><th>Phone</th><th>History</th></tr>
+    <tbody id="memberResultsBody">
     <?php foreach ($members as $member) { ?>
         <tr>
             <td><?php echo $member['name']; ?></td>
@@ -208,6 +211,7 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
             <td><a href="../../Controllers/LibrarianOperationsController.php?member_id=<?php echo $member['id']; ?>">View History</a></td>
         </tr>
     <?php } ?>
+    </tbody>
 </table>
 <table border="1" cellpadding="6" cellspacing="0">
     <tr><th>Loan History</th><th>Book</th><th>Status</th><th>Borrow</th><th>Due</th><th>Returned</th></tr>
@@ -326,5 +330,43 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 </table>
 
 <script src="../js/librarian_validation.js"></script>
+<script>
+function selectMemberSuggestion(name) {
+    document.getElementById('member_query').value = name;
+    document.getElementById('txtHint').innerHTML = '';
+    searchMembersAjax(name);
+}
+
+function showHint(str) {
+    var txt = document.getElementById('txtHint');
+    if (str.length == 0) {
+        txt.innerHTML = "";
+        return;
+    }
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            txt.innerHTML = this.responseText;
+        }
+    };
+    xmlhttp.open("GET", "../../Controllers/gethint.php?q=" + encodeURIComponent(str), true);
+    xmlhttp.send();
+}
+
+function searchMembersAjax(str) {
+    var tbody = document.getElementById('memberResultsBody');
+    if (!tbody) return;
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            tbody.innerHTML = this.responseText;
+        }
+    };
+    xmlhttp.open("GET", "../../Controllers/MemberSearchResultsApi.php?q=" + encodeURIComponent(str), true);
+    xmlhttp.send();
+}
+</script>
 </body>
 </html>

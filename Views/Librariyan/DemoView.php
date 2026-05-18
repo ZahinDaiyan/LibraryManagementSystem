@@ -19,9 +19,10 @@ $branchCity = isset($librarian['branch_city']) ? $librarian['branch_city'] : '';
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>Librarian Dashboard</title>
+    <link rel="stylesheet" href="../css/librarian.css">
 </head>
 
-<body>
+<body class="librarian-dashboard-page">
 
 <h2>Librarian Dashboard</h2>
 
@@ -46,28 +47,28 @@ $branchCity = isset($librarian['branch_city']) ? $librarian['branch_city'] : '';
 
 <hr>
 
-<h3>Library Tools</h3>
+<div class="tools-panel">
+	<h3>Library Tools</h3>
 
-<ul>
-	<li>
-		<a href="../../Controllers/LibrarianProfileController.php">Manage Profile</a>
-	</li>
-	<li>
-		<a href="../../Controllers/LibrarianBookCatalogController.php">Manage Book Catalog</a>
-	</li>
-	<li>
-		<a href="../../Controllers/LibrarianOperationsController.php">Librarian Operations</a>
-	</li>
-	<li>
-		<a href="../../Controllers/LibrarianBookFormController.php?mode=add">Add New Book</a>
-	</li>
-</ul>
+	<ul>
+		<li>
+			<a href="../../Controllers/LibrarianProfileController.php">Manage Profile</a>
+		</li>
+		<li>
+			<a href="../../Controllers/LibrarianBookCatalogController.php">Manage Book Catalog</a>
+		</li>
+		<li>
+			<a href="../../Controllers/LibrarianOperationsController.php">Librarian Operations</a>
+		</li>
+		<li>
+			<a href="../../Controllers/LibrarianBookFormController.php?mode=add">Add New Book</a>
+		</li>
+	</ul>
 
-<br>
-
-<a href="../../Controllers/LogoutController.php">
-	<button>Logout</button>
-</a>
+	<a class="logout-link" href="../../Controllers/LogoutController.php">
+		<button>Logout</button>
+	</a>
+</div>
 
 </body>
 </html>

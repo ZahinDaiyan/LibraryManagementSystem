@@ -6,7 +6,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     exit();
 }
 
-$loans = $_SESSION['active_loans'] ?? [];
+$loans = [];
+require_once '../../models/DB.php';
+require_once '../../models/LoanModel.php';
+
+$conn = Connect();
+$loans = getActiveLoans($conn, $_SESSION['id']);
+Close($conn);
+
 $msg = $_SESSION['msg'] ?? '';
 $error = $_SESSION['error'] ?? '';
 unset($_SESSION['msg'], $_SESSION['error']);
