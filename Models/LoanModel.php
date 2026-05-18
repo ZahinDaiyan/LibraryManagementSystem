@@ -57,4 +57,40 @@ function requestRenewal($conn, $loan_id, $member_id)
     return ['success' => false, 'message' => 'Failed to renew loan'];
 }
 
+function checkBookAvailabilityInBranch($conn, $book_id, $branch_id)
+{
+    $book_id = mysqli_real_escape_string($conn, $book_id);
+    $branch_id = mysqli_real_escape_string($conn, $branch_id);
+    $sql = "SELECT available_copies 
+            FROM branch_inventory 
+            WHERE book_id='$book_id' AND branch_id='$branch_id'";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    return ($row && $row['available_copies'] > 0);
+}
+
+function hasPendingBorrowRequest($conn, $member_id, $book_id)
+{
+    $member_id = mysqli_real_escape_string($conn, $member_id);
+    $book_id = mysqli_real_escape_string($conn, $book_id);
+    $sql = "SELECT id FROM borrow_records 
+            WHERE member_id='$member_id' 
+            AND book_id='$book_id' 
+            AND status='pending'";
+    $result = mysqli_query($conn, $sql);
+    return (mysqli_num_rows($result) > 0);
+}
+
+function createBorrowRequest($conn, $member_id, $book_id, $branch_id)
+{
+    $member_id = mysqli_real_escape_string($conn, $member_id);
+    $book_id = mysqli_real_escape_string($conn, $book_id);
+    $branch_id = mysqli_real_escape_string($conn, $branch_id);
+    $sql = "INSERT INTO borrow_records
+            (member_id, book_id, branch_id, status, borrow_date)
+            VALUES
+            ('$member_id', '$book_id', '$branch_id', 'pending', CURDATE())";
+    return mysqli_query($conn, $sql);
+}
+
 ?>
