@@ -156,4 +156,98 @@ function deleteReview($conn, $review_id, $member_id)
     return mysqli_query($conn, $sql);
 }
 
+function getAdminBookCatalog($conn, $search = '')
+{
+    $where_sql = "";
+    if (!empty($search)) {
+        $escaped_search = mysqli_real_escape_string($conn, $search);
+        $where_sql = "WHERE (b.title LIKE '%$escaped_search%' OR b.author LIKE '%$escaped_search%' OR b.isbn LIKE '%$escaped_search%')";
+    }
+
+    $sql = "SELECT b.*, g.name AS genre_name, 
+            (SELECT SUM(total_copies) FROM branch_inventory WHERE book_id = b.id) AS total_stock,
+            (SELECT SUM(available_copies) FROM branch_inventory WHERE book_id = b.id) AS total_available
+            FROM books b 
+            LEFT JOIN genres g ON b.genre_id = g.id 
+            $where_sql 
+            ORDER BY b.title ASC";
+
+    $result = mysqli_query($conn, $sql);
+    $books = [];
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $books[] = $row;
+        }
+    }
+    return $books;
+}
+
+function isIsbnAssignedToOtherBook($conn, $isbn, $current_id = null)
+{
+    $escaped_isbn = mysqli_real_escape_string($conn, $isbn);
+    $sql = "SELECT id FROM books WHERE isbn = '$escaped_isbn'";
+    if ($current_id !== null) {
+        $escaped_id = mysqli_real_escape_string($conn, $current_id);
+        $sql .= " AND id != '$escaped_id'";
+    }
+    $result = mysqli_query($conn, $sql);
+    return ($result && mysqli_num_rows($result) > 0);
+}
+
+function createBook($conn, $title, $author, $isbn, $genre_id, $publisher, $published_year, $description)
+{
+    $title = mysqli_real_escape_string($conn, $title);
+    $author = mysqli_real_escape_string($conn, $author);
+    $isbn = mysqli_real_escape_string($conn, $isbn);
+    $publisher = mysqli_real_escape_string($conn, $publisher);
+    $description = mysqli_real_escape_string($conn, $description);
+
+    $genre_val = empty($genre_id) ? "NULL" : "'" . mysqli_real_escape_string($conn, $genre_id) . "'";
+    $year_val = empty($published_year) ? "NULL" : "'" . mysqli_real_escape_string($conn, $published_year) . "'";
+
+    $sql = "INSERT INTO books (title, author, isbn, genre_id, publisher, published_year, description, created_at) 
+            VALUES ('$title', '$author', '$isbn', $genre_val, '$publisher', $year_val, NOW())";
+    return mysqli_query($conn, $sql);
+}
+
+function updateBook($conn, $id, $title, $author, $isbn, $genre_id, $publisher, $published_year, $description)
+{
+    $id = mysqli_real_escape_string($conn, $id);
+    $title = mysqli_real_escape_string($conn, $title);
+    $author = mysqli_real_escape_string($conn, $author);
+    $isbn = mysqli_real_escape_string($conn, $isbn);
+    $publisher = mysqli_real_escape_string($conn, $publisher);
+    $description = mysqli_real_escape_string($conn, $description);
+
+    $genre_val = empty($genre_id) ? "NULL" : "'" . mysqli_real_escape_string($conn, $genre_id) . "'";
+    $year_val = empty($published_year) ? "NULL" : "'" . mysqli_real_escape_string($conn, $published_year) . "'";
+
+    $sql = "UPDATE books 
+            SET title = '$title', author = '$author', isbn = '$isbn', genre_id = $genre_val, 
+                publisher = '$publisher', published_year = $year_val, description = '$description' 
+            WHERE id = '$id'";
+    return mysqli_query($conn, $sql);
+}
+
+function hasActiveLoansForBook($conn, $book_id)
+{
+    $escaped_id = mysqli_real_escape_string($conn, $book_id);
+    $sql = "SELECT id FROM borrow_records WHERE book_id = '$escaped_id' AND status IN ('pending', 'active')";
+    $result = mysqli_query($conn, $sql);
+    return ($result && mysqli_num_rows($result) > 0);
+}
+
+function deleteBookAndInventory($conn, $book_id)
+{
+    $escaped_id = mysqli_real_escape_string($conn, $book_id);
+    
+    // Clean up inventory first
+    if (!mysqli_query($conn, "DELETE FROM branch_inventory WHERE book_id = '$escaped_id'")) {
+        return false;
+    }
+    
+    // Delete book record
+    return mysqli_query($conn, "DELETE FROM books WHERE id = '$escaped_id'");
+}
+
 ?>
