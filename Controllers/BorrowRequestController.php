@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: /LibraryManagementSystem/Views/LoginView.php");
+    header("Location: ../Views/LoginView.php");
     exit();
 }
 
@@ -21,7 +21,7 @@ if (!checkBookAvailabilityInBranch($conn, $book_id, $branch_id)) {
     $_SESSION['error'] = "Book not available";
     $_SESSION['book_details_id'] = $book_id;
     Close($conn);
-    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php");
+    header("Location: BookDetailsController.php");
     exit();
 }
 
@@ -30,7 +30,7 @@ if (hasPendingBorrowRequest($conn, $member_id, $book_id)) {
     $_SESSION['error'] = "Already requested";
     $_SESSION['book_details_id'] = $book_id;
     Close($conn);
-    header("Location: /LibraryManagementSystem/Controllers/BookDetailsController.php");
+    header("Location: BookDetailsController.php");
     exit();
 }
 
@@ -43,6 +43,6 @@ if (createBorrowRequest($conn, $member_id, $book_id, $branch_id)) {
 
 Close($conn);
 
-header("Location: /LibraryManagementSystem/Controllers/MemberDashboardController.php");
+header("Location: MemberDashboardController.php");
 
 ?>

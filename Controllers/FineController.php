@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: /LibraryManagementSystem/Views/LoginView.php");
+    header("Location: ../Views/LoginView.php");
     exit();
 }
 
@@ -18,5 +18,5 @@ Close($conn);
 $_SESSION['unpaid_fines'] = $unpaid;
 $_SESSION['paid_fines'] = $paid;
 
-header("Location: /LibraryManagementSystem/Views/Member/FinesView.php");
+header("Location: ../Views/Member/FinesView.php");
 exit();
