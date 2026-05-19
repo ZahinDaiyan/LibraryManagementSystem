@@ -71,7 +71,7 @@ $notifications = $_SESSION['notifications'] ?? [];
             <div style="border-bottom: 1px solid #eee; margin-bottom: 15px; padding-bottom: 10px;">
                 <h4><?= $a['title'] ?></h4>
                 <p><?= $a['body'] ?></p>
-                <small>By <?= $a['author_name'] ?> on <?= $a['created_at'] ?></small>
+                <small>By <?= htmlspecialchars($a['author_name'] ?? '') ?> on <?= htmlspecialchars($a['published_at'] ?? '') ?></small>
             </div>
         <?php endforeach; ?>
     </div>
