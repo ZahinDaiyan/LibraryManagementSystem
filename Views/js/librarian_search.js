@@ -27,7 +27,7 @@ function showHint(str) {
             console.error('Request failed', xhttp.status);
         }
     };
-    xhttp.open('POST', '../../Controllers/gethint.php', true);
+    xhttp.open('POST', '/LibraryManagementSystem/Controllers/gethint.php', true);
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     xhttp.send('q=' + encodeURIComponent(str));
 }
@@ -42,7 +42,9 @@ function searchMembersAjax(str) {
             var data;
             try { data = JSON.parse(xhttp.responseText); } catch (e) { console.error('Invalid JSON', e); return; }
             var display = '';
-            if (!Array.isArray(data) || data.length === 0) {
+            if (data && data.error) {
+                display = "<tr><td colspan='4'>" + (data.error || 'Error') + "</td></tr>";
+            } else if (!Array.isArray(data) || data.length === 0) {
                 display = "<tr><td colspan='4'>No members found.</td></tr>";
             } else {
                 for (var i = 0; i < data.length; i++) {
@@ -52,7 +54,7 @@ function searchMembersAjax(str) {
                     display += '<td>' + (m.email || '') + '</td>';
                     display += '<td>' + (m.phone || '') + '</td>';
                     display += '<td>';
-                    display += '<form action="../../Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">';
+                    display += '<form action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">';
                     display += '<input type="hidden" name="member_id" value="' + (m.id || '') + '">';
                     display += '<button type="submit">View History</button>';
                     display += '</form>';
@@ -65,7 +67,7 @@ function searchMembersAjax(str) {
             console.error('Request failed', xhttp.status);
         }
     };
-    xhttp.open('POST', '../../Controllers/MemberSearchResultsApi.php', true);
+    xhttp.open('POST', '/LibraryManagementSystem/Controllers/MemberSearchResultsApi.php', true);
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     xhttp.send('q=' + encodeURIComponent(str));
 }
@@ -80,7 +82,9 @@ function searchReturnsAjax(str) {
             var data;
             try { data = JSON.parse(xhttp.responseText); } catch (e) { console.error('Invalid JSON', e); return; }
             var display = '';
-            if (!Array.isArray(data) || data.length === 0) {
+            if (data && data.error) {
+                display = "<tr><td colspan='6'>" + (data.error || 'Error') + "</td></tr>";
+            } else if (!Array.isArray(data) || data.length === 0) {
                 display = "<tr><td colspan='6'>No records found.</td></tr>";
             } else {
                 for (var i = 0; i < data.length; i++) {
@@ -92,7 +96,7 @@ function searchReturnsAjax(str) {
                     display += '<td>' + (r.status || '') + '</td>';
                     display += '<td>' + (r.due_date || '') + '</td>';
                     display += '<td>';
-                    display += '<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">';
+                    display += '<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">';
                     display += '<input type="hidden" name="action" value="process_return">';
                     display += '<input type="hidden" name="borrow_record_id" value="' + (r.id || '') + '">';
                     display += '<button type="submit">Mark Returned</button>';
@@ -106,7 +110,7 @@ function searchReturnsAjax(str) {
             console.error('Request failed', xhttp.status);
         }
     };
-    xhttp.open('POST', '../../Controllers/ReturnSearchApi.php', true);
+    xhttp.open('POST', '/LibraryManagementSystem/Controllers/ReturnSearchApi.php', true);
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
     xhttp.send('q=' + encodeURIComponent(str));
 }
