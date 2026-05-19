@@ -185,9 +185,10 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <button type="submit">Filter</button>
 </form>
 <table border="1" cellpadding="6" cellspacing="0">
-    <tr><th>Record</th><th>Member</th><th>Book</th><th>Borrow</th><th>Due</th></tr>
+    <tr><th>User ID</th><th>Borrow ID</th><th>Member</th><th>Book</th><th>Borrow</th><th>Due</th></tr>
     <?php foreach ($activeLoans as $loan) { ?>
         <tr>
+            <td><?php echo $loan['member_id']; ?></td>
             <td><?php echo $loan['id']; ?></td>
             <td><?php echo $loan['member_name']; ?></td>
             <td><?php echo $loan['book_title']; ?></td>
