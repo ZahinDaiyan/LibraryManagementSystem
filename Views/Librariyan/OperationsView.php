@@ -293,24 +293,68 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 
 <hr>
 <h3>Catalog Statistics</h3>
-<h4>Most Borrowed Books</h4>
-<ul>
-    <?php foreach ($stats['most_borrowed'] as $item) { ?>
-        <li><?php echo $item['title']; ?> - <?php echo $item['borrow_total']; ?></li>
-    <?php } ?>
-</ul>
-<h4>Never Borrowed</h4>
-<ul>
-    <?php foreach ($stats['never_borrowed'] as $item) { ?>
-        <li><?php echo $item['title']; ?></li>
-    <?php } ?>
-</ul>
-<h4>Total Borrows by Genre</h4>
-<ul>
-    <?php foreach ($stats['borrows_by_genre'] as $item) { ?>
-        <li><?php echo $item['genre_name']; ?> - <?php echo $item['total_borrows']; ?></li>
-    <?php } ?>
-</ul>
+<p class="stats-intro">These summaries show branch activity: which titles are borrowed most, which titles have never been borrowed, and how borrowing is distributed by genre.</p>
+<div class="stats-grid">
+    <section class="stats-card">
+        <h4>Most Borrowed Books</h4>
+        <table class="stats-table">
+            <thead>
+                <tr><th>Book</th><th>Borrows</th></tr>
+            </thead>
+            <tbody>
+            <?php if (!empty($stats['most_borrowed'])) { ?>
+                <?php foreach ($stats['most_borrowed'] as $item) { ?>
+                    <tr>
+                        <td><?php echo $item['title']; ?></td>
+                        <td><?php echo $item['borrow_total']; ?></td>
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr><td colspan="2">No borrow data available.</td></tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="stats-card">
+        <h4>Never Borrowed</h4>
+        <table class="stats-table">
+            <thead>
+                <tr><th>Title</th></tr>
+            </thead>
+            <tbody>
+            <?php if (!empty($stats['never_borrowed'])) { ?>
+                <?php foreach ($stats['never_borrowed'] as $item) { ?>
+                    <tr><td><?php echo $item['title']; ?></td></tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr><td>No titles in this category.</td></tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="stats-card">
+        <h4>Total Borrows by Genre</h4>
+        <table class="stats-table">
+            <thead>
+                <tr><th>Genre</th><th>Total borrows</th></tr>
+            </thead>
+            <tbody>
+            <?php if (!empty($stats['borrows_by_genre'])) { ?>
+                <?php foreach ($stats['borrows_by_genre'] as $item) { ?>
+                    <tr>
+                        <td><?php echo $item['genre_name']; ?></td>
+                        <td><?php echo $item['total_borrows']; ?></td>
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr><td colspan="2">No genre totals available.</td></tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </section>
+</div>
 
 <hr>
 <h3>Announcements</h3>
