@@ -1,14 +1,16 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo '<tr><td colspan="6">Invalid request method.</td></tr>';
+    http_response_code(405);
+    echo json_encode(['error' => 'Invalid request method.']);
     exit();
 }
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
-    echo '<tr><td colspan="6">Unauthorized - please login as librarian.</td></tr>';
+    http_response_code(403);
+    echo json_encode(['error' => 'Unauthorized - please login as librarian.']);
     exit();
 }
 
@@ -26,13 +28,13 @@ if (isset($_SESSION['id'])) {
 $branchId = isset($branchInfo['branch_id']) ? (int)$branchInfo['branch_id'] : 0;
 
 if ($q === '') {
-    echo '<tr><td colspan="6">Please enter a borrow id or member name to search.</td></tr>';
+    echo json_encode(['error' => 'Please enter a borrow id or member name to search.']);
     Close($conn);
     exit();
 }
 
 if (!$branchId) {
-    echo '<tr><td colspan="6">No branch assigned to your account. Contact administrator.</td></tr>';
+    echo json_encode(['error' => 'No branch assigned to your account. Contact administrator.']);
     Close($conn);
     exit();
 }
@@ -40,35 +42,24 @@ if (!$branchId) {
 $rows = getBorrowRecordForReturnSearch($conn, $branchId, $q);
 
 if (empty($rows)) {
-    echo '<tr><td colspan="6">No records found.</td></tr>';
+    echo json_encode([]);
     Close($conn);
     exit();
 }
 
+$out = [];
 foreach ($rows as $record) {
-    $id = htmlspecialchars($record['id']);
-    $member = htmlspecialchars($record['member_name']);
-    $book = htmlspecialchars($record['book_title']);
-    $status = htmlspecialchars($record['status']);
-    $due = htmlspecialchars($record['due_date']);
-
-    echo '<tr>';
-    echo '<td>' . $id . '</td>';
-    echo '<td>' . $member . '</td>';
-    echo '<td>' . $book . '</td>';
-    echo '<td>' . $status . '</td>';
-    echo '<td>' . $due . '</td>';
-    echo '<td>';
-    echo '<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">';
-    echo '<input type="hidden" name="action" value="process_return">';
-    echo '<input type="hidden" name="borrow_record_id" value="' . $id . '">';
-    echo '<button type="submit">Mark Returned</button>';
-    echo '</form>';
-    echo '</td>';
-    echo '</tr>';
+    $out[] = [
+        'id' => (int)$record['id'],
+        'member_name' => $record['member_name'],
+        'book_title' => $record['book_title'],
+        'status' => $record['status'],
+        'due_date' => $record['due_date']
+    ];
 }
 
 Close($conn);
+echo json_encode($out);
 exit();
 
 ?>
