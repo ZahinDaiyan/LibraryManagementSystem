@@ -32,13 +32,13 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian Operations</title>
-    <link rel="stylesheet" href="../css/librarian.css">
+    <link rel="stylesheet" href="/LibraryManagementSystem/Views/css/librarian.css">
 </head>
 <body>
 
 <h2>Librarian Operations</h2>
 <p>Branch: <?php echo isset($branch['branch_name']) ? $branch['branch_name'] : 'Unassigned'; ?></p>
-<a href="../../Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
+<a href="/LibraryManagementSystem/Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
 
 <?php if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?><p><?php echo $_SESSION['error']; ?></p><?php } ?>
 <?php if (isset($_SESSION['msg']) && $_SESSION['msg'] != '') { ?><p><?php echo $_SESSION['msg']; ?></p><?php } ?>
@@ -406,7 +406,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
     <?php } ?>
 </table>
 
-<script src="../js/librarian_validation.js"></script>
+<script src="/LibraryManagementSystem/Views/js/librarian_validation.js"></script>
 <script>
 function selectMemberSuggestion(name) {
     document.getElementById('member_query').value = name;
@@ -414,6 +414,6 @@ function selectMemberSuggestion(name) {
     searchMembersAjax(name);
 }
 </script>
-<script src="../js/librarian_search.js"></script>
+<script src="/LibraryManagementSystem/Views/js/librarian_search.js"></script>
 </body>
 </html>
