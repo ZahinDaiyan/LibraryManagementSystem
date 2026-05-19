@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: /LibraryManagementSystem/Views/LoginView.php");
+    header("Location: ../Views/LoginView.php");
     exit();
 }
 
@@ -30,7 +30,7 @@ $_SESSION['book_genre_id'] = $genre_id;
 $_SESSION['book_branch_id'] = $branch_id;
 $_SESSION['book_year'] = $year;
 
-header("Location: /LibraryManagementSystem/Views/Member/BookIndexView.php");
+header("Location: ../Views/Member/BookIndexView.php");
 exit();
 
 ?>
