@@ -194,7 +194,7 @@ $selectedMonth = $_GET['month'] ?? date('Y-m');
 
 <hr>
 
-<h3>AJAX Overdue Loan Alerts</h3>
+<h3>Overdue Loan Alerts</h3>
 <p>Show active loans overdue by more than this many days:</p>
 <input type="number" id="threshold_days" value="7" min="0" max="365">
 <button type="button" onclick="loadOverdueAlerts()">Load Alerts</button>
