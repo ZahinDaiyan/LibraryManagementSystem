@@ -358,7 +358,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 
 <hr>
 <h3>Announcements</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="create_announcement">
     <input type="number" name="branch_id" placeholder="Branch ID or leave blank">
     <input type="text" name="title" placeholder="Title">
@@ -370,41 +370,6 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
         <li><?php echo $announcement['title']; ?> - <?php echo $announcement['body']; ?></li>
     <?php } ?>
 </ul>
-
-<hr>
-<h3>Inter-Branch Transfer Requests</h3>
-<table border="1" cellpadding="6" cellspacing="0">
-    <tr><th>Request</th><th>Book</th><th>From</th><th>To</th><th>Status</th><th>Action</th></tr>
-    <?php foreach ($transfers as $transfer) { ?>
-        <tr>
-            <td><?php echo $transfer['id']; ?></td>
-            <td><?php echo $transfer['book_title']; ?></td>
-            <td><?php echo $transfer['from_branch_name']; ?></td>
-            <td><?php echo $transfer['to_branch_name']; ?></td>
-            <td><?php echo $transfer['status']; ?></td>
-            <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
-                    <input type="hidden" name="action" value="update_transfer">
-                    <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
-                    <input type="hidden" name="status" value="approved">
-                    <button type="submit">Approve</button>
-                </form>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
-                    <input type="hidden" name="action" value="update_transfer">
-                    <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
-                    <input type="hidden" name="status" value="rejected">
-                    <button type="submit">Reject</button>
-                </form>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
-                    <input type="hidden" name="action" value="update_transfer">
-                    <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
-                    <input type="hidden" name="status" value="completed">
-                    <button type="submit">Complete</button>
-                </form>
-            </td>
-        </tr>
-    <?php } ?>
-</table>
 
 <script src="/LibraryManagementSystem/Views/js/librarian_validation.js"></script>
 <script>
