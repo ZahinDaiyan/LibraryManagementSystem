@@ -16,6 +16,7 @@ $branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);
 $branchId = isset($branchInfo['branch_id']) ? (int)$branchInfo['branch_id'] : 0;
 $message = '';
 
+
 if ($action === 'create_genre') {
     $name = htmlspecialchars($_POST['name']);
     $message = createGenre($conn, $name) ? 'Genre created' : 'Genre create failed';
@@ -47,10 +48,7 @@ if ($action === 'create_genre') {
     $amount = (float)$_POST['amount'];
     $reason = htmlspecialchars($_POST['reason']);
 
-    // Server-side guard: verify borrow record exists and belongs to this branch and member
-    $brSql = "SELECT member_id, branch_id FROM borrow_records WHERE id = '$borrowRecordId' LIMIT 1";
-    $brRes = mysqli_query($conn, $brSql);
-    $brRow = $brRes ? mysqli_fetch_assoc($brRes) : null;
+    $brRow = getBorrowRecordBranchMember($conn, $borrowRecordId);
 
     if (!$brRow) {
         $message = 'Borrow record not found';
