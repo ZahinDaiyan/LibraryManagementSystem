@@ -58,13 +58,13 @@ unset($_SESSION['msg'], $_SESSION['error']);
 
 <h3>Navigation</h3>
 <ul>
-    <li><a href="../../Controllers/BranchManagerProfileController.php">Manage Profile</a></li>
-    <li><a href="../../Controllers/BranchManagerBranchController.php">Manage Branch Profiles</a></li>
-    <li><a href="../../Controllers/BranchManagerStaffController.php">Assign Librarians</a></li>
-    <li><a href="../../Controllers/BranchManagerPolicyController.php">Configure Branch Policies</a></li>
-    <li><a href="../../Controllers/BranchManagerReportController.php">Cross-Branch Reports</a></li>
-    <li><a href="../../Controllers/BranchManagerTransferController.php">Inter-Branch Transfers</a></li>
-    <li><a href="../../Controllers/BranchManagerAnnouncementController.php">Platform Announcements</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerProfileController.php">Manage Profile</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerBranchController.php">Manage Branch Profiles</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerStaffController.php">Assign Librarians</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerPolicyController.php">Configure Branch Policies</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerReportController.php">Cross-Branch Reports</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerTransferController.php">Inter-Branch Transfers</a></li>
+    <li><a href="/LibraryManagementSystem/Controllers/BranchManagerAnnouncementController.php">Platform Announcements</a></li>
 </ul>
 
 <hr>

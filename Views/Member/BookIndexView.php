@@ -106,7 +106,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
 
 <hr>
 
-<form novalidate class="search-form" action="../../Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
+<form novalidate class="search-form" action="/LibraryManagementSystem/Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
     <input type="text" id="bookSearch" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchBooks()">
     
     <select id="bookGenre" name="genre_id" onchange="ajaxSearchBooks()">
@@ -130,7 +130,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
     <input type="number" id="bookYear" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" onkeyup="ajaxSearchBooks()" onchange="ajaxSearchBooks()">
 
     <button type="submit">Search</button>
-    <a href="../../Controllers/BookIndexController.php" class="btn-clear">Clear</a>
+    <a href="/LibraryManagementSystem/Controllers/BookIndexController.php" class="btn-clear">Clear</a>
 </form>
 
 <hr>
@@ -160,7 +160,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
             <td><?= $book['isbn'] ?></td>
             <td><?= $book['published_year'] ?></td>
             <td>
-                <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit" class="btn-link">View Details</button></form>
+                <form method="POST" action="/LibraryManagementSystem/Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit" class="btn-link">View Details</button></form>
             </td>
         </tr>
         <?php } ?>

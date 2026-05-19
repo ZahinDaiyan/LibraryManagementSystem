@@ -25,10 +25,10 @@ if (!$c) {
 <body>
 
 <h2>Complaint Details</h2>
-<a href="../../Controllers/AdminComplaintController.php">← Back to List</a>
+<a href="/LibraryManagementSystem/Controllers/AdminComplaintController.php">← Back to List</a>
 <hr>
 
-<div style="background: #f9f9f9; padding: 15px; border: 1px solid #ccc;">
+<div class="complaint-card">
     <p><b>From:</b> <?= htmlspecialchars($c['member_name']) ?> (<?= htmlspecialchars($c['member_email']) ?>)</p>
     <p><b>Date:</b> <?= date('M d, Y H:i', strtotime($c['created_at'])) ?></p>
     <p><b>Subject:</b> <?= htmlspecialchars($c['title']) ?></p>

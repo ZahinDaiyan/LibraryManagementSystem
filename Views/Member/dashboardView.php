@@ -90,7 +90,7 @@ $notifications = $_SESSION['notifications'] ?? [];
             <?php foreach ($notifications as $n): ?>
                 <li>
                     <?= htmlspecialchars($n['message']) ?> 
-                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link">Mark as Read</button></form>
+                    <form method="POST" action="/LibraryManagementSystem/Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link">Mark as Read</button></form>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -102,7 +102,7 @@ $notifications = $_SESSION['notifications'] ?? [];
     <div style="flex: 1;">
         <h3>Features</h3>
         <ul>
-            <li><a href="../../controllers/BookIndexController.php">Browse Books</a></li>
+            <li><a href="/LibraryManagementSystem/Controllers/BookIndexController.php">Browse Books</a></li>
             <li><a href="../../controllers/MyLoansController.php">Active Loans</a></li>
             <li><a href="../../controllers/BorrowHistoryController.php">Borrow History</a></li>
             <li><a href="../../controllers/ReservationController.php">My Reservations</a></li>

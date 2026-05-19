@@ -348,6 +348,23 @@ div[style*="border-bottom: 1px solid #ccc"] {
     margin-bottom: 12px;
 }
 
+/* Complaint detail card (use this class in ComplaintDetailView.php) */
+.complaint-card {
+    background: #1a1d2e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 18px;
+    border-radius: 8px;
+    color: #e8eaf0;
+    margin-bottom: 18px;
+}
+.complaint-card p {
+    color: #9a9fbf;
+    margin-bottom: 10px;
+}
+.complaint-card b, .complaint-card strong {
+    color: #f0f2ff;
+}
+
 /* --- Profile Picture --- */
 img[alt="Profile Picture"] {
     width: 100px;
