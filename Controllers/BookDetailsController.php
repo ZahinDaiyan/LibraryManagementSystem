@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: /LibraryManagementSystem/Views/LoginView.php");
+    header("Location: ../Views/LoginView.php");
     exit();
 }
 
@@ -36,7 +36,7 @@ $_SESSION['reviews'] = $reviews;
 $_SESSION['rating_info'] = $rating_info;
 $_SESSION['in_reading_list'] = $in_reading_list;
 
-header("Location: /LibraryManagementSystem/Views/Member/BookDetailsView.php");
+header("Location: ../Views/Member/BookDetailsView.php");
 exit();
 
 ?>
