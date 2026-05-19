@@ -1,9 +1,10 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 session_start();
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
-    echo '<tr><td colspan="4">Unauthorized</td></tr>';
+    http_response_code(403);
+    echo json_encode(['error' => 'Unauthorized']);
     exit();
 }
 
@@ -17,7 +18,7 @@ $branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);
 $branchId = isset($branchInfo['branch_id']) ? (int)$branchInfo['branch_id'] : 0;
 
 if ($q === '' || !$branchId) {
-    echo '<tr><td colspan="4">No members found.</td></tr>';
+    echo json_encode([]);
     Close($conn);
     exit();
 }
@@ -25,30 +26,23 @@ if ($q === '' || !$branchId) {
 $members = searchMembersByBranch($conn, $branchId, $q);
 
 if (empty($members)) {
-    echo '<tr><td colspan="4">No members found.</td></tr>';
+    echo json_encode([]);
     Close($conn);
     exit();
 }
 
+$out = [];
 foreach ($members as $member) {
-    $id = htmlspecialchars($member['id']);
-    $name = htmlspecialchars($member['name']);
-    $email = htmlspecialchars($member['email']);
-    $phone = htmlspecialchars($member['phone']);
-    echo '<tr>';
-    echo '<td>' . $name . '</td>';
-    echo '<td>' . $email . '</td>';
-    echo '<td>' . $phone . '</td>';
-    echo '<td>';
-    echo '<form action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">';
-    echo '<input type="hidden" name="member_id" value="' . $id . '">';
-    echo '<button type="submit">View History</button>';
-    echo '</form>';
-    echo '</td>';
-    echo '</tr>';
+    $out[] = [
+        'id' => (int)$member['id'],
+        'name' => $member['name'],
+        'email' => $member['email'],
+        'phone' => $member['phone']
+    ];
 }
 
 Close($conn);
+echo json_encode($out);
 exit();
 
 ?>
