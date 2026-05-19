@@ -161,8 +161,15 @@ function getPendingBorrowRequestsForBranch($conn, $branchId)
 
 function decideBorrowRequest($conn, $borrowRecordId, $branchId, $librarianId, $status)
 {
+    $dueDateSql = '';
+    if ($status === 'active') {
+        $policy = getBranchPolicyByBranchId($conn, $branchId);
+        $maxBorrowDays = $policy && isset($policy['max_borrow_days']) ? (int)$policy['max_borrow_days'] : 14;
+        $dueDateSql = ", due_date = DATE_ADD(CURDATE(), INTERVAL $maxBorrowDays DAY)";
+    }
+
     $sql = "UPDATE borrow_records
-            SET status = '$status', librarian_id = '$librarianId'
+            SET status = '$status', librarian_id = '$librarianId'$dueDateSql
             WHERE id = '$borrowRecordId' AND branch_id = '$branchId' AND status = 'pending'";
 
     $result = mysqli_query($conn, $sql);
