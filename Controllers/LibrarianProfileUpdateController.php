@@ -39,7 +39,13 @@ if ($newPassword != '' || $confirmPassword != '') {
         exit();
     }
 
-    if (!$currentUser || !isset($currentUser['password_hash']) || !password_verify($currentPassword, $currentUser['password_hash'])) {
+    $storedPassword = $currentUser['password_hash'] ?? '';
+    $passwordMatches = $storedPassword !== '' && (
+        password_verify($currentPassword, $storedPassword) ||
+        $currentPassword === $storedPassword
+    );
+
+    if (!$currentUser || !$passwordMatches) {
         Close($conn);
         $_SESSION['error'] = 'Current password is incorrect';
         header('Location: ../Controllers/LibrarianProfileController.php');
