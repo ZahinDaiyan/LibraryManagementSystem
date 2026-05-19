@@ -12,7 +12,7 @@ $logs = $_SESSION['audit_logs'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
     <title>Platform Audit Logs</title>
 </head>
 <body>
@@ -24,7 +24,7 @@ $logs = $_SESSION['audit_logs'] ?? [];
 <p>Showing the last 100 significant actions performed by users.</p>
 
 <table border="1" cellpadding="8" width="100%">
-    <tr style="background-color: #eee;">
+    <tr>
         <th>Timestamp</th>
         <th>User</th>
         <th>Action</th>
