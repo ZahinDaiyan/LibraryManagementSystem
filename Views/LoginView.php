@@ -9,15 +9,32 @@ session_start();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/auth.css?v=<?= time() ?>">
+    <style>
+        .btn-outline {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-bottom: 0;
+        }
+        .btn-outline:hover {
+            background: #f59e0b;
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="auth-container">
-    <h2>Login</h2>
-
-    <a href="RegisterView.php">Create New Account</a>
+    <h2 style="margin-bottom: 24px;">Login</h2>
 
     <form
         action="../Controllers/LoginController.php"
@@ -35,6 +52,11 @@ session_start();
         <span id="passwordErr"></span>
 
         <button type="submit">Login</button>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <span style="color: #9a9fbf; font-size: 0.9rem;">Don't have an account?</span>
+            <a href="RegisterView.php" class="btn-outline" style="margin-top: 10px;">Create New Account</a>
+        </div>
 
     </form>
 

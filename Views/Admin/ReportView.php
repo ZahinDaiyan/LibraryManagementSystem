@@ -12,21 +12,34 @@ $reports = $_SESSION['admin_reports'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
     <title>Platform Reports</title>
     <style>
         .report-section { margin-bottom: 40px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        .bar { height: 20px; background-color: #4CAF50; display: inline-block; }
+        
+        .create-btn {
+            background: #f59e0b !important;
+            color: #fff !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+            font-size: 0.85rem !important;
+            display: inline-block !important;
+            margin-left: 12px !important;
+            text-decoration: none !important;
+        }
+
+        .create-btn:hover {
+            background: #fbbf24 !important;
+            color: #fff !important;
+        }
     </style>
 </head>
 <body>
 
 <h2>Platform-Wide Data Reports</h2>
-<a href="dashboardView.php">← Back to Dashboard</a> | 
-<a href="../../Controllers/AdminReportExportController.php">Export Data (Printable)</a>
+<a href="dashboardView.php">← Back to Dashboard</a>
+<a href="../../Controllers/AdminReportExportController.php" class="create-btn">Export Data (Printable)</a>
 <hr>
 
 <div class="report-section">

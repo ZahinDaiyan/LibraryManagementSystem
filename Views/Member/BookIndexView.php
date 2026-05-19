@@ -22,7 +22,80 @@ $selected_year = $_SESSION['book_year'] ?? '';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Book Catalog</title>
-    <link rel="stylesheet" href="../css/member.css">
+    <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
+    <style>
+        /* Force spacing and inline horizontal display */
+        .search-form {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 16px !important;
+            max-width: 100% !important;
+            align-items: center !important;
+            background: #1e2235 !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 12px !important;
+            padding: 24px !important;
+            margin-bottom: 24px !important;
+        }
+
+        .search-form input[type="text"] {
+            flex: 2 !important;
+            min-width: 220px !important;
+            max-width: none !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form select {
+            flex: 1 !important;
+            min-width: 150px !important;
+            max-width: none !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form input[type="number"] {
+            flex: 0.5 !important;
+            min-width: 80px !important;
+            max-width: none !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form button {
+            padding: 10px 24px !important;
+            flex: initial !important;
+            width: auto !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form .btn-clear {
+            color: #f59e0b !important;
+            font-weight: 600 !important;
+            margin-left: 8px !important;
+            text-decoration: underline !important;
+        }
+
+        .search-form .btn-clear:hover {
+            color: #fbbf24 !important;
+        }
+
+        /* Styled button link for View Details */
+        .btn-link {
+            background: transparent !important;
+            border: 1px solid #f59e0b !important;
+            color: #f59e0b !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .btn-link:hover {
+            background: #f59e0b !important;
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,7 +106,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
 
 <hr>
 
-<form novalidate action="../../Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
+<form novalidate class="search-form" action="../../Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
     <input type="text" id="bookSearch" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchBooks()">
     
     <select id="bookGenre" name="genre_id" onchange="ajaxSearchBooks()">
@@ -54,10 +127,10 @@ $selected_year = $_SESSION['book_year'] ?? '';
         <?php } ?>
     </select>
 
-    <input type="number" id="bookYear" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" style="width: 80px;" onkeyup="ajaxSearchBooks()" onchange="ajaxSearchBooks()">
+    <input type="number" id="bookYear" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" onkeyup="ajaxSearchBooks()" onchange="ajaxSearchBooks()">
 
     <button type="submit">Search</button>
-    <a href="../../Controllers/BookIndexController.php">Clear</a>
+    <a href="../../Controllers/BookIndexController.php" class="btn-clear">Clear</a>
 </form>
 
 <hr>
@@ -87,7 +160,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
             <td><?= $book['isbn'] ?></td>
             <td><?= $book['published_year'] ?></td>
             <td>
-                <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View Details</button></form>
+                <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit" class="btn-link">View Details</button></form>
             </td>
         </tr>
         <?php } ?>

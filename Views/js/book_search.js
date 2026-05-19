@@ -23,7 +23,7 @@ function ajaxSearchBooks() {
                     display += "<td>" +
                         "<form method='POST' action='../../Controllers/BookDetailsController.php' style='display:inline;'>" +
                         "<input type='hidden' name='id' value='" + books[i].id + "'>" +
-                        "<button type='submit' style='background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit;'>View Details</button>" +
+                        "<button type='submit' class='btn-link'>View Details</button>" +
                         "</form>" +
                         "</td>";
                     display += "</tr>";

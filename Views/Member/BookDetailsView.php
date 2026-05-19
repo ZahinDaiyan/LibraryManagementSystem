@@ -27,7 +27,28 @@ if (!$book) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Book Details</title>
-    <link rel="stylesheet" href="../css/member.css">
+    <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
+    <style>
+        /* Golden outline button style for links */
+        .btn-link {
+            background: transparent !important;
+            border: 1px solid #f59e0b !important;
+            color: #f59e0b !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: inline-block !important;
+        }
+
+        .btn-link:hover {
+            background: #f59e0b !important;
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,13 +65,9 @@ if (!$book) {
 <h3><?= $book['title'] ?></h3>
 
 <?php if (isset($_SESSION['in_reading_list']) && $_SESSION['in_reading_list']): ?>
-    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
-        [ Remove from Reading List ]
-    </button></form>
+    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Remove from Reading List</button></form>
 <?php else: ?>
-    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
-        [ Add to Reading List ]
-    </button></form>
+    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Add to Reading List</button></form>
 <?php endif; ?>
 
 <p><b>Average Rating:</b> <?= number_format($rating_info['avg_rating'], 1) ?> / 5 (<?= $rating_info['review_count'] ?> reviews)</p>
@@ -83,14 +100,10 @@ if (!$book) {
     <td><?= $a['available_copies'] ?></td>
     <td>
         <?php if ($a['available_copies'] > 0) { ?>
-            <form method="POST" action="../../Controllers/BorrowRequestController.php" style="display:inline;"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
-                Request Borrow
-            </button></form>
+            <form method="POST" action="../../Controllers/BorrowRequestController.php" style="display:inline;"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit" class="btn-link">Request Borrow</button></form>
         <?php } else { ?>
-            <span style="color:red;">Not Available</span> | 
-            <form method="POST" action="../../Controllers/ReservationActionController.php" style="display:inline;"><input type="hidden" name="action" value="reserve"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
-                Join Waitlist
-            </button></form>
+            <span style="color:red; margin-right: 8px;">Not Available</span> | 
+            <form method="POST" action="../../Controllers/ReservationActionController.php" style="display:inline;"><input type="hidden" name="action" value="reserve"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit" class="btn-link">Join Waitlist</button></form>
         <?php } ?>
     </td>
 </tr>

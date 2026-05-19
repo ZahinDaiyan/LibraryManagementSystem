@@ -441,3 +441,71 @@ form[style*="display:inline"] button {
     padding: 6px 14px !important;
     font-size: 0.8rem !important;
 }
+
+/* --- Search Form Specific Layout --- */
+.search-form {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    max-width: 100% !important;
+    align-items: center !important;
+    background: #1e2235 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+    margin-bottom: 24px !important;
+}
+
+.search-form input[type="text"] {
+    flex: 2 !important;
+    min-width: 250px !important;
+    max-width: none !important;
+}
+
+.search-form select {
+    flex: 1 !important;
+    min-width: 180px !important;
+    max-width: none !important;
+}
+
+.search-form input[type="number"] {
+    flex: 0.5 !important;
+    min-width: 90px !important;
+    max-width: none !important;
+}
+
+.search-form button {
+    padding: 10px 24px !important;
+    flex: initial !important;
+    width: auto !important;
+}
+
+.search-form .btn-clear {
+    color: #f59e0b !important;
+    font-weight: 600 !important;
+    margin-left: 8px !important;
+    text-decoration: underline !important;
+}
+
+.search-form .btn-clear:hover {
+    color: #fbbf24 !important;
+}
+
+/* --- High-Visibility Styled Outline Button Link --- */
+.btn-link {
+    background: transparent !important;
+    border: 1px solid #f59e0b !important;
+    color: #f59e0b !important;
+    padding: 6px 14px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-link:hover {
+    background: #f59e0b !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}

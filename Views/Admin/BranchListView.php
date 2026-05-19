@@ -14,8 +14,30 @@ unset($_SESSION['msg']);
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
     <title>Manage Branches</title>
+    <style>
+        /* Styled button link for table actions */
+        .btn-link {
+            background: transparent !important;
+            border: 1px solid #f59e0b !important;
+            color: #f59e0b !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: inline-block !important;
+            margin-right: 8px !important;
+        }
+
+        .btn-link:hover {
+            background: #f59e0b !important;
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -53,9 +75,7 @@ unset($_SESSION['msg']);
             </b>
         </td>
         <td>
-            <form method="POST" action="../../Controllers/AdminBranchActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit"  onclick="return confirm('Toggle status for this branch?')" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">
-                <?= $b['is_active'] ? 'Deactivate' : 'Activate' ?>
-            </button></form>
+            <form method="POST" action="../../Controllers/AdminBranchActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this branch?')" class="btn-link"><?= $b['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
         </td>
     </tr>
     <?php endforeach; ?>

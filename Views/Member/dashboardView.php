@@ -21,7 +21,60 @@ $notifications = $_SESSION['notifications'] ?? [];
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Member Dashboard</title>
-    <link rel="stylesheet" href="../css/member.css">
+    <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
+    <style>
+        /* Premium announcement cards with high contrast readability */
+        .announcement-card {
+            background: #1a1d2e !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-left: 4px solid #f59e0b !important;
+            border-radius: 8px !important;
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .announcement-card h4 {
+            color: #f59e0b !important; /* Golden amber heading for hierarchy */
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .announcement-card p {
+            color: #e8eaf0 !important; /* Crisp high-contrast text */
+            font-size: 0.95rem !important;
+            margin-bottom: 12px !important;
+            line-height: 1.5 !important;
+        }
+
+        .announcement-card small {
+            color: #9a9fbf !important; /* Readable gray for metadata */
+            font-size: 0.8rem !important;
+            font-weight: 400 !important;
+        }
+
+        /* Golden outline button style for Mark as Read */
+        .btn-link {
+            background: transparent !important;
+            border: 1px solid #f59e0b !important;
+            color: #f59e0b !important;
+            padding: 4px 10px !important;
+            font-size: 0.75rem !important;
+            font-weight: 500 !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            text-decoration: none !important;
+            margin-left: 10px !important;
+            display: inline-block !important;
+        }
+
+        .btn-link:hover {
+            background: #f59e0b !important;
+            color: #fff !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -36,8 +89,8 @@ $notifications = $_SESSION['notifications'] ?? [];
         <ul>
             <?php foreach ($notifications as $n): ?>
                 <li>
-                    <?= $n['message'] ?> 
-                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">[Mark as Read]</button></form>
+                    <?= htmlspecialchars($n['message']) ?> 
+                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link">Mark as Read</button></form>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -68,9 +121,9 @@ $notifications = $_SESSION['notifications'] ?? [];
             <p>No announcements.</p>
         <?php endif; ?>
         <?php foreach ($announcements as $a): ?>
-            <div style="border-bottom: 1px solid #eee; margin-bottom: 15px; padding-bottom: 10px;">
-                <h4><?= $a['title'] ?></h4>
-                <p><?= $a['body'] ?></p>
+            <div class="announcement-card">
+                <h4><?= htmlspecialchars($a['title'] ?? '') ?></h4>
+                <p><?= htmlspecialchars($a['body'] ?? '') ?></p>
                 <small>By <?= htmlspecialchars($a['author_name'] ?? '') ?> on <?= htmlspecialchars($a['published_at'] ?? '') ?></small>
             </div>
         <?php endforeach; ?>

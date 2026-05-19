@@ -13,8 +13,52 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
     <title>Inter-Branch Transfers</title>
+    <style>
+        /* Force spacing and inline horizontal display */
+        .search-form {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 16px !important;
+            max-width: 100% !important;
+            align-items: center !important;
+            background: #1e2235 !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 12px !important;
+            padding: 24px !important;
+            margin-bottom: 24px !important;
+        }
+
+        .search-form label {
+            margin-bottom: 0 !important;
+        }
+
+        .search-form select {
+            flex: 1 !important;
+            min-width: 200px !important;
+            max-width: none !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form button {
+            padding: 10px 24px !important;
+            flex: initial !important;
+            width: auto !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form .btn-clear {
+            color: #f59e0b !important;
+            font-weight: 600 !important;
+            margin-left: 8px !important;
+            text-decoration: underline !important;
+        }
+
+        .search-form .btn-clear:hover {
+            color: #fbbf24 !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,7 +66,7 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
 <a href="dashboardView.php">← Back to Dashboard</a>
 <hr>
 
-<form novalidate action="../../Controllers/AdminTransferController.php" method="POST">
+<form novalidate class="search-form" action="../../Controllers/AdminTransferController.php" method="POST">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Transfers</option>
@@ -32,7 +76,7 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
         <option value="rejected" <?= $status_filter === 'rejected' ? 'selected' : '' ?>>Rejected</option>
     </select>
     <button type="submit">Filter</button>
-    <a href="../../Controllers/AdminTransferController.php">Clear</a>
+    <a href="../../Controllers/AdminTransferController.php" class="btn-clear">Clear</a>
 </form>
 
 <br>

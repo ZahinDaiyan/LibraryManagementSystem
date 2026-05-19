@@ -37,12 +37,12 @@ function ajaxSearchUsers() {
                     const toggleBtnText = u.is_active ? 'Deactivate' : 'Activate';
                     const actionsHtml = "<form method='POST' action='../../Controllers/AdminUserFormController.php' style='display:inline;'>" +
                         "<input type='hidden' name='id' value='" + u.id + "'>" +
-                        "<button type='submit' style='background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit;'>Edit Info</button>" +
-                    "</form> | " +
+                        "<button type='submit' class='btn-link'>Edit Info</button>" +
+                    "</form> " +
                     "<form method='POST' action='../../Controllers/AdminUserActionController.php' style='display:inline;'>" +
                         "<input type='hidden' name='action' value='toggle_status'>" +
                         "<input type='hidden' name='id' value='" + u.id + "'>" +
-                        "<button type='submit' onclick=\"return confirm('Toggle status for this user?')\" style='background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit;'>" + toggleBtnText + "</button>" +
+                        "<button type='submit' onclick=\"return confirm('Toggle status for this user?')\" class='btn-link'>" + toggleBtnText + "</button>" +
                     "</form>";
 
                     display += "<tr>";

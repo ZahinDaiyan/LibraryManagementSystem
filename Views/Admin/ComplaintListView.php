@@ -15,8 +15,73 @@ unset($_SESSION['msg']);
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
     <title>Member Complaints</title>
+    <style>
+        /* Force spacing and inline horizontal display */
+        .search-form {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 16px !important;
+            max-width: 100% !important;
+            align-items: center !important;
+            background: #1e2235 !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 12px !important;
+            padding: 24px !important;
+            margin-bottom: 24px !important;
+        }
+
+        .search-form label {
+            margin-bottom: 0 !important;
+        }
+
+        .search-form select {
+            flex: 1 !important;
+            min-width: 200px !important;
+            max-width: none !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form button {
+            padding: 10px 24px !important;
+            flex: initial !important;
+            width: auto !important;
+            margin-bottom: 0 !important;
+        }
+
+        .search-form .btn-clear {
+            color: #f59e0b !important;
+            font-weight: 600 !important;
+            margin-left: 8px !important;
+            text-decoration: underline !important;
+        }
+
+        .search-form .btn-clear:hover {
+            color: #fbbf24 !important;
+        }
+
+        /* Styled button link for table actions */
+        .btn-link {
+            background: transparent !important;
+            border: 1px solid #f59e0b !important;
+            color: #f59e0b !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: inline-block !important;
+            margin-right: 8px !important;
+        }
+
+        .btn-link:hover {
+            background: #f59e0b !important;
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -26,7 +91,7 @@ unset($_SESSION['msg']);
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form novalidate action="../../Controllers/AdminComplaintController.php" method="POST">
+<form novalidate class="search-form" action="../../Controllers/AdminComplaintController.php" method="POST">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Complaints</option>
@@ -35,7 +100,7 @@ unset($_SESSION['msg']);
         <option value="resolved" <?= $status_filter === 'resolved' ? 'selected' : '' ?>>Resolved</option>
     </select>
     <button type="submit">Filter</button>
-    <a href="../../Controllers/AdminComplaintController.php">Clear</a>
+    <a href="../../Controllers/AdminComplaintController.php" class="btn-clear">Clear</a>
 </form>
 
 <br>
@@ -64,7 +129,7 @@ unset($_SESSION['msg']);
         </td>
         <td><?= date('M d, Y', strtotime($c['created_at'])) ?></td>
         <td>
-            <form method="POST" action="../../Controllers/AdminComplaintDetailController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $c['id'] ?>"><button type="submit"  style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer; padding:0; font:inherit; ">View & Respond</button></form>
+            <form method="POST" action="../../Controllers/AdminComplaintDetailController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $c['id'] ?>"><button type="submit" class="btn-link">View & Respond</button></form>
         </td>
     </tr>
     <?php endforeach; ?>
