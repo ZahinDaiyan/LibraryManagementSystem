@@ -208,7 +208,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
     <button type="submit">Filter</button>
 </form>
 <table border="1" cellpadding="6" cellspacing="0">
-    <tr><th>User ID</th><th>Borrow ID</th><th>Member</th><th>Book</th><th>Borrow</th><th>Due</th></tr>
+    <tr><th>User ID</th><th>Borrow ID</th><th>Member</th><th>Book</th><th>Borrow</th><th>Due date</th></tr>
     <?php foreach ($activeLoans as $loan) { ?>
         <tr>
             <td><?php echo $loan['member_id']; ?></td>
