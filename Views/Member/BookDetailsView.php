@@ -65,9 +65,9 @@ if (!$book) {
 <h3><?= $book['title'] ?></h3>
 
 <?php if (isset($_SESSION['in_reading_list']) && $_SESSION['in_reading_list']): ?>
-    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Remove from Reading List</button></form>
+    <form method="POST" action="/LibraryManagementSystem/Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Remove from Reading List</button></form>
 <?php else: ?>
-    <form method="POST" action="../../Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Add to Reading List</button></form>
+    <form method="POST" action="/LibraryManagementSystem/Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Add to Reading List</button></form>
 <?php endif; ?>
 
 <p><b>Average Rating:</b> <?= number_format($rating_info['avg_rating'], 1) ?> / 5 (<?= $rating_info['review_count'] ?> reviews)</p>
@@ -100,10 +100,10 @@ if (!$book) {
     <td><?= $a['available_copies'] ?></td>
     <td>
         <?php if ($a['available_copies'] > 0) { ?>
-            <form method="POST" action="../../Controllers/BorrowRequestController.php" style="display:inline;"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit" class="btn-link">Request Borrow</button></form>
+            <form method="POST" action="/LibraryManagementSystem/Controllers/BorrowRequestController.php" style="display:inline;"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit" class="btn-link">Request Borrow</button></form>
         <?php } else { ?>
             <span style="color:red; margin-right: 8px;">Not Available</span> | 
-            <form method="POST" action="../../Controllers/ReservationActionController.php" style="display:inline;"><input type="hidden" name="action" value="reserve"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit" class="btn-link">Join Waitlist</button></form>
+            <form method="POST" action="/LibraryManagementSystem/Controllers/ReservationActionController.php" style="display:inline;"><input type="hidden" name="action" value="reserve"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="branch_id" value="<?= $a['branch_id'] ?>"><button type="submit" class="btn-link">Join Waitlist</button></form>
         <?php } ?>
     </td>
 </tr>
@@ -123,7 +123,7 @@ if (!$book) {
         <small><?= $r['created_at'] ?></small>
         
         <?php if ($r['member_id'] == $_SESSION['id']) { ?>
-            <form novalidate action="../../Controllers/BookReviewController.php" method="POST" style="display:inline;">
+            <form novalidate action="/LibraryManagementSystem/Controllers/BookReviewController.php" method="POST" style="display:inline;">
                 <input type="hidden" name="action" value="delete_review">
                 <input type="hidden" name="review_id" value="<?= $r['id'] ?>">
                 <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
@@ -138,7 +138,7 @@ if (!$book) {
 <hr>
 
 <h3>Write a Review</h3>
-<form novalidate action="../../Controllers/BookReviewController.php" method="POST" onsubmit="return validateReviewForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/BookReviewController.php" method="POST" onsubmit="return validateReviewForm(this)">
     <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
     <input type="hidden" name="action" value="submit_review">
     

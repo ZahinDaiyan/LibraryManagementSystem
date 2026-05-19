@@ -45,7 +45,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 
 <hr>
 <h3>Genres</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
     <input type="hidden" name="action" value="create_genre">
     <input type="text" name="name" placeholder="New genre name">
     <button type="submit">Add Genre</button>
@@ -56,7 +56,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
         <tr>
             <td><?php echo $genre['name']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
                     <input type="hidden" name="action" value="rename_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <input type="text" name="name" value="<?php echo $genre['name']; ?>">
@@ -64,7 +64,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
                 </form>
             </td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="delete_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <button type="submit">Delete</button>
@@ -83,7 +83,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $row['title']; ?></td>
             <td><?php echo $row['isbn']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="save_inventory">
                     <input type="hidden" name="book_id" value="<?php echo $row['book_id']; ?>">
                     <input type="number" name="total_copies" value="<?php echo $row['total_copies']; ?>">
@@ -111,13 +111,13 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $request['member_name']; ?></td>
             <td><?php echo $request['book_title']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="approve">
                     <button type="submit">Approve</button>
                 </form>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="reject">
@@ -145,7 +145,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $record['status']; ?></td>
             <td><?php echo $record['due_date']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="process_return">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $record['id']; ?>">
                     <button type="submit">Mark Returned</button>
@@ -158,7 +158,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 
 <hr>
 <h3>Issue Manual Fine</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
     <input type="hidden" name="action" value="issue_fine">
     <input type="number" name="borrow_record_id" placeholder="Borrow record ID">
     <input type="number" name="member_id" placeholder="Member ID">
@@ -168,7 +168,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 </form>
 
 <h3>Confirm Fine Payments</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
     <input type="hidden" name="action" value="pay_fine">
     <input type="number" name="fine_id" placeholder="Fine ID">
     <button type="submit">Mark Paid</button>
@@ -186,7 +186,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $fine['amount']; ?></td>
             <td><?php echo $fine['reason']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="pay_fine">
                     <input type="hidden" name="fine_id" value="<?php echo $fine['id']; ?>">
                     <button type="submit">Mark Paid</button>
@@ -198,7 +198,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 
 <hr>
 <h3>Active Loans</h3>
-<form novalidate action="../../Controllers/LibrarianOperationsController.php" method="POST">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST">
     <select name="loan_filter">
         <option value="">All</option>
         <option value="overdue">Overdue</option>
@@ -237,7 +237,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $member['email']; ?></td>
             <td><?php echo $member['phone']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="member_id" value="<?php echo $member['id']; ?>">
                     <button type="submit">View History</button>
                 </form>
@@ -281,7 +281,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $reservation['member_name']; ?></td>
             <td><?php echo $reservation['book_title']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="fulfill_reservation">
                     <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                     <button type="submit">Fulfil</button>
@@ -383,19 +383,19 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $transfer['to_branch_name']; ?></td>
             <td><?php echo $transfer['status']; ?></td>
             <td>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="update_transfer">
                     <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
                     <input type="hidden" name="status" value="approved">
                     <button type="submit">Approve</button>
                 </form>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="update_transfer">
                     <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
                     <input type="hidden" name="status" value="rejected">
                     <button type="submit">Reject</button>
                 </form>
-                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="update_transfer">
                     <input type="hidden" name="request_id" value="<?php echo $transfer['id']; ?>">
                     <input type="hidden" name="status" value="completed">

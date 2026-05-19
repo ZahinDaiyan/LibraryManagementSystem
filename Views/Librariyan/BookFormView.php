@@ -27,7 +27,7 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
 
 <h2><?php echo $formTitle; ?></h2>
 
-<a href="../../Controllers/LibrarianBookCatalogController.php">Back to Catalog</a>
+<a href="/LibraryManagementSystem/Controllers/LibrarianBookCatalogController.php">Back to Catalog</a>
 
 <?php if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?>
     <p><?php echo $_SESSION['error']; ?></p>
@@ -35,7 +35,7 @@ $formTitle = $mode === 'edit' ? 'Edit Book' : 'Add New Book';
 
 <hr>
 
-<form novalidate action="../../Controllers/LibrarianBookSaveController.php" method="POST" enctype="multipart/form-data" onsubmit="return validateBookForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianBookSaveController.php" method="POST" enctype="multipart/form-data" onsubmit="return validateBookForm(this)">
 
     <input type="hidden" name="mode" value="<?php echo $mode; ?>">
     <input type="hidden" name="book_id" value="<?php echo isset($book['id']) ? $book['id'] : ''; ?>">

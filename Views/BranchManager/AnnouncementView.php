@@ -21,14 +21,14 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <body>
 
 <h2>Platform-Wide Announcements</h2>
-<a href="../../Controllers/BranchManagerDashboardController.php">Back to Dashboard</a>
+<a href="/LibraryManagementSystem/Controllers/BranchManagerDashboardController.php">Back to Dashboard</a>
 <hr>
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
 <h3>Post Announcement</h3>
-<form novalidate action="../../Controllers/BranchManagerAnnouncementActionController.php" method="POST" onsubmit="return validateManagerAnnouncementForm(this)">
+<form novalidate action="/LibraryManagementSystem/Controllers/BranchManagerAnnouncementActionController.php" method="POST" onsubmit="return validateManagerAnnouncementForm(this)">
     <p>
         <label>Title:</label><br>
         <input type="text" name="title" size="60">

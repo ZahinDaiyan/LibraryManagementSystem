@@ -110,13 +110,13 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
 
 <h2>Manage All User Accounts</h2>
 <a href="dashboardView.php">← Back to Dashboard</a>
-<a href="../../Controllers/AdminUserFormController.php" class="create-btn">Create Staff Account</a>
+<a href="/LibraryManagementSystem/Controllers/AdminUserFormController.php" class="create-btn">Create Staff Account</a>
 <hr>
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
-<form novalidate class="search-form" action="../../Controllers/AdminUserController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchUsers();">
+<form novalidate class="search-form" action="/LibraryManagementSystem/Controllers/AdminUserController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchUsers();">
     <input type="text" id="userSearch" name="search" placeholder="Search name, email, phone..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchUsers()">
     
     <select id="userRole" name="role_filter" onchange="ajaxSearchUsers()">
@@ -128,7 +128,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
     </select>
 
     <button type="submit">Filter/Search</button>
-    <a href="../../Controllers/AdminUserController.php" class="btn-clear">Clear</a>
+    <a href="/LibraryManagementSystem/Controllers/AdminUserController.php" class="btn-clear">Clear</a>
 </form>
 
 <br>
@@ -156,7 +156,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             <td><?= $u['name'] ?></td>
             <td><?= $u['email'] ?></td>
             <td>
-                <form novalidate action="../../Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="change_role">
                     <input type="hidden" name="id" value="<?= $u['id'] ?>">
                     <select name="role" onchange="this.form.submit()">
@@ -175,8 +175,8 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             </td>
             <td><?= date('M d, Y', strtotime($u['created_at'])) ?></td>
             <td>
-                <form method="POST" action="../../Controllers/AdminUserFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
-                <form method="POST" action="../../Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+                <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
+                <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
             </td>
         </tr>
         <?php endforeach; ?>
