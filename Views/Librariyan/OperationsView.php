@@ -421,45 +421,128 @@ function showHint(str) {
         return;
     }
 
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            txt.innerHTML = this.responseText;
-        }
-    };
-    xmlhttp.open("POST", "/LibraryManagementSystem/Controllers/gethint.php", true);
-    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xmlhttp.send("q=" + encodeURIComponent(str));
+    fetch('/LibraryManagementSystem/Controllers/gethint.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        body: 'q=' + encodeURIComponent(str)
+    }).then(function(resp) {
+        if (!resp.ok) throw new Error('Network response was not ok');
+        return resp.json();
+    }).then(function(data) {
+        // build suggestion nodes
+        txt.innerHTML = '';
+        if (!Array.isArray(data) || data.length === 0) return;
+        data.forEach(function(item) {
+            var div = document.createElement('div');
+            div.style.padding = '6px';
+            div.style.cursor = 'pointer';
+            div.style.color = '#e8eaf0';
+            div.style.background = '#1a1d2e';
+            div.style.marginBottom = '6px';
+            div.style.borderRadius = '6px';
+            var strong = document.createElement('strong');
+            strong.style.display = 'block';
+            strong.style.color = '#f0f2ff';
+            strong.textContent = item.name;
+            var small = document.createElement('small');
+            small.style.color = '#9a9fbf';
+            small.textContent = item.email + ' · ' + item.phone;
+            div.appendChild(strong);
+            div.appendChild(small);
+            div.addEventListener('click', function() { selectMemberSuggestion(item.name); });
+            txt.appendChild(div);
+        });
+    }).catch(function(err) {
+        console.error(err);
+    });
 }
 
 function searchMembersAjax(str) {
     var tbody = document.getElementById('memberResultsBody');
     if (!tbody) return;
-
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            tbody.innerHTML = this.responseText;
+    fetch('/LibraryManagementSystem/Controllers/MemberSearchResultsApi.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        body: 'q=' + encodeURIComponent(str)
+    }).then(function(resp) {
+        if (!resp.ok) throw new Error('Network response was not ok');
+        return resp.json();
+    }).then(function(data) {
+        tbody.innerHTML = '';
+        if (!Array.isArray(data) || data.length === 0) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td');
+            td.colSpan = 4;
+            td.textContent = 'No members found.';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
         }
-    };
-    xmlhttp.open("POST", "/LibraryManagementSystem/Controllers/MemberSearchResultsApi.php", true);
-    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xmlhttp.send("q=" + encodeURIComponent(str));
+
+        data.forEach(function(m) {
+            var tr = document.createElement('tr');
+            var tdName = document.createElement('td'); tdName.textContent = m.name;
+            var tdEmail = document.createElement('td'); tdEmail.textContent = m.email;
+            var tdPhone = document.createElement('td'); tdPhone.textContent = m.phone;
+            var tdAction = document.createElement('td');
+            var form = document.createElement('form');
+            form.action = '/LibraryManagementSystem/Controllers/LibrarianOperationsController.php';
+            form.method = 'POST';
+            form.style.display = 'inline';
+            var input = document.createElement('input'); input.type = 'hidden'; input.name = 'member_id'; input.value = m.id;
+            var btn = document.createElement('button'); btn.type = 'submit'; btn.textContent = 'View History';
+            form.appendChild(input); form.appendChild(btn);
+            tdAction.appendChild(form);
+            tr.appendChild(tdName); tr.appendChild(tdEmail); tr.appendChild(tdPhone); tr.appendChild(tdAction);
+            tbody.appendChild(tr);
+        });
+    }).catch(function(err) {
+        console.error(err);
+    });
 }
 
 function searchReturnsAjax(str) {
     var tbody = document.getElementById('returnResultsBody');
     if (!tbody) return;
-
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            tbody.innerHTML = this.responseText;
+    fetch('/LibraryManagementSystem/Controllers/ReturnSearchApi.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        body: 'q=' + encodeURIComponent(str)
+    }).then(function(resp) {
+        if (!resp.ok) throw new Error('Network response was not ok');
+        return resp.json();
+    }).then(function(data) {
+        tbody.innerHTML = '';
+        if (!Array.isArray(data) || data.length === 0) {
+            var tr = document.createElement('tr');
+            var td = document.createElement('td'); td.colSpan = 6; td.textContent = 'No records found.'; tr.appendChild(td); tbody.appendChild(tr); return;
         }
-    };
-    xmlhttp.open("POST", "/LibraryManagementSystem/Controllers/ReturnSearchApi.php", true);
-    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    xmlhttp.send("q=" + encodeURIComponent(str));
+
+        data.forEach(function(r) {
+            var tr = document.createElement('tr');
+            var tdId = document.createElement('td'); tdId.textContent = r.id;
+            var tdMember = document.createElement('td'); tdMember.textContent = r.member_name;
+            var tdBook = document.createElement('td'); tdBook.textContent = r.book_title;
+            var tdStatus = document.createElement('td'); tdStatus.textContent = r.status;
+            var tdDue = document.createElement('td'); tdDue.textContent = r.due_date;
+            var tdAction = document.createElement('td');
+
+            var form = document.createElement('form');
+            form.setAttribute('novalidate', '');
+            form.action = '/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php';
+            form.method = 'POST';
+            var inputAction = document.createElement('input'); inputAction.type = 'hidden'; inputAction.name = 'action'; inputAction.value = 'process_return';
+            var inputId = document.createElement('input'); inputId.type = 'hidden'; inputId.name = 'borrow_record_id'; inputId.value = r.id;
+            var btn = document.createElement('button'); btn.type = 'submit'; btn.textContent = 'Mark Returned';
+            form.appendChild(inputAction); form.appendChild(inputId); form.appendChild(btn);
+            tdAction.appendChild(form);
+
+            tr.appendChild(tdId); tr.appendChild(tdMember); tr.appendChild(tdBook); tr.appendChild(tdStatus); tr.appendChild(tdDue); tr.appendChild(tdAction);
+            tbody.appendChild(tr);
+        });
+    }).catch(function(err) {
+        console.error(err);
+    });
 }
 </script>
 </body>
