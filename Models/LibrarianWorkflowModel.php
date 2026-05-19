@@ -288,30 +288,32 @@ function markFineAsPaid($conn, $fineId)
 
 function getActiveLoansForBranch($conn, $branchId, $filter)
 {
+    $dueDateExpr = "COALESCE(br.due_date, DATE_ADD(br.borrow_date, INTERVAL COALESCE(bp.max_borrow_days, 14) DAY))";
     $sql = "SELECT
                 br.id,
                 br.member_id,
                 br.book_id,
                 br.branch_id,
                 br.borrow_date,
-                br.due_date,
+                $dueDateExpr AS due_date,
                 br.status,
                 u.name AS member_name,
                 b.title AS book_title
             FROM borrow_records br
             JOIN users u ON u.id = br.member_id
             JOIN books b ON b.id = br.book_id
+            LEFT JOIN branch_policies bp ON bp.branch_id = br.branch_id
             WHERE br.branch_id = '$branchId' AND br.status = 'active'";
 
     if ($filter === 'overdue') {
-        $sql .= " AND br.due_date < CURDATE()";
+        $sql .= " AND $dueDateExpr < CURDATE()";
     } elseif ($filter === 'today') {
-        $sql .= " AND br.due_date = CURDATE()";
+        $sql .= " AND $dueDateExpr = CURDATE()";
     } elseif ($filter === 'week') {
-        $sql .= " AND br.due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)";
+        $sql .= " AND $dueDateExpr BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)";
     }
 
-    $sql .= " ORDER BY br.due_date ASC";
+    $sql .= " ORDER BY $dueDateExpr ASC";
 
     $result = mysqli_query($conn, $sql);
     $rows = array();
