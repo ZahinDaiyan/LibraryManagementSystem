@@ -155,13 +155,7 @@ function getSystemSettings($conn)
     return $settings;
 }
 
-/**
- * Update system settings key-value pairs
- * 
- * @param mysqli $conn Database connection
- * @param array $updates Associative array of setting_key => setting_value
- * @return bool
- */
+
 function updateSystemSettings($conn, $updates)
 {
     foreach ($updates as $key => $value) {
