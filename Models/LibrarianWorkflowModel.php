@@ -376,6 +376,26 @@ function getMemberFineHistory($conn, $memberId)
     return $rows;
 }
 
+function getUnpaidFinesForBranch($conn, $branchId)
+{
+    $sql = "SELECT f.id, f.borrow_record_id, f.member_id, f.amount, f.reason, f.branch_id, u.name AS member_name, b.title AS book_title
+            FROM fines f
+            JOIN users u ON u.id = f.member_id
+            LEFT JOIN borrow_records br ON br.id = f.borrow_record_id
+            LEFT JOIN books b ON b.id = br.book_id
+            WHERE f.branch_id = '$branchId' AND f.is_paid = 0
+            ORDER BY f.id DESC";
+
+    $result = mysqli_query($conn, $sql);
+    $rows = array();
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+    }
+
+    return $rows;
+}
+
 function getReservationWaitlistForBranch($conn, $branchId)
 {
     $sql = "SELECT r.id, r.member_id, r.book_id, r.branch_id, r.reserved_at, r.status, u.name AS member_name, b.title AS book_title

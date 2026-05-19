@@ -26,6 +26,7 @@ $data['members'] = $branchId && isset($_POST['member_query']) ? searchMembersByB
 $data['stats'] = $branchId ? getBranchCatalogStats($conn, $branchId) : array('most_borrowed' => array(), 'never_borrowed' => array(), 'borrows_by_genre' => array());
 $data['announcements'] = $branchId ? getAnnouncementsForBranch($conn, $branchId) : array();
 $data['transfers'] = $branchId ? getInterBranchRequestsForBranch($conn, $branchId) : array();
+$data['unpaid_fines'] = $branchId ? getUnpaidFinesForBranch($conn, $branchId) : array();
 
 if (isset($_POST['member_id']) && $branchId) {
     $memberId = (int)$_POST['member_id'];

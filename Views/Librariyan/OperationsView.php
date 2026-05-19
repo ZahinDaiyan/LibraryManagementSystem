@@ -23,6 +23,7 @@ $memberFines = isset($data['member_fines']) ? $data['member_fines'] : array();
 $stats = isset($data['stats']) ? $data['stats'] : array('most_borrowed' => array(), 'never_borrowed' => array(), 'borrows_by_genre' => array());
 $announcements = isset($data['announcements']) ? $data['announcements'] : array();
 $transfers = isset($data['transfers']) ? $data['transfers'] : array();
+$unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 ?>
 
 <!DOCTYPE html>
@@ -172,6 +173,28 @@ $transfers = isset($data['transfers']) ? $data['transfers'] : array();
     <input type="number" name="fine_id" placeholder="Fine ID">
     <button type="submit">Mark Paid</button>
 </form>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <tr><th>Fine ID</th><th>Borrow ID</th><th>Member ID</th><th>Member</th><th>Book</th><th>Amount</th><th>Reason</th><th>Action</th></tr>
+    <?php foreach ($unpaidFines as $fine) { ?>
+        <tr>
+            <td><?php echo $fine['id']; ?></td>
+            <td><?php echo $fine['borrow_record_id']; ?></td>
+            <td><?php echo $fine['member_id']; ?></td>
+            <td><?php echo $fine['member_name']; ?></td>
+            <td><?php echo isset($fine['book_title']) ? $fine['book_title'] : ''; ?></td>
+            <td><?php echo $fine['amount']; ?></td>
+            <td><?php echo $fine['reason']; ?></td>
+            <td>
+                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="action" value="pay_fine">
+                    <input type="hidden" name="fine_id" value="<?php echo $fine['id']; ?>">
+                    <button type="submit">Mark Paid</button>
+                </form>
+            </td>
+        </tr>
+    <?php } ?>
+</table>
 
 <hr>
 <h3>Active Loans</h3>
