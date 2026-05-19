@@ -303,6 +303,15 @@ function processBorrowReturn($conn, $borrowRecordId, $librarianId)
     return array('success' => true, 'message' => 'Return processed', 'fine_amount' => $fineAmount, 'overdue_days' => $overdueDays, 'max_days' => $maxDays);
 }
 
+function getBorrowRecordBranchMember($conn, $borrowRecordId)
+{
+    $sql = "SELECT member_id, branch_id FROM borrow_records WHERE id = '$borrowRecordId' LIMIT 1";
+    $result = mysqli_query($conn, $sql);
+    $row = $result ? mysqli_fetch_assoc($result) : null;
+
+    return $row ? $row : null;
+}
+
 function issueManualFine($conn, $borrowRecordId, $memberId, $branchId, $amount, $reason)
 {
     $borrowRecordId = mysqli_real_escape_string($conn, $borrowRecordId);
