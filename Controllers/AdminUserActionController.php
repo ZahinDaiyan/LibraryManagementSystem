@@ -125,8 +125,8 @@ if ($action === 'create' || $action === 'update') {
         if (!$target_user) {
             $success = false;
             $message = "User not found";
-        } elseif (deleteUser($conn, $id)) {
-            logAction($conn, $admin_id, "Deleted User", "users", $id, "Deleted user profile: " . $target_user['name']);
+        } elseif (setUserActiveStatus($conn, $id, 0)) {
+            logAction($conn, $admin_id, "Deleted User Profile", "users", $id, "Soft-deleted user profile: " . $target_user['name']);
             $success = true;
             $message = "User profile deleted successfully";
         } else {

@@ -244,4 +244,23 @@ function toggleUserStatus($conn, $id)
     return false;
 }
 
+function setUserActiveStatus($conn, $id, $is_active)
+{
+    $id = mysqli_real_escape_string($conn, $id);
+    $is_active = $is_active ? 1 : 0;
+    $res = mysqli_query($conn, "SELECT name, is_active FROM users WHERE id = '$id'");
+    $user = $res ? mysqli_fetch_assoc($res) : null;
+    if (!$user) {
+        return false;
+    }
+
+    $sql = "UPDATE users SET is_active = '$is_active' WHERE id = '$id'";
+    if (mysqli_query($conn, $sql)) {
+        $user['new_status'] = $is_active;
+        return $user;
+    }
+
+    return false;
+}
+
 ?>

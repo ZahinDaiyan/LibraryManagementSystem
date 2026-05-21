@@ -188,7 +188,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             <td><?= $u['name'] ?></td>
             <td><?= $u['email'] ?></td>
             <td>
-                <form novalidate data-admin-ajax="1" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="change_role">
                     <input type="hidden" name="id" value="<?= $u['id'] ?>">
                     <select name="role" onchange="this.form.submit()">
@@ -209,7 +209,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             <td>
                 <div class="user-actions">
                     <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
-                    <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
                     <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
                     <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile permanently?')" class="btn-link-danger">Delete Profile</button></form>
                     <?php endif; ?>
