@@ -53,6 +53,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
     <?php foreach ($loans as $loan) { 
         $overdue = $loan['days_remaining'] < 0;
         $color = $overdue ? 'red' : 'black';
+        $renewalPending = isset($loan['renewal_request_status']) && $loan['renewal_request_status'] === 'pending';
     ?>
     <tr style="color: <?= $color ?>;">
         <td><?= $loan['book_title'] ?></td>
@@ -63,11 +64,15 @@ unset($_SESSION['msg'], $_SESSION['error']);
             <?= $overdue ? "Overdue by " . abs($loan['days_remaining']) . " days" : $loan['days_remaining'] . " days remaining" ?>
         </td>
         <td>
-            <form novalidate action="../../Controllers/LoanActionController.php" method="POST">
-                <input type="hidden" name="action" value="renew">
-                <input type="hidden" name="loan_id" value="<?= $loan['id'] ?>">
-                <button type="submit" <?= $overdue ? 'disabled' : '' ?>>Request Renewal</button>
-            </form>
+            <?php if ($renewalPending): ?>
+                <span style="color:#f59e0b; font-weight:600;">Pending approvals</span>
+            <?php else: ?>
+                <form novalidate action="../../Controllers/LoanActionController.php" method="POST">
+                    <input type="hidden" name="action" value="renew">
+                    <input type="hidden" name="loan_id" value="<?= $loan['id'] ?>">
+                    <button type="submit" <?= $overdue ? 'disabled' : '' ?>>Request Renewal</button>
+                </form>
+            <?php endif; ?>
         </td>
     </tr>
     <?php } ?>

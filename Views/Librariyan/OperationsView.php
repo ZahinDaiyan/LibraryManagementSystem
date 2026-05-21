@@ -24,6 +24,7 @@ $stats = isset($data['stats']) ? $data['stats'] : array('most_borrowed' => array
 $announcements = isset($data['announcements']) ? $data['announcements'] : array();
 $transfers = isset($data['transfers']) ? $data['transfers'] : array();
 $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
+$renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] : array();
 ?>
 
 <!DOCTYPE html>
@@ -122,6 +123,36 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="reject">
+                    <button type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+    <?php } ?>
+</table>
+
+<hr>
+<h3>Loan Renewal Approvals</h3>
+<table border="1" cellpadding="6" cellspacing="0">
+    <tr><th>Request</th><th>Loan</th><th>Member</th><th>Book</th><th>Current Due</th><th>Decision</th></tr>
+    <?php if (empty($renewalRequests)) { ?>
+        <tr><td colspan="6">No pending renewal approvals.</td></tr>
+    <?php } ?>
+    <?php foreach ($renewalRequests as $rr) { ?>
+        <tr>
+            <td><?php echo $rr['id']; ?></td>
+            <td><?php echo $rr['loan_id']; ?></td>
+            <td><?php echo $rr['member_name']; ?></td>
+            <td><?php echo $rr['book_title']; ?></td>
+            <td><?php echo $rr['due_date']; ?></td>
+            <td>
+                <form novalidate action="/LibraryManagementSystem/Controllers/RenewalDecisionController.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="request_id" value="<?php echo $rr['id']; ?>">
+                    <input type="hidden" name="decision" value="approved">
+                    <button type="submit">Approve</button>
+                </form>
+                <form novalidate action="/LibraryManagementSystem/Controllers/RenewalDecisionController.php" method="POST" style="display:inline;">
+                    <input type="hidden" name="request_id" value="<?php echo $rr['id']; ?>">
+                    <input type="hidden" name="decision" value="rejected">
                     <button type="submit">Reject</button>
                 </form>
             </td>

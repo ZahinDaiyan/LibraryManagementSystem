@@ -10,6 +10,7 @@ $profile = $_SESSION['branch_manager_profile'] ?? array();
 $dashboard = $_SESSION['bm_dashboard'] ?? array();
 $branches = $dashboard['branches'] ?? array();
 $stats = $dashboard['stats'] ?? array();
+$pendingRenewals = $dashboard['pending_renewals'] ?? array();
 $msg = $_SESSION['msg'] ?? '';
 $error = $_SESSION['error'] ?? '';
 unset($_SESSION['msg'], $_SESSION['error']);
@@ -53,6 +54,46 @@ unset($_SESSION['msg'], $_SESSION['error']);
         <p style="font-size:24px; font-weight:bold; color:green;">$<?= number_format((float)($stats['total_outstanding_fines'] ?? 0), 2) ?></p>
     </div>
 </div>
+
+<hr>
+
+<h3>Pending Loan Renewal Approvals</h3>
+<table border="1" cellpadding="8" width="100%">
+    <tr>
+        <th>Request ID</th>
+        <th>Loan ID</th>
+        <th>Member</th>
+        <th>Book</th>
+        <th>Branch</th>
+        <th>Current Due</th>
+        <th>Action</th>
+    </tr>
+    <?php if (empty($pendingRenewals)): ?>
+        <tr><td colspan="7">No renewal requests pending branch manager review.</td></tr>
+    <?php endif; ?>
+    <?php foreach ($pendingRenewals as $r): ?>
+        <tr>
+            <td><?= htmlspecialchars($r['id']) ?></td>
+            <td><?= htmlspecialchars($r['loan_id']) ?></td>
+            <td><?= htmlspecialchars($r['member_name']) ?></td>
+            <td><?= htmlspecialchars($r['book_title']) ?></td>
+            <td><?= htmlspecialchars($r['branch_name']) ?></td>
+            <td><?= htmlspecialchars($r['due_date']) ?></td>
+            <td>
+                <form method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
+                    <input type="hidden" name="request_id" value="<?= htmlspecialchars($r['id']) ?>">
+                    <input type="hidden" name="decision" value="approved">
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
+                    <input type="hidden" name="request_id" value="<?= htmlspecialchars($r['id']) ?>">
+                    <input type="hidden" name="decision" value="rejected">
+                    <button type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
 
 <hr>
 

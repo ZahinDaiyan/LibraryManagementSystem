@@ -7,6 +7,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $stats = $_SESSION['admin_stats'] ?? [];
+$pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -158,6 +159,46 @@ $stats = $_SESSION['admin_stats'] ?? [];
     </div>
 
 </div>
+
+<hr>
+
+<h3>Pending Loan Renewal Approvals</h3>
+<table border="1" cellpadding="10" width="100%">
+    <tr>
+        <th>Request ID</th>
+        <th>Loan ID</th>
+        <th>Member</th>
+        <th>Book</th>
+        <th>Branch</th>
+        <th>Current Due</th>
+        <th>Action</th>
+    </tr>
+    <?php if (empty($pendingRenewals)): ?>
+        <tr><td colspan="7">No renewal requests pending admin review.</td></tr>
+    <?php endif; ?>
+    <?php foreach ($pendingRenewals as $r): ?>
+        <tr>
+            <td><?= htmlspecialchars($r['id']) ?></td>
+            <td><?= htmlspecialchars($r['loan_id']) ?></td>
+            <td><?= htmlspecialchars($r['member_name']) ?></td>
+            <td><?= htmlspecialchars($r['book_title']) ?></td>
+            <td><?= htmlspecialchars($r['branch_name']) ?></td>
+            <td><?= htmlspecialchars($r['due_date']) ?></td>
+            <td>
+                <form method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
+                    <input type="hidden" name="request_id" value="<?= htmlspecialchars($r['id']) ?>">
+                    <input type="hidden" name="decision" value="approved">
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
+                    <input type="hidden" name="request_id" value="<?= htmlspecialchars($r['id']) ?>">
+                    <input type="hidden" name="decision" value="rejected">
+                    <button type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
 
 <hr>
 

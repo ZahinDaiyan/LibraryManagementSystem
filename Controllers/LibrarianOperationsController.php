@@ -33,6 +33,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
 
 require_once '../Models/DB.php';
 require_once '../Models/LibrarianWorkflowModel.php';
+require_once '../Models/LoanModel.php';
 
 $conn = Connect();
 $branchInfo = getLibrarianBranchByUserId($conn, $_SESSION['id']);
@@ -51,6 +52,7 @@ $data['stats'] = $branchId ? getBranchCatalogStats($conn, $branchId) : array('mo
 $data['announcements'] = $branchId ? getAnnouncementsForBranch($conn, $branchId) : array();
 $data['transfers'] = $branchId ? getInterBranchRequestsForBranch($conn, $branchId) : array();
 $data['unpaid_fines'] = $branchId ? getUnpaidFinesForBranch($conn, $branchId) : array();
+$data['renewal_requests'] = getPendingRenewalRequestsForLibrarian($conn, $_SESSION['id']);
 
 if (isset($_POST['member_id']) && $branchId) {
     $memberId = (int)$_POST['member_id'];

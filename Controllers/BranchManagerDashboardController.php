@@ -9,6 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'branch_manager') {
 
 require_once '../Models/DB.php';
 require_once '../Models/BranchManagerModel.php';
+require_once '../Models/LoanModel.php';
 
 $conn = Connect();
 $profile = bmGetManagerProfile($conn, $_SESSION['id']);
@@ -25,7 +26,8 @@ if (!$profile) {
 $_SESSION['branch_manager_profile'] = $profile;
 $_SESSION['bm_dashboard'] = array(
     'branches' => $branches,
-    'stats' => $stats
+    'stats' => $stats,
+    'pending_renewals' => getPendingRenewalRequestsForManager($conn, $_SESSION['id'])
 );
 
 header('Location: ../Views/BranchManager/dashboardView.php');
