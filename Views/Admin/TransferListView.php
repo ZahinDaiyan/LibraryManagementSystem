@@ -66,7 +66,7 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
 <a href="dashboardView.php">← Back to Dashboard</a>
 <hr>
 
-<form novalidate class="search-form" action="../../Controllers/AdminTransferController.php" method="POST">
+<form novalidate data-admin-ajax="1" class="search-form" action="../../Controllers/AdminTransferController.php" method="POST">
     <label>Filter by Status:</label>
     <select name="status_filter">
         <option value="">All Transfers</option>
@@ -114,6 +114,8 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
     </tr>
     <?php endforeach; ?>
 </table>
+
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

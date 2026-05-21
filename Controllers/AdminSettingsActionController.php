@@ -2,9 +2,10 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../Views/LoginView.php');
-    exit();
+    adminFinishResponse(adminWantsJson(), false, 'Unauthorized', '../Views/LoginView.php', array(), 403);
 }
 
 require_once '../Models/DB.php';
@@ -13,6 +14,8 @@ require_once '../Models/AdminModel.php';
 $action = $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
+$success = false;
+$message = 'Unknown settings action';
 
 if ($action === 'update_settings') {
     $allow_self_reg = $_POST['allow_self_registration'] ?? '0';
@@ -29,6 +32,9 @@ if ($action === 'update_settings') {
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_data'] = $_POST;
         Close($conn);
+        if (adminWantsJson()) {
+            adminJsonResponse(false, 'Validation failed', array('errors' => $errors), 422);
+        }
         header('Location: AdminSettingsController.php');
         exit();
     }
@@ -42,12 +48,13 @@ if ($action === 'update_settings') {
     ];
 
     if (updateSystemSettings($conn, $updates)) {
-        $_SESSION['msg'] = "Global system settings updated successfully";
+        $success = true;
+        $message = "Global system settings updated successfully";
     } else {
-        $_SESSION['error'] = "Failed to update global system settings";
+        $success = false;
+        $message = "Failed to update global system settings";
     }
 }
 
 Close($conn);
-header('Location: AdminSettingsController.php');
-exit();
+adminFinishResponse(adminWantsJson(), $success, $message, 'AdminSettingsController.php', array(), $success ? 200 : 400);

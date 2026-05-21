@@ -75,11 +75,13 @@ unset($_SESSION['msg']);
             </b>
         </td>
         <td>
-            <form method="POST" action="../../Controllers/AdminBranchActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this branch?')" class="btn-link"><?= $b['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+            <form data-admin-ajax="1" method="POST" action="../../Controllers/AdminBranchActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this branch?')" class="btn-link"><?= $b['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
         </td>
     </tr>
     <?php endforeach; ?>
 </table>
+
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

@@ -28,7 +28,9 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
 <a href="AnnouncementListView.php">← Back to List</a>
 <hr>
 
-<form novalidate action="/LibraryManagementSystem/Controllers/AdminAnnouncementActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
+<div id="adminAjaxMessage"></div>
+
+<form novalidate data-admin-ajax="1" action="/LibraryManagementSystem/Controllers/AdminAnnouncementActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="<?= $a ? 'update' : 'create' ?>">
     <?php if ($a): ?>
         <input type="hidden" name="id" value="<?= $a['id'] ?>">
@@ -66,6 +68,7 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
 </form>
 
 <script src="../js/admin_validation.js"></script>
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>
 

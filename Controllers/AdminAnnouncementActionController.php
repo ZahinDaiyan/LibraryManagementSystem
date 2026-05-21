@@ -2,9 +2,10 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../Views/LoginView.php');
-    exit();
+    adminFinishResponse(adminWantsJson(), false, 'Unauthorized', '../Views/LoginView.php', array(), 403);
 }
 
 require_once '../Models/DB.php';
@@ -15,6 +16,8 @@ $action = $_POST['action'] ?? $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
 $admin_id = $_SESSION['id'];
+$success = false;
+$message = 'Unknown admin announcement action';
 
 if ($action === 'create' || $action === 'update') {
     $title = htmlspecialchars($_POST['title']);
@@ -32,6 +35,9 @@ if ($action === 'create' || $action === 'update') {
             $_SESSION['admin_announcement_form_id'] = $id;
         }
         Close($conn);
+        if (adminWantsJson()) {
+            adminJsonResponse(false, 'Validation failed', array('errors' => $errors), 422);
+        }
         header('Location: AdminAnnouncementFormController.php');
         exit();
     }
@@ -40,16 +46,20 @@ if ($action === 'create' || $action === 'update') {
         if (createAnnouncement($conn, $title, $body, $branch_id, $admin_id)) {
             $new_id = mysqli_insert_id($conn);
             logAction($conn, $admin_id, "Created Announcement", "announcements", $new_id, "Title: $title");
-            $_SESSION['msg'] = "Announcement posted successfully.";
+            $success = true;
+            $message = "Announcement posted successfully.";
         } else {
-            $_SESSION['error'] = "Failed to post announcement.";
+            $success = false;
+            $message = "Failed to post announcement.";
         }
     } else {
         if (updateAnnouncement($conn, $id, $title, $body, $branch_id)) {
             logAction($conn, $admin_id, "Updated Announcement", "announcements", $id, "Title: $title");
-            $_SESSION['msg'] = "Announcement updated successfully.";
+            $success = true;
+            $message = "Announcement updated successfully.";
         } else {
-            $_SESSION['error'] = "Failed to update announcement.";
+            $success = false;
+            $message = "Failed to update announcement.";
         }
     }
 
@@ -57,12 +67,13 @@ if ($action === 'create' || $action === 'update') {
     $id = $_POST['id'];
     if (deleteAnnouncement($conn, $id)) {
         logAction($conn, $admin_id, "Deleted Announcement", "announcements", $id);
-        $_SESSION['msg'] = "Announcement deleted.";
+        $success = true;
+        $message = "Announcement deleted.";
     } else {
-        $_SESSION['error'] = "Failed to delete announcement.";
+        $success = false;
+        $message = "Failed to delete announcement.";
     }
 }
 
 Close($conn);
-header('Location: AdminAnnouncementController.php');
-exit();
+adminFinishResponse(adminWantsJson(), $success, $message, 'AdminAnnouncementController.php', array(), $success ? 200 : 400);

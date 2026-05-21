@@ -2,7 +2,13 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Unauthorized', array(), 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -19,11 +25,19 @@ $complaint = getComplaintById($conn, $id);
 Close($conn);
 
 if (!$complaint) {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Complaint not found', array(), 404);
+    }
+
     header('Location: AdminComplaintController.php');
     exit();
 }
 
 $_SESSION['current_complaint'] = $complaint;
+
+if (adminWantsJson()) {
+    adminJsonResponse(true, 'Complaint loaded', array('complaint' => $complaint));
+}
 
 header('Location: ../Views/Admin/ComplaintDetailView.php');
 exit();

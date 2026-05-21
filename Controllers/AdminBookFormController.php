@@ -2,7 +2,13 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Unauthorized', array(), 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -23,6 +29,13 @@ if ($id) {
 
 $_SESSION['genres'] = getGenres($conn);
 Close($conn);
+
+if (adminWantsJson()) {
+    adminJsonResponse(true, 'Book form loaded', array(
+        'edit_book' => $_SESSION['edit_book'] ?? null,
+        'genres' => $_SESSION['genres']
+    ));
+}
 
 header('Location: ../Views/Admin/BookFormView.php');
 exit();

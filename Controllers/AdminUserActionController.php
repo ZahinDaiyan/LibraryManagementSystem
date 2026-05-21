@@ -2,9 +2,10 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../Views/LoginView.php');
-    exit();
+    adminFinishResponse(adminWantsJson(), false, 'Unauthorized', '../Views/LoginView.php', array(), 403);
 }
 
 require_once '../Models/DB.php';
@@ -15,6 +16,8 @@ $action = $_POST['action'] ?? $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
 $admin_id = $_SESSION['id'];
+$success = false;
+$message = 'Unknown admin user action';
 
 if ($action === 'create' || $action === 'update') {
     $name = htmlspecialchars($_POST['name']);
@@ -56,6 +59,9 @@ if ($action === 'create' || $action === 'update') {
             $_SESSION['admin_user_form_id'] = $id;
         }
         Close($conn);
+        if (adminWantsJson()) {
+            adminJsonResponse(false, 'Validation failed', array('errors' => $errors), 422);
+        }
         header("Location: AdminUserFormController.php");
         exit();
     }
@@ -64,16 +70,20 @@ if ($action === 'create' || $action === 'update') {
         if (createAdminUser($conn, $name, $email, $password, $phone, $role, $branch_id)) {
             $new_id = mysqli_insert_id($conn);
             logAction($conn, $admin_id, "Created User", "users", $new_id, "Role: $role, Email: $email");
-            $_SESSION['msg'] = "Account for $name ($role) created successfully";
+            $success = true;
+            $message = "Account for $name ($role) created successfully";
         } else {
-            $_SESSION['error'] = "Failed to create user";
+            $success = false;
+            $message = "Failed to create user";
         }
     } else {
         if (updateAdminUser($conn, $id, $name, $email, $phone, $role, $branch_id)) {
             logAction($conn, $admin_id, "Updated User Info", "users", $id, "Updated $name");
-            $_SESSION['msg'] = "User $name updated successfully";
+            $success = true;
+            $message = "User $name updated successfully";
         } else {
-            $_SESSION['error'] = "Failed to update user";
+            $success = false;
+            $message = "Failed to update user";
         }
     }
 
@@ -83,9 +93,11 @@ if ($action === 'create' || $action === 'update') {
     
     if (updateUserRole($conn, $id, $new_role)) {
         logAction($conn, $admin_id, "Changed User Role", "users", $id, "New Role: $new_role");
-        $_SESSION['msg'] = "Role updated successfully";
+        $success = true;
+        $message = "Role updated successfully";
     } else {
-        $_SESSION['error'] = "Failed to update role";
+        $success = false;
+        $message = "Failed to update role";
     }
 
 } elseif ($action === 'toggle_status') {
@@ -94,12 +106,35 @@ if ($action === 'create' || $action === 'update') {
     
     if ($user) {
         logAction($conn, $admin_id, "Toggled User Status", "users", $id, "Target: " . $user['name'] . ", New Status: " . ($user['new_status'] ? 'Active' : 'Inactive'));
-        $_SESSION['msg'] = "User status toggled successfully";
+        $success = true;
+        $message = "User status toggled successfully";
     } else {
-        $_SESSION['error'] = "User not found or failed to toggle status";
+        $success = false;
+        $message = "User not found or failed to toggle status";
+    }
+
+} elseif ($action === 'delete_user') {
+    $id = $_POST['id'] ?? '';
+
+    if ((string)$id === (string)$admin_id) {
+        $success = false;
+        $message = "You cannot delete your own admin profile";
+    } else {
+        $target_user = getUserById($conn, $id);
+
+        if (!$target_user) {
+            $success = false;
+            $message = "User not found";
+        } elseif (deleteUser($conn, $id)) {
+            logAction($conn, $admin_id, "Deleted User", "users", $id, "Deleted user profile: " . $target_user['name']);
+            $success = true;
+            $message = "User profile deleted successfully";
+        } else {
+            $success = false;
+            $message = "Failed to delete user profile";
+        }
     }
 }
 
 Close($conn);
-header('Location: AdminUserController.php');
-exit();
+adminFinishResponse(adminWantsJson(), $success, $message, 'AdminUserController.php', array(), $success ? 200 : 400);

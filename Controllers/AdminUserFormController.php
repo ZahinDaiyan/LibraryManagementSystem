@@ -2,7 +2,13 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Unauthorized', array(), 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -24,6 +30,13 @@ if ($id) {
 
 $_SESSION['branches'] = getBranches($conn);
 Close($conn);
+
+if (adminWantsJson()) {
+    adminJsonResponse(true, 'User form loaded', array(
+        'edit_user' => $_SESSION['edit_user'] ?? null,
+        'branches' => $_SESSION['branches']
+    ));
+}
 
 header('Location: ../Views/Admin/UserFormView.php');
 exit();

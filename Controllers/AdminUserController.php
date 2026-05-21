@@ -2,7 +2,13 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Unauthorized', array('users' => array()), 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -20,6 +26,14 @@ Close($conn);
 
 $_SESSION['admin_user_search'] = $search;
 $_SESSION['admin_user_role_filter'] = $role_filter;
+
+if (adminWantsJson()) {
+    adminJsonResponse(true, 'Users loaded', array(
+        'users' => $_SESSION['admin_users'],
+        'search' => $search,
+        'role_filter' => $role_filter
+    ));
+}
 
 header('Location: ../Views/Admin/UserListView.php');
 exit();

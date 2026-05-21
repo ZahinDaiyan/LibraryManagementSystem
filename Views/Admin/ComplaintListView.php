@@ -129,11 +129,13 @@ unset($_SESSION['msg']);
         </td>
         <td><?= date('M d, Y', strtotime($c['created_at'])) ?></td>
         <td>
-            <form method="POST" action="../../Controllers/AdminComplaintDetailController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $c['id'] ?>"><button type="submit" class="btn-link">View & Respond</button></form>
+            <form data-admin-ajax="1" method="POST" action="../../Controllers/AdminComplaintDetailController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $c['id'] ?>"><button type="submit" class="btn-link">View & Respond</button></form>
         </td>
     </tr>
     <?php endforeach; ?>
 </table>
+
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

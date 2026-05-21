@@ -2,7 +2,13 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Unauthorized', array('reports' => array()), 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -10,8 +16,19 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 $reports = $_SESSION['admin_reports'] ?? null;
 
 if (!$reports) {
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'No report data available', array('reports' => array()), 404);
+    }
+
     header('Location: AdminReportController.php');
     exit();
+}
+
+if (adminWantsJson()) {
+    adminJsonResponse(true, 'Report data loaded', array(
+        'reports' => $reports,
+        'generated_on' => date('M d, Y')
+    ));
 }
 
 $date = date('M d, Y');

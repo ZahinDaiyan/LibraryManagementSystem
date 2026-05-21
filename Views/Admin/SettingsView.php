@@ -31,9 +31,11 @@ function getVal($key, $settings, $old_data) {
 <a href="dashboardView.php">← Back to Dashboard</a>
 <hr>
 
+<div id="adminAjaxMessage"></div>
+
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form novalidate action="../../Controllers/AdminSettingsActionController.php" method="POST" onsubmit="return validateSettingsForm(this)">
+<form novalidate data-admin-ajax="1" action="../../Controllers/AdminSettingsActionController.php" method="POST" onsubmit="return validateSettingsForm(this)">
     <input type="hidden" name="action" value="update_settings">
 
     <h3>Platform Configuration</h3>
@@ -79,6 +81,7 @@ function getVal($key, $settings, $old_data) {
 </form>
 
 <script src="../js/admin_validation.js"></script>
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>
 

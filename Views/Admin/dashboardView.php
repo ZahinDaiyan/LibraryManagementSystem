@@ -163,6 +163,7 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 <hr>
 
 <h3>Pending Loan Renewal Approvals</h3>
+<div id="adminAjaxMessage"></div>
 <table border="1" cellpadding="10" width="100%">
     <tr>
         <th>Request ID</th>
@@ -185,12 +186,12 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
             <td><?= htmlspecialchars($r['branch_name']) ?></td>
             <td><?= htmlspecialchars($r['due_date']) ?></td>
             <td>
-                <form method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
+                <form data-admin-ajax="1" method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
                     <input type="hidden" name="request_id" value="<?= htmlspecialchars($r['id']) ?>">
                     <input type="hidden" name="decision" value="approved">
                     <button type="submit">Approve</button>
                 </form>
-                <form method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
+                <form data-admin-ajax="1" method="POST" action="../../Controllers/RenewalDecisionController.php" style="display:inline;">
                     <input type="hidden" name="request_id" value="<?= htmlspecialchars($r['id']) ?>">
                     <input type="hidden" name="decision" value="rejected">
                     <button type="submit">Reject</button>
@@ -261,6 +262,7 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 </ul>
 
 <br>
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 <a href="../../Controllers/LogoutController.php"><button style="margin-top: 10px;">Logout</button></a>
 
 </body>

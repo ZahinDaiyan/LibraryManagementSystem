@@ -2,9 +2,10 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../Views/LoginView.php');
-    exit();
+    adminFinishResponse(adminWantsJson(), false, 'Unauthorized', '../Views/LoginView.php', array(), 403);
 }
 
 require_once '../Models/DB.php';
@@ -13,15 +14,18 @@ require_once '../Models/BranchModel.php';
 $action = $_POST['action'] ?? '';
 $id = $_POST['id'] ?? '';
 $conn = Connect();
+$success = false;
+$message = 'Unknown admin branch action';
 
 if ($action === 'toggle_status') {
     if (toggleBranchStatus($conn, $id)) {
-        $_SESSION['msg'] = "Branch status updated successfully";
+        $success = true;
+        $message = "Branch status updated successfully";
     } else {
-        $_SESSION['error'] = "Failed to update branch status";
+        $success = false;
+        $message = "Failed to update branch status";
     }
 }
 
 Close($conn);
-header('Location: AdminBranchController.php');
-exit();
+adminFinishResponse(adminWantsJson(), $success, $message, 'AdminBranchController.php', array(), $success ? 200 : 400);

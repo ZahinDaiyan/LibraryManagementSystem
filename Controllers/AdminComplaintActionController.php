@@ -2,9 +2,10 @@
 
 session_start();
 
+require_once '../Controllers/AdminAjaxSupport.php';
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../Views/LoginView.php');
-    exit();
+    adminFinishResponse(adminWantsJson(), false, 'Unauthorized', '../Views/LoginView.php', array(), 403);
 }
 
 require_once '../Models/DB.php';
@@ -14,6 +15,8 @@ $id = $_POST['id'] ?? '';
 $status = $_POST['status'] ?? '';
 $admin_response = htmlspecialchars($_POST['admin_response'] ?? '');
 $errors = [];
+$success = false;
+$message = 'Failed to update complaint.';
 
 if (empty($admin_response) && $status === 'resolved') {
     $errors['admin_response'] = "Please provide a response before resolving the complaint.";
@@ -22,6 +25,9 @@ if (empty($admin_response) && $status === 'resolved') {
 if (!empty($errors)) {
     $_SESSION['form_errors'] = $errors;
     $_SESSION['admin_complaint_detail_id'] = $id;
+    if (adminWantsJson()) {
+        adminJsonResponse(false, 'Validation failed', array('errors' => $errors), 422);
+    }
     header("Location: AdminComplaintDetailController.php");
     exit();
 }
@@ -29,11 +35,12 @@ if (!empty($errors)) {
 $conn = Connect();
 
 if (updateComplaintStatusAndResponse($conn, $id, $status, $admin_response)) {
-    $_SESSION['msg'] = "Complaint updated successfully.";
+    $success = true;
+    $message = "Complaint updated successfully.";
 } else {
-    $_SESSION['error'] = "Failed to update complaint.";
+    $success = false;
+    $message = "Failed to update complaint.";
 }
 
 Close($conn);
-header('Location: AdminComplaintController.php');
-exit();
+adminFinishResponse(adminWantsJson(), $success, $message, 'AdminComplaintController.php', array(), $success ? 200 : 400);

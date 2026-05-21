@@ -27,8 +27,9 @@ $title = $user ? "Edit User" : "Add New User";
 <h2><?= $title ?></h2>
 <a href="UserListView.php">← Back to List</a>
 <hr>
+<div id="adminAjaxMessage"></div>
 
-<form novalidate action="../../Controllers/AdminUserActionController.php" method="POST" onsubmit="return validateUserForm(this)">
+<form novalidate data-admin-ajax="1" action="../../Controllers/AdminUserActionController.php" method="POST" onsubmit="return validateUserForm(this)">
     <input type="hidden" name="action" value="<?= $user ? 'update' : 'create' ?>">
     <?php if ($user): ?>
         <input type="hidden" name="id" value="<?= $user['id'] ?>">
@@ -93,6 +94,7 @@ $title = $user ? "Edit User" : "Add New User";
     <button type="submit"><?= $user ? 'Update User' : 'Create User' ?></button>
 </form>
 
+    <script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 <script src="../js/admin_validation.js"></script>
 </body>
 </html>

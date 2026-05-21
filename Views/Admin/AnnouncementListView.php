@@ -109,11 +109,13 @@ unset($_SESSION['msg']);
         <td><?= date('M d, Y H:i', strtotime($a['published_at'])) ?></td>
         <td>
             <form method="POST" action="../../Controllers/AdminAnnouncementFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $a['id'] ?>"><button type="submit" class="btn-link">Edit</button></form>
-            <form method="POST" action="../../Controllers/AdminAnnouncementActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $a['id'] ?>"><button type="submit" onclick="return confirm('Delete this announcement?')" class="btn-link-danger">Delete</button></form>
+            <form data-admin-ajax="1" method="POST" action="../../Controllers/AdminAnnouncementActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $a['id'] ?>"><button type="submit" onclick="return confirm('Delete this announcement?')" class="btn-link-danger">Delete</button></form>
         </td>
     </tr>
     <?php endforeach; ?>
 </table>
+
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

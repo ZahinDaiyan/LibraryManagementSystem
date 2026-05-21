@@ -28,6 +28,8 @@ if (!$c) {
 <a href="/LibraryManagementSystem/Controllers/AdminComplaintController.php">← Back to List</a>
 <hr>
 
+<div id="adminAjaxMessage"></div>
+
 <div class="complaint-card">
     <p><b>From:</b> <?= htmlspecialchars($c['member_name']) ?> (<?= htmlspecialchars($c['member_email']) ?>)</p>
     <p><b>Date:</b> <?= date('M d, Y H:i', strtotime($c['created_at'])) ?></p>
@@ -39,7 +41,7 @@ if (!$c) {
 <hr>
 
 <h3>Admin Action</h3>
-<form novalidate action="../../Controllers/AdminComplaintActionController.php" method="POST" onsubmit="return validateComplaintResponse(this)">
+<form novalidate data-admin-ajax="1" action="../../Controllers/AdminComplaintActionController.php" method="POST" onsubmit="return validateComplaintResponse(this)">
     <input type="hidden" name="id" value="<?= $c['id'] ?>">
 
     <p>
@@ -63,6 +65,7 @@ if (!$c) {
 </form>
 
 <script src="../js/admin_validation.js"></script>
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>
 

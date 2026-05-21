@@ -88,6 +88,26 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             text-decoration: none !important;
         }
 
+        .btn-link-danger {
+            background: transparent !important;
+            border: 1px solid #ef4444 !important;
+            color: #ef4444 !important;
+            padding: 6px 14px !important;
+            font-size: 0.8rem !important;
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            display: inline-block !important;
+            margin-right: 8px !important;
+        }
+
+        .btn-link-danger:hover {
+            background: #ef4444 !important;
+            color: #fff !important;
+            text-decoration: none !important;
+        }
+
         .create-btn {
             background: #f59e0b !important;
             color: #fff !important;
@@ -156,7 +176,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             <td><?= $u['name'] ?></td>
             <td><?= $u['email'] ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
+                <form novalidate data-admin-ajax="1" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="change_role">
                     <input type="hidden" name="id" value="<?= $u['id'] ?>">
                     <select name="role" onchange="this.form.submit()">
@@ -176,7 +196,10 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             <td><?= date('M d, Y', strtotime($u['created_at'])) ?></td>
             <td>
                 <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
-                <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+                <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+                <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
+                <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile permanently?')" class="btn-link-danger">Delete Profile</button></form>
+                <?php endif; ?>
             </td>
         </tr>
         <?php endforeach; ?>
@@ -184,6 +207,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
 </table>
 
 <script src="../js/admin_user_search.js"></script>
+<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 
 </body>
 </html>
