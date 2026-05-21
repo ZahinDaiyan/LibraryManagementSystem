@@ -2,7 +2,31 @@
 
 session_start();
 
+$expectsJson = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    || (isset($_POST['ajax']) && $_POST['ajax'] === '1')
+    || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+
+if (!function_exists('librarianOperationsControllerRespond')) {
+    function librarianOperationsControllerRespond($expectsJson, $success, $data, $message = '', $statusCode = 200)
+    {
+        if ($expectsJson) {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code($statusCode);
+            echo json_encode(array(
+                'success' => (bool)$success,
+                'message' => $message,
+                'data' => $data
+            ));
+            exit();
+        }
+    }
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
+    if ($expectsJson) {
+        librarianOperationsControllerRespond($expectsJson, false, array(), 'Unauthorized', 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -48,6 +72,10 @@ if (isset($_POST['loan_filter']) && $branchId) {
 }
 
 Close($conn);
+
+if ($expectsJson) {
+    librarianOperationsControllerRespond($expectsJson, true, $data, 'Operations data loaded');
+}
 
 $_SESSION['librarian_ops'] = $data;
 

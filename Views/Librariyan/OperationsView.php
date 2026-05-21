@@ -40,6 +40,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 <p>Branch: <?php echo isset($branch['branch_name']) ? $branch['branch_name'] : 'Unassigned'; ?></p>
 <a href="/LibraryManagementSystem/Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
 
+<div id="librarianOpsMessage" style="margin:12px 0;color:#1f2937;"></div>
 <?php if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?><p><?php echo $_SESSION['error']; ?></p><?php } ?>
 <?php if (isset($_SESSION['msg']) && $_SESSION['msg'] != '') { ?><p><?php echo $_SESSION['msg']; ?></p><?php } ?>
 
@@ -209,6 +210,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 </form>
 <table border="1" cellpadding="6" cellspacing="0">
     <tr><th>User ID</th><th>Borrow ID</th><th>Member</th><th>Book</th><th>Borrow</th><th>Due date</th></tr>
+    <tbody id="activeLoansBody">
     <?php foreach ($activeLoans as $loan) { ?>
         <tr>
             <td><?php echo $loan['member_id']; ?></td>
@@ -219,6 +221,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $loan['due_date']; ?></td>
         </tr>
     <?php } ?>
+    </tbody>
 </table>
 
 <hr>
@@ -248,6 +251,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
 </table>
 <table border="1" cellpadding="6" cellspacing="0">
     <tr><th>Loan History</th><th>Book</th><th>Status</th><th>Borrow</th><th>Due</th><th>Returned</th></tr>
+    <tbody id="memberHistoryBody">
     <?php foreach ($memberHistory as $history) { ?>
         <tr>
             <td><?php echo $history['id']; ?></td>
@@ -258,9 +262,11 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $history['return_date']; ?></td>
         </tr>
     <?php } ?>
+    </tbody>
 </table>
 <table border="1" cellpadding="6" cellspacing="0">
     <tr><th>Fine History</th><th>Amount</th><th>Reason</th><th>Paid</th></tr>
+    <tbody id="memberFinesBody">
     <?php foreach ($memberFines as $fine) { ?>
         <tr>
             <td><?php echo $fine['id']; ?></td>
@@ -269,6 +275,7 @@ $unpaidFines = isset($data['unpaid_fines']) ? $data['unpaid_fines'] : array();
             <td><?php echo $fine['is_paid']; ?></td>
         </tr>
     <?php } ?>
+    </tbody>
 </table>
 
 <hr>
@@ -380,5 +387,6 @@ function selectMemberSuggestion(name) {
 }
 </script>
 <script src="/LibraryManagementSystem/Views/js/librarian_search.js"></script>
+<script src="/LibraryManagementSystem/Views/js/librarian_operations.js"></script>
 </body>
 </html>
