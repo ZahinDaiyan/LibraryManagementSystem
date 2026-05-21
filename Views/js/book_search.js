@@ -10,11 +10,21 @@ function ajaxSearchBooks() {
         if (xhttp.status === 200) {
             const books = JSON.parse(xhttp.responseText);
             let display = "";
+
+            function getCoverCell(book) {
+                if (book.cover_image_path && String(book.cover_image_path).trim() !== "") {
+                    return "<img src='/LibraryManagementSystem/" + book.cover_image_path + "' alt='Book Cover' width='52' style='border-radius:6px;object-fit:cover;'>";
+                }
+
+                return "<span style='font-size:12px;color:#9ca3af;'>No cover</span>";
+            }
+
             if (books.length === 0) {
-                display = "<tr><td colspan='6'>No books found.</td></tr>";
+                display = "<tr><td colspan='7'>No books found.</td></tr>";
             } else {
                 for (let i = 0; i < books.length; i++) {
                     display += "<tr>";
+                    display += "<td>" + getCoverCell(books[i]) + "</td>";
                     display += "<td>" + books[i].title + "</td>";
                     display += "<td>" + books[i].author + "</td>";
                     display += "<td>" + books[i].genre_name + "</td>";

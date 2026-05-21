@@ -138,6 +138,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
 <table border="1" cellpadding="10">
     <thead>
         <tr>
+            <th>Cover</th>
             <th>Title</th>
             <th>Author</th>
             <th>Genre</th>
@@ -149,11 +150,18 @@ $selected_year = $_SESSION['book_year'] ?? '';
 
     <tbody id="bookTableBody">
         <?php if (empty($books)): ?>
-            <tr><td colspan="6">No books found.</td></tr>
+            <tr><td colspan="7">No books found.</td></tr>
         <?php endif; ?>
 
         <?php foreach ($books as $book) { ?>
         <tr>
+            <td>
+                <?php if (isset($book['cover_image_path']) && $book['cover_image_path'] != '') { ?>
+                    <img src="/LibraryManagementSystem/<?php echo htmlspecialchars($book['cover_image_path']); ?>" alt="Book Cover" width="52" style="border-radius:6px; object-fit:cover;">
+                <?php } else { ?>
+                    <span style="font-size:12px;color:#9ca3af;">No cover</span>
+                <?php } ?>
+            </td>
             <td><?= $book['title'] ?></td>
             <td><?= $book['author'] ?></td>
             <td><?= $book['genre_name'] ?? 'N/A' ?></td>

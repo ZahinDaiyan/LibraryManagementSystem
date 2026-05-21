@@ -26,6 +26,7 @@ foreach ($books as $book) {
         'id' => $book['id'],
         'title' => htmlspecialchars($book['title']),
         'author' => htmlspecialchars($book['author']),
+        'cover_image_path' => htmlspecialchars($book['cover_image_path'] ?? ''),
         'genre_name' => htmlspecialchars($book['genre_name'] ?? 'N/A'),
         'isbn' => htmlspecialchars($book['isbn']),
         'published_year' => htmlspecialchars($book['published_year'])

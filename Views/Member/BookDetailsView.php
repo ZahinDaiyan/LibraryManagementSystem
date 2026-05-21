@@ -48,6 +48,41 @@ if (!$book) {
             color: #fff !important;
             text-decoration: none !important;
         }
+
+        .book-top-section {
+            display: grid;
+            grid-template-columns: minmax(320px, 1fr) 280px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .book-cover-card {
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            text-align: center;
+        }
+
+        .book-cover-card img {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .book-cover-empty {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            padding: 40px 12px;
+        }
+
+        @media (max-width: 900px) {
+            .book-top-section {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -62,22 +97,34 @@ if (!$book) {
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
-<h3><?= $book['title'] ?></h3>
+<div class="book-top-section">
+    <div>
+        <h3><?= $book['title'] ?></h3>
 
-<?php if (isset($_SESSION['in_reading_list']) && $_SESSION['in_reading_list']): ?>
-    <form method="POST" action="/LibraryManagementSystem/Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Remove from Reading List</button></form>
-<?php else: ?>
-    <form method="POST" action="/LibraryManagementSystem/Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Add to Reading List</button></form>
-<?php endif; ?>
+        <?php if (isset($_SESSION['in_reading_list']) && $_SESSION['in_reading_list']): ?>
+            <form method="POST" action="/LibraryManagementSystem/Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="remove"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Remove from Reading List</button></form>
+        <?php else: ?>
+            <form method="POST" action="/LibraryManagementSystem/Controllers/ReadingListActionController.php" style="display:inline;"><input type="hidden" name="action" value="add"><input type="hidden" name="book_id" value="<?= $book['id'] ?>"><input type="hidden" name="redirect" value="details"><button type="submit" class="btn-link">Add to Reading List</button></form>
+        <?php endif; ?>
 
-<p><b>Average Rating:</b> <?= number_format($rating_info['avg_rating'], 1) ?> / 5 (<?= $rating_info['review_count'] ?> reviews)</p>
+        <p><b>Average Rating:</b> <?= number_format($rating_info['avg_rating'], 1) ?> / 5 (<?= $rating_info['review_count'] ?> reviews)</p>
 
-<p><b>Author:</b> <?= $book['author'] ?></p>
-<p><b>Genre:</b> <?= $book['genre_name'] ?? 'N/A' ?></p>
-<p><b>ISBN:</b> <?= $book['isbn'] ?></p>
-<p><b>Publisher:</b> <?= $book['publisher'] ?></p>
-<p><b>Year:</b> <?= $book['published_year'] ?></p>
-<p><b>Description:</b> <?= $book['description'] ?></p>
+        <p><b>Author:</b> <?= $book['author'] ?></p>
+        <p><b>Genre:</b> <?= $book['genre_name'] ?? 'N/A' ?></p>
+        <p><b>ISBN:</b> <?= $book['isbn'] ?></p>
+        <p><b>Publisher:</b> <?= $book['publisher'] ?></p>
+        <p><b>Year:</b> <?= $book['published_year'] ?></p>
+        <p><b>Description:</b> <?= $book['description'] ?></p>
+    </div>
+
+    <div class="book-cover-card">
+        <?php if (isset($book['cover_image_path']) && $book['cover_image_path'] != '') { ?>
+            <img src="/LibraryManagementSystem/<?= htmlspecialchars($book['cover_image_path']) ?>" alt="<?= htmlspecialchars($book['title']) ?> Cover">
+        <?php } else { ?>
+            <div class="book-cover-empty">No cover image uploaded</div>
+        <?php } ?>
+    </div>
+</div>
 
 <hr>
 
