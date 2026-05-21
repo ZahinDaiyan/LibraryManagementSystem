@@ -1,6 +1,7 @@
 <?php
 
 function getMemberComplaints($conn, $member_id) {
+    $member_id = mysqli_real_escape_string($conn, $member_id);
     $sql = "SELECT * FROM complaints WHERE member_id = '$member_id' ORDER BY created_at DESC";
     $result = mysqli_query($conn, $sql);
     $complaints = [];
@@ -11,6 +12,7 @@ function getMemberComplaints($conn, $member_id) {
 }
 
 function createComplaint($conn, $member_id, $title, $description) {
+    $member_id = mysqli_real_escape_string($conn, $member_id);
     $title = mysqli_real_escape_string($conn, $title);
     $description = mysqli_real_escape_string($conn, $description);
     

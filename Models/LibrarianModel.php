@@ -40,9 +40,10 @@ function getAllCatalogBooks($conn)
 
 function getBookById($conn, $id)
 {
+    $id = mysqli_real_escape_string($conn, $id);
     $sql = "SELECT * FROM books WHERE id = '$id' LIMIT 1";
     $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_assoc($result);
+    return $result ? mysqli_fetch_assoc($result) : null;
 }
 
 function getGenres($conn)
@@ -70,8 +71,15 @@ function createBook(
     $cover_image_path
 )
 {
-    $genre_val = $genre_id == '' ? "NULL" : "'$genre_id'";
-    $year_val = $published_year == '' ? "NULL" : "'$published_year'";
+    $title = mysqli_real_escape_string($conn, $title);
+    $author = mysqli_real_escape_string($conn, $author);
+    $isbn = mysqli_real_escape_string($conn, $isbn);
+    $publisher = mysqli_real_escape_string($conn, $publisher);
+    $description = mysqli_real_escape_string($conn, $description);
+    $cover_image_path = mysqli_real_escape_string($conn, $cover_image_path);
+
+    $genre_val = $genre_id == '' ? "NULL" : "'" . mysqli_real_escape_string($conn, $genre_id) . "'";
+    $year_val = $published_year == '' ? "NULL" : "'" . mysqli_real_escape_string($conn, $published_year) . "'";
 
     $sql = "INSERT INTO books
             (title, author, isbn, genre_id, publisher, published_year, description, cover_image_path, created_at)
@@ -94,8 +102,16 @@ function updateBook(
     $cover_image_path
 )
 {
-    $genre_val = $genre_id == '' ? "NULL" : "'$genre_id'";
-    $year_val = $published_year == '' ? "NULL" : "'$published_year'";
+    $id = mysqli_real_escape_string($conn, $id);
+    $title = mysqli_real_escape_string($conn, $title);
+    $author = mysqli_real_escape_string($conn, $author);
+    $isbn = mysqli_real_escape_string($conn, $isbn);
+    $publisher = mysqli_real_escape_string($conn, $publisher);
+    $description = mysqli_real_escape_string($conn, $description);
+    $cover_image_path = mysqli_real_escape_string($conn, $cover_image_path);
+
+    $genre_val = $genre_id == '' ? "NULL" : "'" . mysqli_real_escape_string($conn, $genre_id) . "'";
+    $year_val = $published_year == '' ? "NULL" : "'" . mysqli_real_escape_string($conn, $published_year) . "'";
 
     $sql = "UPDATE books
             SET title = '$title',
@@ -113,7 +129,8 @@ function updateBook(
 
 function retireBook($conn, $id, $branchId = null)
 {
-    $branchFilter = $branchId === null || $branchId === '' ? '' : " AND branch_id = '$branchId'";
+    $id = mysqli_real_escape_string($conn, $id);
+    $branchFilter = $branchId === null || $branchId === '' ? '' : " AND branch_id = '" . mysqli_real_escape_string($conn, $branchId) . "'";
 
     $sql = "UPDATE branch_inventory
             SET total_copies = 0,
@@ -125,6 +142,7 @@ function retireBook($conn, $id, $branchId = null)
 
 function makeBookAvailable($conn, $id, $copies = 1, $branchId = null)
 {
+    $id = mysqli_real_escape_string($conn, $id);
     $copies_int = intval($copies) > 0 ? intval($copies) : 1;
 
     if (empty($branchId)) {
@@ -143,19 +161,21 @@ function makeBookAvailable($conn, $id, $copies = 1, $branchId = null)
         return mysqli_query($conn, $sql);
     }
 
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $checkSql = "SELECT id FROM branch_inventory WHERE book_id = '$id' AND branch_id = '$branchId' LIMIT 1";
     $checkResult = mysqli_query($conn, $checkSql);
     $existing = mysqli_fetch_assoc($checkResult);
 
     if ($existing) {
+        $existingId = mysqli_real_escape_string($conn, $existing['id']);
         $sql = "UPDATE branch_inventory
                 SET total_copies = $copies_int,
                     available_copies = $copies_int
-                WHERE id = '{$existing['id']}'";
+                WHERE id = '$existingId'";
         return mysqli_query($conn, $sql);
     }
 
-        $sql = "INSERT INTO branch_inventory (book_id, branch_id, total_copies, available_copies)
+    $sql = "INSERT INTO branch_inventory (book_id, branch_id, total_copies, available_copies)
             VALUES ('$id', '$branchId', $copies_int, $copies_int)";
     return mysqli_query($conn, $sql);
 }

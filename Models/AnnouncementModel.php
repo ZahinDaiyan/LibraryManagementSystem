@@ -2,6 +2,7 @@
 
 function getAnnouncements($conn, $branch_id)
 {
+    $branch_id = mysqli_real_escape_string($conn, $branch_id);
     // Fetch global (branch_id IS NULL) and branch-specific announcements
     // Schema uses author_id and published_at
     $sql = "SELECT a.*, u.name AS author_name 
