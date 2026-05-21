@@ -10,12 +10,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 require_once '../Models/DB.php';
 require_once '../Models/BookModel.php'; // For getBranches
 
-$id = $_POST['id'] ?? $_SESSION['admin_announcement_form_id'] ?? null;
+$id = intval($_POST['id'] ?? $_SESSION['admin_announcement_form_id'] ?? 0);
 unset($_SESSION['admin_announcement_form_id']);
 $conn = Connect();
 
-if ($id) {
-    $res = mysqli_query($conn, "SELECT * FROM announcements WHERE id = '$id' LIMIT 1");
+if ($id > 0) {
+    $escaped_id = mysqli_real_escape_string($conn, $id);
+    $res = mysqli_query($conn, "SELECT * FROM announcements WHERE id = '$escaped_id' LIMIT 1");
     $_SESSION['edit_announcement'] = mysqli_fetch_assoc($res);
 } else {
     unset($_SESSION['edit_announcement']);

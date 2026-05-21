@@ -10,10 +10,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
 require_once '../models/DB.php';
 require_once '../models/BookModel.php';
 
-$query = $_POST['search'] ?? '';
-$genre_id = $_POST['genre_id'] ?? '';
-$branch_id = $_POST['branch_id'] ?? '';
-$year = $_POST['year'] ?? '';
+$query = trim($_POST['search'] ?? '');
+$genre_id = isset($_POST['genre_id']) && is_numeric($_POST['genre_id']) ? $_POST['genre_id'] : '';
+$branch_id = isset($_POST['branch_id']) && is_numeric($_POST['branch_id']) ? $_POST['branch_id'] : '';
+$year = isset($_POST['year']) && is_numeric($_POST['year']) ? $_POST['year'] : '';
 
 $conn = Connect();
 $books = searchBooks($conn, $query, $genre_id, $branch_id, $year);

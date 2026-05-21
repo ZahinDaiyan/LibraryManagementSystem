@@ -2,13 +2,16 @@
 
 function reserveBook($conn, $member_id, $book_id, $branch_id)
 {
-    // Prevent duplicate active reservation
+    $member_id = mysqli_real_escape_string($conn, $member_id);
+    $book_id = mysqli_real_escape_string($conn, $book_id);
+    $branch_id = mysqli_real_escape_string($conn, $branch_id);
+
     $sql_check = "SELECT id FROM reservations 
                   WHERE member_id = '$member_id' AND book_id = '$book_id' 
                   AND branch_id = '$branch_id' AND status = 'waiting'";
     $result_check = mysqli_query($conn, $sql_check);
     
-    if (mysqli_num_rows($result_check) > 0) {
+    if ($result_check && mysqli_num_rows($result_check) > 0) {
         return ['success' => false, 'message' => 'Already on waitlist for this book/branch'];
     }
 
@@ -23,6 +26,7 @@ function reserveBook($conn, $member_id, $book_id, $branch_id)
 
 function getMemberReservations($conn, $member_id)
 {
+    $member_id = mysqli_real_escape_string($conn, $member_id);
     $sql = "SELECT r.*, b.title AS book_title, brn.name AS branch_name
             FROM reservations r
             JOIN books b ON r.book_id = b.id
@@ -33,10 +37,13 @@ function getMemberReservations($conn, $member_id)
     $result = mysqli_query($conn, $sql);
     $reservations = [];
     while ($row = mysqli_fetch_assoc($result)) {
-        // Get queue position
+        $book_id = mysqli_real_escape_string($conn, $row['book_id']);
+        $branch_id = mysqli_real_escape_string($conn, $row['branch_id']);
+        $reserved_at = mysqli_real_escape_string($conn, $row['reserved_at']);
+
         $pos_sql = "SELECT COUNT(*) as pos FROM reservations 
-                    WHERE book_id = '{$row['book_id']}' AND branch_id = '{$row['branch_id']}' 
-                    AND status = 'waiting' AND reserved_at <= '{$row['reserved_at']}'";
+                    WHERE book_id = '$book_id' AND branch_id = '$branch_id' 
+                    AND status = 'waiting' AND reserved_at <= '$reserved_at'";
         $pos_res = mysqli_query($conn, $pos_sql);
         $pos_row = mysqli_fetch_assoc($pos_res);
         $row['queue_position'] = $pos_row['pos'];
@@ -48,6 +55,8 @@ function getMemberReservations($conn, $member_id)
 
 function cancelReservation($conn, $reservation_id, $member_id)
 {
+    $reservation_id = mysqli_real_escape_string($conn, $reservation_id);
+    $member_id = mysqli_real_escape_string($conn, $member_id);
     $sql = "DELETE FROM reservations WHERE id = '$reservation_id' AND member_id = '$member_id'";
     return mysqli_query($conn, $sql);
 }

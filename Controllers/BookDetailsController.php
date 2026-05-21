@@ -11,8 +11,14 @@ require_once '../models/DB.php';
 require_once '../models/BookModel.php';
 require_once '../models/ReadingListModel.php';
 
-$id = $_POST['id'] ?? $_SESSION['book_details_id'] ?? null;
+$id = intval($_POST['id'] ?? $_SESSION['book_details_id'] ?? 0);
 unset($_SESSION['book_details_id']);
+
+if ($id <= 0) {
+    $_SESSION['error'] = "Invalid book selection.";
+    header("Location: /LibraryManagementSystem/Controllers/BookIndexController.php");
+    exit();
+}
 
 $conn = Connect();
 

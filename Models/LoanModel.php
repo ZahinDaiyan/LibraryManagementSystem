@@ -2,6 +2,7 @@
 
 function getActiveLoans($conn, $member_id)
 {
+    $member_id = mysqli_real_escape_string($conn, $member_id);
     $sql = "SELECT br.*, b.title AS book_title, brn.name AS branch_name,
             DATEDIFF(br.due_date, CURDATE()) AS days_remaining
             FROM borrow_records br
@@ -20,6 +21,7 @@ function getActiveLoans($conn, $member_id)
 
 function getBorrowHistory($conn, $member_id)
 {
+    $member_id = mysqli_real_escape_string($conn, $member_id);
     $sql = "SELECT br.*, b.title AS book_title, brn.name AS branch_name
             FROM borrow_records br
             JOIN books b ON br.book_id = b.id
@@ -37,16 +39,16 @@ function getBorrowHistory($conn, $member_id)
 
 function requestRenewal($conn, $loan_id, $member_id)
 {
-    // Check if renewals are allowed (can be complex, but let's keep it simple for now)
-    // Check if book is reserved by others
+    $loan_id = mysqli_real_escape_string($conn, $loan_id);
+    $member_id = mysqli_real_escape_string($conn, $member_id);
+    
     $sql_check = "SELECT book_id FROM reservations WHERE book_id = (SELECT book_id FROM borrow_records WHERE id = '$loan_id') AND status = 'pending'";
     $res_check = mysqli_query($conn, $sql_check);
     
-    if (mysqli_num_rows($res_check) > 0) {
+    if ($res_check && mysqli_num_rows($res_check) > 0) {
         return ['success' => false, 'message' => 'Book is reserved by another member'];
     }
 
-    // Extend due date by 7 days
     $sql = "UPDATE borrow_records 
             SET due_date = DATE_ADD(due_date, INTERVAL 7 DAY) 
             WHERE id = '$loan_id' AND member_id = '$member_id' AND status = 'active'";
@@ -78,7 +80,7 @@ function hasPendingBorrowRequest($conn, $member_id, $book_id)
             AND book_id='$book_id' 
             AND status='pending'";
     $result = mysqli_query($conn, $sql);
-    return (mysqli_num_rows($result) > 0);
+    return ($result && mysqli_num_rows($result) > 0);
 }
 
 function createBorrowRequest($conn, $member_id, $book_id, $branch_id)
@@ -94,3 +96,4 @@ function createBorrowRequest($conn, $member_id, $book_id, $branch_id)
 }
 
 ?>
+

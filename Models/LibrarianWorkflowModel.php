@@ -2,6 +2,7 @@
 
 function getLibrarianBranchByUserId($conn, $userId)
 {
+    $userId = mysqli_real_escape_string($conn, $userId);
     $sql = "SELECT u.branch_id, b.name AS branch_name, b.city AS branch_city, b.address AS branch_address
             FROM users u
             LEFT JOIN branches b ON b.id = u.branch_id
@@ -9,16 +10,17 @@ function getLibrarianBranchByUserId($conn, $userId)
             LIMIT 1";
 
     $result = mysqli_query($conn, $sql);
-    $branch = mysqli_fetch_assoc($result);
+    $branch = $result ? mysqli_fetch_assoc($result) : null;
 
     return $branch;
 }
 
 function getBranchPolicyByBranchId($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT * FROM branch_policies WHERE branch_id = '$branchId' LIMIT 1";
     $result = mysqli_query($conn, $sql);
-    $policy = mysqli_fetch_assoc($result);
+    $policy = $result ? mysqli_fetch_assoc($result) : null;
 
     return $policy;
 }
@@ -38,18 +40,22 @@ function getGenresList($conn)
 
 function createGenre($conn, $name)
 {
+    $name = mysqli_real_escape_string($conn, $name);
     $sql = "INSERT INTO genres (name) VALUES ('$name')";
     return mysqli_query($conn, $sql);
 }
 
 function renameGenre($conn, $genreId, $name)
 {
+    $genreId = mysqli_real_escape_string($conn, $genreId);
+    $name = mysqli_real_escape_string($conn, $name);
     $sql = "UPDATE genres SET name = '$name' WHERE id = '$genreId'";
     return mysqli_query($conn, $sql);
 }
 
 function deleteGenreIfUnused($conn, $genreId)
 {
+    $genreId = mysqli_real_escape_string($conn, $genreId);
     $checkSql = "SELECT COUNT(*) AS total_books FROM books WHERE genre_id = '$genreId'";
     $checkResult = mysqli_query($conn, $checkSql);
     $row = mysqli_fetch_assoc($checkResult);
@@ -64,6 +70,7 @@ function deleteGenreIfUnused($conn, $genreId)
 
 function getBranchInventoryRows($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT
                 bi.id,
                 bi.book_id,
@@ -90,6 +97,7 @@ function getBranchInventoryRows($conn, $branchId)
 
 function getBooksWithoutInventoryForBranch($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT b.id, b.title, b.author
             FROM books b
             WHERE NOT EXISTS (
@@ -110,21 +118,29 @@ function getBooksWithoutInventoryForBranch($conn, $branchId)
 
 function saveBranchInventory($conn, $branchId, $bookId, $totalCopies, $availableCopies)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
+    $bookId = mysqli_real_escape_string($conn, $bookId);
+    $totalCopies = intval($totalCopies);
+    $availableCopies = intval($availableCopies);
+
     $checkSql = "SELECT id FROM branch_inventory WHERE branch_id = '$branchId' AND book_id = '$bookId' LIMIT 1";
     $checkResult = mysqli_query($conn, $checkSql);
     $existing = mysqli_fetch_assoc($checkResult);
 
     if ($existing) {
-        $sql = "UPDATE branch_inventory SET total_copies = '$totalCopies', available_copies = '$availableCopies' WHERE id = '{$existing['id']}'";
+        $existingId = mysqli_real_escape_string($conn, $existing['id']);
+        $sql = "UPDATE branch_inventory SET total_copies = $totalCopies, available_copies = $availableCopies WHERE id = '$existingId'";
         return mysqli_query($conn, $sql);
     }
 
-    $sql = "INSERT INTO branch_inventory (book_id, branch_id, total_copies, available_copies) VALUES ('$bookId', '$branchId', '$totalCopies', '$availableCopies')";
+    $sql = "INSERT INTO branch_inventory (book_id, branch_id, total_copies, available_copies) VALUES ('$bookId', '$branchId', $totalCopies, $availableCopies)";
     return mysqli_query($conn, $sql);
 }
 
 function getBranchInventoryRow($conn, $branchId, $bookId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
+    $bookId = mysqli_real_escape_string($conn, $bookId);
     $sql = "SELECT * FROM branch_inventory WHERE branch_id = '$branchId' AND book_id = '$bookId' LIMIT 1";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
@@ -133,6 +149,7 @@ function getBranchInventoryRow($conn, $branchId, $bookId)
 
 function getPendingBorrowRequestsForBranch($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT
                 br.id,
                 br.member_id,
@@ -161,6 +178,11 @@ function getPendingBorrowRequestsForBranch($conn, $branchId)
 
 function decideBorrowRequest($conn, $borrowRecordId, $branchId, $librarianId, $status)
 {
+    $borrowRecordId = mysqli_real_escape_string($conn, $borrowRecordId);
+    $branchId = mysqli_real_escape_string($conn, $branchId);
+    $librarianId = mysqli_real_escape_string($conn, $librarianId);
+    $status = mysqli_real_escape_string($conn, $status);
+
     $dueDateSql = '';
     if ($status === 'active') {
         $policy = getBranchPolicyByBranchId($conn, $branchId);
@@ -187,6 +209,7 @@ function decideBorrowRequest($conn, $borrowRecordId, $branchId, $librarianId, $s
 
 function getBorrowRecordForReturnSearch($conn, $branchId, $query)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $likeQuery = '%' . mysqli_real_escape_string($conn, $query) . '%';
     $sql = "SELECT
                 br.id,
@@ -220,11 +243,14 @@ function getBorrowRecordForReturnSearch($conn, $branchId, $query)
 
 function processBorrowReturn($conn, $borrowRecordId, $librarianId)
 {
+    $borrowRecordId = mysqli_real_escape_string($conn, $borrowRecordId);
+    $librarianId = mysqli_real_escape_string($conn, $librarianId);
+
     $recordSql = "SELECT br.id, br.member_id, br.book_id, br.branch_id, br.due_date, br.status
                   FROM borrow_records br
                   WHERE br.id = '$borrowRecordId' LIMIT 1";
     $recordResult = mysqli_query($conn, $recordSql);
-    $record = mysqli_fetch_assoc($recordResult);
+    $record = $recordResult ? mysqli_fetch_assoc($recordResult) : null;
 
     if (!$record || $record['status'] !== 'active') {
         return array('success' => false, 'message' => 'Borrow record is not active');
@@ -256,17 +282,21 @@ function processBorrowReturn($conn, $borrowRecordId, $librarianId)
         return array('success' => false, 'message' => 'Unable to update return');
     }
 
+    $recordBranchId = mysqli_real_escape_string($conn, $record['branch_id']);
+    $recordBookId = mysqli_real_escape_string($conn, $record['book_id']);
+    $recordMemberId = mysqli_real_escape_string($conn, $record['member_id']);
+
     $inventorySql = "UPDATE branch_inventory
                      SET available_copies = available_copies + 1
-                     WHERE branch_id = '{$record['branch_id']}' AND book_id = '{$record['book_id']}'";
+                     WHERE branch_id = '$recordBranchId' AND book_id = '$recordBookId'";
     mysqli_query($conn, $inventorySql);
 
     $fineAmount = 0;
     if ($overdueDays > 0) {
         $fineAmount = $overdueDays * $fineRate;
-        $reason = 'Overdue return';
+        $reason = mysqli_real_escape_string($conn, 'Overdue return');
         $fineSql = "INSERT INTO fines (borrow_record_id, member_id, branch_id, amount, reason, is_paid, paid_at)
-                    VALUES ('$borrowRecordId', '{$record['member_id']}', '{$record['branch_id']}', '$fineAmount', '$reason', 0, NULL)";
+                    VALUES ('$borrowRecordId', '$recordMemberId', '$recordBranchId', '$fineAmount', '$reason', 0, NULL)";
         mysqli_query($conn, $fineSql);
     }
 
@@ -284,6 +314,11 @@ function getBorrowRecordBranchMember($conn, $borrowRecordId)
 
 function issueManualFine($conn, $borrowRecordId, $memberId, $branchId, $amount, $reason)
 {
+    $borrowRecordId = mysqli_real_escape_string($conn, $borrowRecordId);
+    $memberId = mysqli_real_escape_string($conn, $memberId);
+    $branchId = mysqli_real_escape_string($conn, $branchId);
+    $amount = floatval($amount);
+    $reason = mysqli_real_escape_string($conn, $reason);
     $sql = "INSERT INTO fines (borrow_record_id, member_id, branch_id, amount, reason, is_paid, paid_at)
             VALUES ('$borrowRecordId', '$memberId', '$branchId', '$amount', '$reason', 0, NULL)";
     return mysqli_query($conn, $sql);
@@ -291,12 +326,14 @@ function issueManualFine($conn, $borrowRecordId, $memberId, $branchId, $amount, 
 
 function markFineAsPaid($conn, $fineId)
 {
+    $fineId = mysqli_real_escape_string($conn, $fineId);
     $sql = "UPDATE fines SET is_paid = 1, paid_at = NOW() WHERE id = '$fineId'";
     return mysqli_query($conn, $sql);
 }
 
 function getActiveLoansForBranch($conn, $branchId, $filter)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $dueDateExpr = "COALESCE(br.due_date, DATE_ADD(br.borrow_date, INTERVAL COALESCE(bp.max_borrow_days, 14) DAY))";
     $sql = "SELECT
                 br.id,
@@ -336,6 +373,7 @@ function getActiveLoansForBranch($conn, $branchId, $filter)
 
 function searchMembersByBranch($conn, $branchId, $query)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $likeQuery = '%' . mysqli_real_escape_string($conn, $query) . '%';
     $sql = "SELECT id, name, email, phone, branch_id
             FROM users
@@ -356,6 +394,7 @@ function searchMembersByBranch($conn, $branchId, $query)
 
 function getMemberBorrowHistory($conn, $memberId)
 {
+    $memberId = mysqli_real_escape_string($conn, $memberId);
     $sql = "SELECT br.id, br.book_id, br.branch_id, br.status, br.borrow_date, br.due_date, br.return_date, b.title, b.author, br.renewals_count
             FROM borrow_records br
             JOIN books b ON b.id = br.book_id
@@ -373,6 +412,7 @@ function getMemberBorrowHistory($conn, $memberId)
 
 function getMemberFineHistory($conn, $memberId)
 {
+    $memberId = mysqli_real_escape_string($conn, $memberId);
     $sql = "SELECT id, borrow_record_id, amount, reason, is_paid, paid_at, branch_id
             FROM fines
             WHERE member_id = '$memberId'
@@ -389,6 +429,7 @@ function getMemberFineHistory($conn, $memberId)
 
 function getUnpaidFinesForBranch($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT f.id, f.borrow_record_id, f.member_id, f.amount, f.reason, f.branch_id, u.name AS member_name, b.title AS book_title
             FROM fines f
             JOIN users u ON u.id = f.member_id
@@ -409,6 +450,7 @@ function getUnpaidFinesForBranch($conn, $branchId)
 
 function getReservationWaitlistForBranch($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT r.id, r.member_id, r.book_id, r.branch_id, r.reserved_at, r.status, u.name AS member_name, b.title AS book_title
             FROM reservations r
             JOIN users u ON u.id = r.member_id
@@ -427,12 +469,15 @@ function getReservationWaitlistForBranch($conn, $branchId)
 
 function fulfillReservation($conn, $reservationId, $branchId)
 {
+    $reservationId = mysqli_real_escape_string($conn, $reservationId);
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "UPDATE reservations SET status = 'fulfilled' WHERE id = '$reservationId' AND branch_id = '$branchId' AND status = 'waiting'";
     return mysqli_query($conn, $sql);
 }
 
 function getBranchCatalogStats($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $stats = array();
 
     $sql1 = "SELECT b.id, b.title, COUNT(br.id) AS borrow_total
@@ -481,14 +526,20 @@ function getBranchCatalogStats($conn, $branchId)
 
 function createAnnouncement($conn, $branchId, $authorId, $title, $body)
 {
-    $branch_val = $branchId == 0 ? "NULL" : "'$branchId'";
+    $branchIdEsc = mysqli_real_escape_string($conn, $branchId);
+    $authorIdEsc = mysqli_real_escape_string($conn, $authorId);
+    $titleEsc = mysqli_real_escape_string($conn, $title);
+    $bodyEsc = mysqli_real_escape_string($conn, $body);
+
+    $branch_val = ($branchIdEsc === '' || $branchIdEsc === '0') ? "NULL" : "'$branchIdEsc'";
     $sql = "INSERT INTO announcements (branch_id, author_id, title, body, published_at)
-            VALUES ($branch_val, '$authorId', '$title', '$body', NOW())";
+            VALUES ($branch_val, '$authorIdEsc', '$titleEsc', '$bodyEsc', NOW())";
     return mysqli_query($conn, $sql);
 }
 
 function getAnnouncementsForBranch($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT a.id, a.branch_id, a.author_id, a.title, a.body, a.published_at, u.name AS author_name
             FROM announcements a
             JOIN users u ON u.id = a.author_id
@@ -505,6 +556,7 @@ function getAnnouncementsForBranch($conn, $branchId)
 
 function getInterBranchRequestsForBranch($conn, $branchId)
 {
+    $branchId = mysqli_real_escape_string($conn, $branchId);
     $sql = "SELECT r.id, r.book_id, r.from_branch_id, r.to_branch_id, r.requested_by, r.status, r.created_at,
                    b.title AS book_title,
                    fb.name AS from_branch_name,

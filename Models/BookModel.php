@@ -18,22 +18,24 @@ function getAllBooks($conn)
 function searchBooks($conn, $query = '', $genre_id = '', $branch_id = '', $year = '')
 {
     $conditions = [];
-    
-    if ($query != '') {
-        $conditions[] = "(b.title LIKE '%$query%' OR b.author LIKE '%$query%' OR b.isbn LIKE '%$query%')";
+    $query = trim($query);
+    $escaped_query = mysqli_real_escape_string($conn, $query);
+
+    if ($query !== '') {
+        $conditions[] = "(b.title LIKE '%$escaped_query%' OR b.author LIKE '%$escaped_query%' OR b.isbn LIKE '%$escaped_query%')";
     }
-    
-    if ($genre_id != '') {
-        $conditions[] = "b.genre_id = '$genre_id'";
+
+    if ($genre_id !== '' && is_numeric($genre_id)) {
+        $conditions[] = "b.genre_id = '" . mysqli_real_escape_string($conn, $genre_id) . "'";
     }
-    
-    if ($year != '') {
-        $conditions[] = "b.published_year = '$year'";
+
+    if ($year !== '' && is_numeric($year)) {
+        $conditions[] = "b.published_year = '" . mysqli_real_escape_string($conn, $year) . "'";
     }
 
     $join_inventory = "";
-    if ($branch_id != '') {
-        $join_inventory = " JOIN branch_inventory bi ON bi.book_id = b.id AND bi.branch_id = '$branch_id' AND bi.available_copies > 0 ";
+    if ($branch_id !== '' && is_numeric($branch_id)) {
+        $join_inventory = " JOIN branch_inventory bi ON bi.book_id = b.id AND bi.branch_id = '" . mysqli_real_escape_string($conn, $branch_id) . "' AND bi.available_copies > 0 ";
     }
 
     $where = "";
@@ -57,10 +59,11 @@ function searchBooks($conn, $query = '', $genre_id = '', $branch_id = '', $year 
 
 function getBookById($conn, $id)
 {
+    $escaped_id = mysqli_real_escape_string($conn, $id);
     $sql = "SELECT b.*, g.name AS genre_name 
             FROM books b 
             LEFT JOIN genres g ON b.genre_id = g.id
-            WHERE b.id = '$id'";
+            WHERE b.id = '$escaped_id'";
     $result = mysqli_query($conn, $sql);
 
     return mysqli_fetch_assoc($result);
@@ -68,10 +71,11 @@ function getBookById($conn, $id)
 
 function getBookAvailabilityByBranches($conn, $book_id)
 {
+    $escaped_book_id = mysqli_real_escape_string($conn, $book_id);
     $sql = "SELECT b.id AS branch_id, b.name AS branch_name, bi.total_copies, bi.available_copies
             FROM branch_inventory bi
             JOIN branches b ON b.id = bi.branch_id
-            WHERE bi.book_id = '$book_id'";
+            WHERE bi.book_id = '$escaped_book_id'";
 
     $result = mysqli_query($conn, $sql);
     $data = [];
@@ -107,10 +111,11 @@ function getBranches($conn)
 
 function getBookReviews($conn, $book_id)
 {
+    $escaped_book_id = mysqli_real_escape_string($conn, $book_id);
     $sql = "SELECT br.*, u.name AS member_name 
             FROM book_reviews br
             JOIN users u ON br.member_id = u.id
-            WHERE br.book_id = '$book_id'
+            WHERE br.book_id = '$escaped_book_id'
             ORDER BY br.created_at DESC";
     
     $result = mysqli_query($conn, $sql);
@@ -123,28 +128,33 @@ function getBookReviews($conn, $book_id)
 
 function getBookAverageRating($conn, $book_id)
 {
+    $escaped_book_id = mysqli_real_escape_string($conn, $book_id);
     $sql = "SELECT AVG(rating) as avg_rating, COUNT(*) as review_count 
             FROM book_reviews 
-            WHERE book_id = '$book_id'";
+            WHERE book_id = '$escaped_book_id'";
     $result = mysqli_query($conn, $sql);
     return mysqli_fetch_assoc($result);
 }
 
 function addOrUpdateReview($conn, $book_id, $member_id, $rating, $comment)
 {
-    // Check if review exists
-    $checkSql = "SELECT id FROM book_reviews WHERE book_id = '$book_id' AND member_id = '$member_id'";
+    $escaped_book_id = mysqli_real_escape_string($conn, $book_id);
+    $escaped_member_id = mysqli_real_escape_string($conn, $member_id);
+    $escaped_rating = mysqli_real_escape_string($conn, (int)$rating);
+    $escaped_comment = mysqli_real_escape_string($conn, $comment);
+
+    $checkSql = "SELECT id FROM book_reviews WHERE book_id = '$escaped_book_id' AND member_id = '$escaped_member_id'";
     $checkResult = mysqli_query($conn, $checkSql);
     
-    if (mysqli_num_rows($checkResult) > 0) {
+    if ($checkResult && mysqli_num_rows($checkResult) > 0) {
         $row = mysqli_fetch_assoc($checkResult);
-        $review_id = $row['id'];
+        $review_id = mysqli_real_escape_string($conn, $row['id']);
         $sql = "UPDATE book_reviews 
-                SET rating = '$rating', review_text = '$comment' 
+                SET rating = '$escaped_rating', review_text = '$escaped_comment' 
                 WHERE id = '$review_id'";
     } else {
         $sql = "INSERT INTO book_reviews (book_id, member_id, rating, review_text, created_at) 
-                VALUES ('$book_id', '$member_id', '$rating', '$comment', NOW())";
+                VALUES ('$escaped_book_id', '$escaped_member_id', '$escaped_rating', '$escaped_comment', NOW())";
     }
     
     return mysqli_query($conn, $sql);
@@ -152,7 +162,9 @@ function addOrUpdateReview($conn, $book_id, $member_id, $rating, $comment)
 
 function deleteReview($conn, $review_id, $member_id)
 {
-    $sql = "DELETE FROM book_reviews WHERE id = '$review_id' AND member_id = '$member_id'";
+    $escaped_review_id = mysqli_real_escape_string($conn, $review_id);
+    $escaped_member_id = mysqli_real_escape_string($conn, $member_id);
+    $sql = "DELETE FROM book_reviews WHERE id = '$escaped_review_id' AND member_id = '$escaped_member_id'";
     return mysqli_query($conn, $sql);
 }
 

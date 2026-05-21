@@ -11,12 +11,17 @@ require_once '../models/DB.php';
 require_once '../models/LoanModel.php';
 
 $member_id = $_SESSION['id'];
-$book_id = $_POST['book_id'];
-$branch_id = $_POST['branch_id'];
+$book_id = isset($_POST['book_id']) && is_numeric($_POST['book_id']) ? intval($_POST['book_id']) : 0;
+$branch_id = isset($_POST['branch_id']) && is_numeric($_POST['branch_id']) ? intval($_POST['branch_id']) : 0;
+
+if ($book_id <= 0 || $branch_id <= 0) {
+    $_SESSION['error'] = "Invalid borrow request.";
+    header("Location: /LibraryManagementSystem/Controllers/BookIndexController.php");
+    exit();
+}
 
 $conn = Connect();
 
-/* 1. Check availability */
 if (!checkBookAvailabilityInBranch($conn, $book_id, $branch_id)) {
     $_SESSION['error'] = "Book not available";
     $_SESSION['book_details_id'] = $book_id;
@@ -25,7 +30,6 @@ if (!checkBookAvailabilityInBranch($conn, $book_id, $branch_id)) {
     exit();
 }
 
-/* 2. Prevent duplicate pending request */
 if (hasPendingBorrowRequest($conn, $member_id, $book_id)) {
     $_SESSION['error'] = "Already requested";
     $_SESSION['book_details_id'] = $book_id;
@@ -34,7 +38,6 @@ if (hasPendingBorrowRequest($conn, $member_id, $book_id)) {
     exit();
 }
 
-/* 3. Insert request */
 if (createBorrowRequest($conn, $member_id, $book_id, $branch_id)) {
     $_SESSION['msg'] = "Borrow request submitted";
 } else {

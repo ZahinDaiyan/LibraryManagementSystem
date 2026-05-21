@@ -35,8 +35,14 @@ function createUser(
     $branch_id
 )
 {
+    $name = mysqli_real_escape_string($conn, $name);
+    $email = mysqli_real_escape_string($conn, $email);
+    $phone = mysqli_real_escape_string($conn, $phone);
+    $role = mysqli_real_escape_string($conn, $role);
+    $profile_pic = mysqli_real_escape_string($conn, $profile_pic);
+
     $storedPassword = hashPasswordIfNeeded($password_hash);
-    $branch_val = $branch_id == '' ? "NULL" : "'$branch_id'";
+    $branch_val = $branch_id === '' ? "NULL" : "'" . mysqli_real_escape_string($conn, $branch_id) . "'";
     
     $sql = "INSERT INTO users
             (name, email, password_hash, phone, role, profile_pic, branch_id, is_active, created_at)
@@ -48,9 +54,10 @@ function createUser(
 
 function login($conn, $email, $password)
 {
+    $email = mysqli_real_escape_string($conn, $email);
     $sql = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
     $result = mysqli_query($conn, $sql);
-    $user = mysqli_fetch_assoc($result);
+    $user = $result ? mysqli_fetch_assoc($result) : null;
 
     if ($user) {
         $storedPassword = $user['password_hash'];
@@ -63,16 +70,17 @@ function login($conn, $email, $password)
     return false;
 }
 
-
 function getUserById($conn, $id)
 {
+    $id = mysqli_real_escape_string($conn, $id);
     $sql = "SELECT * FROM users WHERE id = '$id' LIMIT 1";
     $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_assoc($result);
+    return $result ? mysqli_fetch_assoc($result) : null;
 }
 
 function getUserWithBranchById($conn, $id)
 {
+    $id = mysqli_real_escape_string($conn, $id);
     $sql = "SELECT u.id, u.name, u.email, u.phone, u.role, u.profile_pic, u.branch_id, u.is_active, b.name AS branch_name, b.city AS branch_city, b.address AS branch_address
             FROM users u
             LEFT JOIN branches b ON b.id = u.branch_id
@@ -80,7 +88,7 @@ function getUserWithBranchById($conn, $id)
             LIMIT 1";
 
     $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_assoc($result);
+    return $result ? mysqli_fetch_assoc($result) : null;
 }
 
 function updateUser(
@@ -92,9 +100,14 @@ function updateUser(
     $profile_pic = null
 )
 {
+    $id = mysqli_real_escape_string($conn, $id);
+    $name = mysqli_real_escape_string($conn, $name);
+    $email = mysqli_real_escape_string($conn, $email);
+    $phone = mysqli_real_escape_string($conn, $phone);
+
     $pic_sql = "";
     if ($profile_pic !== null) {
-        $pic_sql = ", profile_pic = '$profile_pic'";
+        $pic_sql = ", profile_pic = '" . mysqli_real_escape_string($conn, $profile_pic) . "'";
     }
 
     $sql = "UPDATE users
@@ -109,21 +122,23 @@ function updateUser(
 
 function updateUserPassword($conn, $id, $password)
 {
+    $id = mysqli_real_escape_string($conn, $id);
     $storedPassword = hashPasswordIfNeeded($password);
     $sql = "UPDATE users SET password_hash = '$storedPassword' WHERE id = '$id'";
     return mysqli_query($conn, $sql);
 }
 
-
 function getUserByEmail($conn, $email)
 {
+    $email = mysqli_real_escape_string($conn, $email);
     $sql = "SELECT * FROM users WHERE email = '$email' LIMIT 1";
     $result = mysqli_query($conn, $sql);
-    return mysqli_fetch_assoc($result);
+    return $result ? mysqli_fetch_assoc($result) : null;
 }
 
 function deleteUser($conn, $id)
 {
+    $id = mysqli_real_escape_string($conn, $id);
     $sql = "DELETE FROM users WHERE id = '$id'";
     return mysqli_query($conn, $sql);
 }
