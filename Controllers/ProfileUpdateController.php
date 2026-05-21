@@ -2,7 +2,40 @@
 
 session_start();
 
+$expectsJson = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    || (isset($_POST['ajax']) && $_POST['ajax'] === '1')
+    || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+
+if (!function_exists('memberProfileUpdateRespond')) {
+    function memberProfileUpdateRespond($expectsJson, $success, $message, $statusCode = 200)
+    {
+        if ($expectsJson) {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code($statusCode);
+            echo json_encode(array(
+                'success' => (bool)$success,
+                'message' => $message,
+                'redirect' => 'ProfileController.php'
+            ));
+            exit();
+        }
+
+        if ($success) {
+            $_SESSION['msg'] = $message;
+        } else {
+            $_SESSION['error'] = $message;
+        }
+
+        header('Location: ProfileController.php');
+        exit();
+    }
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
+    if ($expectsJson) {
+        memberProfileUpdateRespond($expectsJson, false, 'Unauthorized', 403);
+    }
+
     header('Location: ../Views/LoginView.php');
     exit();
 }
@@ -13,6 +46,8 @@ require_once '../Models/UserModel.php';
 $action = $_POST['action'] ?? '';
 $id = $_SESSION['id'];
 $conn = Connect();
+$success = false;
+$message = 'Invalid profile action';
 
 if ($action === 'update_profile') {
     $name = htmlspecialchars($_POST['name']);
@@ -41,34 +76,26 @@ if ($action === 'update_profile') {
 
         // Validate MIME type
         if (!in_array($file_mime, $allowed_mime_types)) {
-            $_SESSION['error'] = "Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.";
             Close($conn);
-            header('Location: ProfileController.php');
-            exit();
+            memberProfileUpdateRespond($expectsJson, false, "Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.", 422);
         }
 
         // Validate extension matches
         if (!in_array($file_ext, $allowed_extensions)) {
-            $_SESSION['error'] = "Invalid file extension. Allowed: " . implode(', ', $allowed_extensions);
             Close($conn);
-            header('Location: ProfileController.php');
-            exit();
+            memberProfileUpdateRespond($expectsJson, false, "Invalid file extension. Allowed: " . implode(', ', $allowed_extensions), 422);
         }
 
         // Validate file size
         if ($file_size > $max_file_size) {
-            $_SESSION['error'] = "File is too large. Maximum size is 2MB.";
             Close($conn);
-            header('Location: ProfileController.php');
-            exit();
+            memberProfileUpdateRespond($expectsJson, false, "File is too large. Maximum size is 2MB.", 422);
         }
 
         // Verify it's a real image
         if (!getimagesize($file_tmp)) {
-            $_SESSION['error'] = "Uploaded file is not a valid image.";
             Close($conn);
-            header('Location: ProfileController.php');
-            exit();
+            memberProfileUpdateRespond($expectsJson, false, "Uploaded file is not a valid image.", 422);
         }
         // --- File Validation End ---
 
@@ -82,18 +109,18 @@ if ($action === 'update_profile') {
         if (move_uploaded_file($file_tmp, $uploadFile)) {
             $profile_pic = $fileName;
         } else {
-            $_SESSION['error'] = "Failed to save the uploaded file. Please try again.";
             Close($conn);
-            header('Location: ProfileController.php');
-            exit();
+            memberProfileUpdateRespond($expectsJson, false, "Failed to save the uploaded file. Please try again.", 500);
         }
     }
 
     if (updateUser($conn, $id, $name, $email, $phone, $profile_pic)) {
         $_SESSION['name'] = $name;
-        $_SESSION['msg'] = "Profile updated successfully";
+        $success = true;
+        $message = "Profile updated successfully";
     } else {
-        $_SESSION['error'] = "Failed to update profile";
+        $success = false;
+        $message = "Failed to update profile";
     }
 
 } elseif ($action === 'change_password') {
@@ -105,18 +132,21 @@ if ($action === 'update_profile') {
     if ($user && (password_verify($currentPassword, $user['password_hash']) || $currentPassword === $user['password_hash'])) {
         if ($newPassword === $confirmPassword) {
             if (updateUserPassword($conn, $id, $newPassword)) {
-                $_SESSION['msg'] = "Password changed successfully";
+                $success = true;
+                $message = "Password changed successfully";
             } else {
-                $_SESSION['error'] = "Failed to change password";
+                $success = false;
+                $message = "Failed to change password";
             }
         } else {
-            $_SESSION['error'] = "New passwords do not match";
+            $success = false;
+            $message = "New passwords do not match";
         }
     } else {
-        $_SESSION['error'] = "Incorrect current password";
+        $success = false;
+        $message = "Incorrect current password";
     }
 }
 
 Close($conn);
-header('Location: ProfileController.php');
-exit();
+memberProfileUpdateRespond($expectsJson, $success, $message, $success ? 200 : 400);

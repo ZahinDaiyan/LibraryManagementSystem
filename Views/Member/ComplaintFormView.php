@@ -46,5 +46,6 @@ unset($_SESSION['form_errors'], $_SESSION['old_data']);
 </form>
 
 <script src="../js/member_validation.js"></script>
+<script src="../js/member_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>

@@ -162,6 +162,7 @@ if (!$book) {
 </form>
 
 <script src="../js/member_validation.js"></script>
+<script src="../js/member_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>
 

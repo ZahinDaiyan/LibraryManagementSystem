@@ -88,6 +88,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
     <?php } ?>
 </table>
 
+<script src="../js/member_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>
 

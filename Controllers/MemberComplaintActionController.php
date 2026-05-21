@@ -2,7 +2,45 @@
 
 session_start();
 
+$expectsJson = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    || (isset($_POST['ajax']) && $_POST['ajax'] === '1')
+    || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+
+if (!function_exists('memberComplaintRespond')) {
+    function memberComplaintRespond($expectsJson, $success, $message, $extra = array(), $statusCode = 200)
+    {
+        if ($expectsJson) {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code($statusCode);
+            echo json_encode(array_merge(array(
+                'success' => (bool)$success,
+                'message' => $message,
+                'redirect' => $success ? 'MemberComplaintController.php' : '../Views/Member/ComplaintFormView.php'
+            ), $extra));
+            exit();
+        }
+
+        if ($success) {
+            $_SESSION['msg'] = $message;
+            header("Location: MemberComplaintController.php");
+        } else {
+            if (isset($extra['errors'])) {
+                $_SESSION['form_errors'] = $extra['errors'];
+                $_SESSION['old_data'] = $_POST;
+            } else {
+                $_SESSION['error'] = $message;
+            }
+            header("Location: ../Views/Member/ComplaintFormView.php");
+        }
+        exit();
+    }
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
+    if ($expectsJson) {
+        memberComplaintRespond($expectsJson, false, 'Unauthorized', array(), 403);
+    }
+
     header("Location: ../Views/LoginView.php");
     exit();
 }
@@ -18,20 +56,14 @@ if (empty($title)) $errors['title'] = "Title is required";
 if (empty($description)) $errors['description'] = "Description is required";
 
 if (count($errors) > 0) {
-    $_SESSION['form_errors'] = $errors;
-    $_SESSION['old_data'] = $_POST;
-    header("Location: ../Views/Member/ComplaintFormView.php");
-    exit();
+    memberComplaintRespond($expectsJson, false, 'Validation failed', array('errors' => $errors), 422);
 }
 
 $conn = Connect();
 if (createComplaint($conn, $_SESSION['id'], $title, $description)) {
-    $_SESSION['msg'] = "Complaint submitted successfully";
     Close($conn);
-    header("Location: MemberComplaintController.php");
+    memberComplaintRespond($expectsJson, true, "Complaint submitted successfully", array(), 200);
 } else {
-    $_SESSION['error'] = "Failed to submit complaint";
     Close($conn);
-    header("Location: ../Views/Member/ComplaintFormView.php");
+    memberComplaintRespond($expectsJson, false, "Failed to submit complaint", array(), 500);
 }
-exit();

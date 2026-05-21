@@ -131,5 +131,6 @@ $notifications = $_SESSION['notifications'] ?? [];
 
 </div>
 
+<script src="../js/member_ajax.js?v=<?= time() ?>"></script>
 </body>
 </html>
