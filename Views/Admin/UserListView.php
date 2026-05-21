@@ -108,6 +108,18 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             text-decoration: none !important;
         }
 
+        .user-actions {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            flex-wrap: nowrap !important;
+            white-space: nowrap !important;
+        }
+
+        .user-actions form {
+            margin: 0 !important;
+        }
+
         .create-btn {
             background: #f59e0b !important;
             color: #fff !important;
@@ -195,11 +207,13 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             </td>
             <td><?= date('M d, Y', strtotime($u['created_at'])) ?></td>
             <td>
-                <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
-                <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
-                <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
-                <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile permanently?')" class="btn-link-danger">Delete Profile</button></form>
-                <?php endif; ?>
+                <div class="user-actions">
+                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
+                    <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+                    <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
+                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile permanently?')" class="btn-link-danger">Delete Profile</button></form>
+                    <?php endif; ?>
+                </div>
             </td>
         </tr>
         <?php endforeach; ?>
