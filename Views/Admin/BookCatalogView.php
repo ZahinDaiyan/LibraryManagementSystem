@@ -127,7 +127,9 @@ $search = $_SESSION['admin_book_search'] ?? '';
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
-<form novalidate class="search-form" action="../../Controllers/AdminBookCatalogController.php" method="POST">
+<div id="catalogMessage" style="margin: 12px 0;"></div>
+
+<form novalidate class="search-form" id="catalogSearchForm" action="../../Controllers/AdminBookCatalogController.php" method="POST">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     <button type="submit">Search Catalog</button>
     <a href="../../Controllers/AdminBookCatalogController.php" class="btn-clear">Clear</a>
@@ -136,6 +138,7 @@ $search = $_SESSION['admin_book_search'] ?? '';
 <br>
 
 <table border="1" cellpadding="10" width="100%">
+    <thead>
     <tr>
         <th>Title</th>
         <th>Author</th>
@@ -145,6 +148,8 @@ $search = $_SESSION['admin_book_search'] ?? '';
         <th>Available</th>
         <th>Actions</th>
     </tr>
+    </thead>
+    <tbody id="catalogTableBody">
 
     <?php if (empty($books)): ?>
         <tr><td colspan="7">No books found in the global catalog.</td></tr>
@@ -160,11 +165,18 @@ $search = $_SESSION['admin_book_search'] ?? '';
         <td><?= $b['total_available'] ?? 0 ?></td>
         <td>
             <form method="POST" action="../../Controllers/AdminBookFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link">Edit Details</button></form>
-            <form method="POST" action="../../Controllers/AdminBookActionController.php" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" onclick="return confirm('Permanently delete this book from the global catalog? This action cannot be undone.')" class="btn-link-danger">Delete</button></form>
+            <form method="POST" action="../../Controllers/AdminBookActionController.php" class="book-delete-form" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link-danger">Delete</button></form>
         </td>
     </tr>
     <?php endforeach; ?>
+    </tbody>
 </table>
+
+<script>
+    window.adminCatalogInitialBooks = <?= json_encode($books) ?>;
+    window.adminCatalogInitialSearch = <?= json_encode($search) ?>;
+</script>
+<script src="../js/admin_book_catalog.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

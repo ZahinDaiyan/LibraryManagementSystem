@@ -2,9 +2,31 @@
 
 session_start();
 
+$expectsJson = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    || (isset($_POST['ajax']) && $_POST['ajax'] === '1')
+    || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
+
+if (!function_exists('adminBookActionRespond')) {
+    function adminBookActionRespond($expectsJson, $success, $message, $extra = array(), $statusCode = 200)
+    {
+        if ($expectsJson) {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code($statusCode);
+            echo json_encode(array_merge(array(
+                'success' => (bool)$success,
+                'message' => $message
+            ), $extra));
+            exit();
+        }
+
+        $_SESSION['msg'] = $message;
+        header('Location: AdminBookCatalogController.php');
+        exit();
+    }
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../Views/LoginView.php');
-    exit();
+    adminBookActionRespond($expectsJson, false, 'Unauthorized', array(), 403);
 }
 
 require_once '../Models/DB.php';
@@ -13,6 +35,7 @@ require_once '../Models/BookModel.php';
 $action = $_POST['action'] ?? $_POST['action'] ?? '';
 $conn = Connect();
 $errors = [];
+$success = false;
 
 if ($action === 'create' || $action === 'update') {
     $title = htmlspecialchars($_POST['title']);
@@ -43,18 +66,24 @@ if ($action === 'create' || $action === 'update') {
             $_SESSION['admin_book_form_id'] = $id;
         }
         Close($conn);
+        if ($expectsJson) {
+            adminBookActionRespond($expectsJson, false, 'Validation failed', array('errors' => $errors), 422);
+        }
+
         header('Location: AdminBookFormController.php');
         exit();
     }
 
     if ($action === 'create') {
         if (createBook($conn, $title, $author, $isbn, $genre_id, $publisher, $published_year, $description)) {
+            $success = true;
             $_SESSION['msg'] = "Book '$title' successfully added to the master catalog";
         } else {
             $_SESSION['error'] = "Failed to add book to the catalog";
         }
     } else {
         if (updateBook($conn, $id, $title, $author, $isbn, $genre_id, $publisher, $published_year, $description)) {
+            $success = true;
             $_SESSION['msg'] = "Book details for '$title' updated successfully";
         } else {
             $_SESSION['error'] = "Failed to update book details";
@@ -69,6 +98,7 @@ if ($action === 'create' || $action === 'update') {
         $_SESSION['msg'] = "Error: Cannot delete book. It is currently borrowed or has a pending request.";
     } else {
         if (deleteBookAndInventory($conn, $id)) {
+            $success = true;
             $_SESSION['msg'] = "Book permanently removed from catalog and all branch inventories";
         } else {
             $_SESSION['error'] = "Failed to remove book";
@@ -77,5 +107,11 @@ if ($action === 'create' || $action === 'update') {
 }
 
 Close($conn);
+
+if ($expectsJson) {
+    $message = isset($_SESSION['msg']) ? $_SESSION['msg'] : (isset($_SESSION['error']) ? $_SESSION['error'] : 'Request completed');
+    adminBookActionRespond($expectsJson, $success, $message, array(), $success ? 200 : 400);
+}
+
 header('Location: AdminBookCatalogController.php');
 exit();
