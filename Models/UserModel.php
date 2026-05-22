@@ -143,6 +143,38 @@ function deleteUser($conn, $id)
     return mysqli_query($conn, $sql);
 }
 
+function deleteUserWithDependencies($conn, $id)
+{
+    $id = mysqli_real_escape_string($conn, $id);
+
+    mysqli_begin_transaction($conn);
+
+    $cleanupQueries = array(
+        "UPDATE branches SET manager_id = NULL WHERE manager_id = '$id'",
+        "DELETE FROM fines WHERE member_id = '$id'",
+        "DELETE FROM borrow_records WHERE member_id = '$id' OR librarian_id = '$id'",
+        "DELETE FROM reservations WHERE member_id = '$id'",
+        "DELETE FROM book_reviews WHERE member_id = '$id'",
+        "DELETE FROM reading_lists WHERE member_id = '$id'",
+        "DELETE FROM notifications WHERE member_id = '$id'",
+        "DELETE FROM complaints WHERE member_id = '$id'",
+        "DELETE FROM announcements WHERE author_id = '$id'",
+        "DELETE FROM inter_branch_requests WHERE requested_by = '$id'",
+        "DELETE FROM audit_log WHERE user_id = '$id'",
+        "DELETE FROM users WHERE id = '$id'"
+    );
+
+    foreach ($cleanupQueries as $sql) {
+        if (!mysqli_query($conn, $sql)) {
+            mysqli_rollback($conn);
+            return false;
+        }
+    }
+
+    mysqli_commit($conn);
+    return true;
+}
+
 function searchUsersWithBranch($conn, $search = '', $role_filter = '')
 {
     $where_clauses = [];

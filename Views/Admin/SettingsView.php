@@ -81,7 +81,7 @@ function getVal($key, $settings, $old_data) {
 </form>
 
 <script src="../js/admin_validation.js"></script>
-<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
+<!-- Removed admin_ajax.js to disable AJAX; using normal form submissions -->
 </body>
 </html>
 

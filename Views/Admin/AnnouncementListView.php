@@ -115,7 +115,7 @@ unset($_SESSION['msg']);
     <?php endforeach; ?>
 </table>
 
-<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
+<!-- Removed admin_ajax.js to disable AJAX; using normal form submissions -->
 
 </body>
 </html>

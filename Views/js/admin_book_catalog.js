@@ -33,7 +33,7 @@ function adminCatalogRow(book) {
                 '<input type="hidden" name="id" value="' + adminCatalogEscapeHtml(book.id) + '">' +
                 '<button type="submit" class="btn-link">Edit Details</button>' +
             '</form> ' +
-            '<form method="POST" action="../../Controllers/AdminBookActionController.php" class="book-delete-form" style="display:inline;">' +
+            '<form method="POST" action="/LibraryManagementSystem/Controllers/AdminBookActionController.php" class="book-delete-form" style="display:inline;">' +
                 '<input type="hidden" name="action" value="delete">' +
                 '<input type="hidden" name="id" value="' + adminCatalogEscapeHtml(book.id) + '">' +
                 '<button type="submit" class="btn-link-danger">Delete</button>' +

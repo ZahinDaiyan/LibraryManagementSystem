@@ -15,6 +15,7 @@ $conn = Connect();
 $profile = bmGetManagerProfile($conn, $_SESSION['id']);
 $branches = bmGetManagedBranches($conn, $_SESSION['id']);
 $stats = bmGetDashboardStats($conn, $_SESSION['id']);
+$pendingRenewals = getPendingRenewalRequestsForManager($conn, $_SESSION['id']);
 Close($conn);
 
 if (!$profile) {
@@ -27,7 +28,7 @@ $_SESSION['branch_manager_profile'] = $profile;
 $_SESSION['bm_dashboard'] = array(
     'branches' => $branches,
     'stats' => $stats,
-    'pending_renewals' => getPendingRenewalRequestsForManager($conn, $_SESSION['id'])
+    'pending_renewals' => $pendingRenewals
 );
 
 header('Location: ../Views/BranchManager/dashboardView.php');

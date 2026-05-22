@@ -2,6 +2,7 @@ function validateManagerProfile(form) {
     let name = form.name.value.trim();
     let email = form.email.value.trim();
     let phone = form.phone.value.trim();
+    let currentPassword = form.current_password.value;
     let newPassword = form.new_password.value;
     let confirmPassword = form.confirm_password.value;
 
@@ -15,6 +16,14 @@ function validateManagerProfile(form) {
     }
     if (phone === "") {
         alert("Phone is required");
+        return false;
+    }
+    if (currentPassword.trim() === "") {
+        alert("Current password is required");
+        return false;
+    }
+    if (newPassword !== "" && newPassword.length < 8) {
+        alert("New password must be at least 8 characters long");
         return false;
     }
     if (newPassword !== "" && newPassword !== confirmPassword) {
@@ -57,6 +66,56 @@ function validateStaffAssignForm(form) {
     }
 
     return true;
+}
+
+function initLibrarianSearch() {
+    let searchInput = document.getElementById("librarian_search");
+    let librarianSelect = document.getElementById("librarian_id");
+    let note = document.getElementById("librarian_search_note");
+
+    if (!searchInput || !librarianSelect || !note) {
+        return;
+    }
+
+    function applyFilter() {
+        let term = searchInput.value.trim().toLowerCase();
+        let options = librarianSelect.options;
+        let visibleCount = 0;
+
+        for (let i = 0; i < options.length; i++) {
+            let option = options[i];
+
+            if (option.value === "") {
+                option.hidden = false;
+                continue;
+            }
+
+            let haystack = (option.getAttribute("data-search") || option.text || "").toLowerCase();
+            let matches = term === "" || haystack.indexOf(term) !== -1;
+
+            option.hidden = !matches;
+            if (matches) {
+                visibleCount++;
+            }
+        }
+
+        if (visibleCount === 0) {
+            note.classList.add("error");
+            note.innerText = "No librarians match your search.";
+            librarianSelect.value = "";
+            return;
+        }
+
+        note.classList.remove("error");
+        note.innerText = visibleCount + " librarian(s) match your search.";
+
+        if (librarianSelect.value !== "" && librarianSelect.selectedOptions.length > 0 && librarianSelect.selectedOptions[0].hidden) {
+            librarianSelect.value = "";
+        }
+    }
+
+    searchInput.addEventListener("input", applyFilter);
+    applyFilter();
 }
 
 function validatePolicyForm(form) {
@@ -174,3 +233,7 @@ function loadOverdueAlerts() {
 
     xhr.send();
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    initLibrarianSearch();
+});

@@ -148,10 +148,10 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
-<form novalidate class="search-form" action="/LibraryManagementSystem/Controllers/AdminUserController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchUsers();">
-    <input type="text" id="userSearch" name="search" placeholder="Search name, email, phone..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchUsers()">
+<form novalidate class="search-form" action="/LibraryManagementSystem/Controllers/AdminUserController.php" method="POST">
+    <input type="text" id="userSearch" name="search" placeholder="Search name, email, phone..." value="<?= htmlspecialchars($search) ?>">
     
-    <select id="userRole" name="role_filter" onchange="ajaxSearchUsers()">
+    <select id="userRole" name="role_filter">
         <option value="">All Roles</option>
         <option value="member" <?= $role_filter === 'member' ? 'selected' : '' ?>>Member</option>
         <option value="librarian" <?= $role_filter === 'librarian' ? 'selected' : '' ?>>Librarian</option>
@@ -211,7 +211,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
                     <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
                     <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
                     <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
-                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile permanently?')" class="btn-link-danger">Delete Profile</button></form>
+                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile?')" class="btn-link-danger">Delete Profile</button></form>
                     <?php endif; ?>
                 </div>
             </td>
@@ -219,9 +219,6 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
         <?php endforeach; ?>
     </tbody>
 </table>
-
-<script src="../js/admin_user_search.js"></script>
-<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
 
 </body>
 </html>

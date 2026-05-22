@@ -55,8 +55,12 @@ unset($_SESSION['msg'], $_SESSION['error']);
         <input type="text" name="phone" value="<?= htmlspecialchars($profile['phone'] ?? '') ?>">
     </p>
     <p>
+        <label>Current Password:</label><br>
+        <input type="password" name="current_password" required>
+    </p>
+    <p>
         <label>New Password:</label><br>
-        <input type="password" name="new_password">
+        <input type="password" name="new_password" minlength="8">
     </p>
     <p>
         <label>Confirm Password:</label><br>

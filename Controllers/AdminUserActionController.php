@@ -125,13 +125,14 @@ if ($action === 'create' || $action === 'update') {
         if (!$target_user) {
             $success = false;
             $message = "User not found";
-        } elseif (setUserActiveStatus($conn, $id, 0)) {
-            logAction($conn, $admin_id, "Deleted User Profile", "users", $id, "Soft-deleted user profile: " . $target_user['name']);
+        } elseif (deleteUserWithDependencies($conn, $id)) {
+            logAction($conn, $admin_id, "Deleted User Profile", "users", $id, "Permanently deleted user profile: " . $target_user['name']);
             $success = true;
             $message = "User profile deleted successfully";
         } else {
             $success = false;
-            $message = "Failed to delete user profile";
+            $dbErr = mysqli_error($conn);
+            $message = "Failed to delete user profile" . ($dbErr ? (": DB Error: " . $dbErr) : "");
         }
     }
 }

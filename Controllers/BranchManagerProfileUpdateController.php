@@ -17,6 +17,7 @@ $id = $_SESSION['id'];
 $name = htmlspecialchars(trim($_POST['name'] ?? ''));
 $email = htmlspecialchars(trim($_POST['email'] ?? ''));
 $phone = htmlspecialchars(trim($_POST['phone'] ?? ''));
+$currentPassword = $_POST['current_password'] ?? '';
 $newPassword = $_POST['new_password'] ?? '';
 $confirmPassword = $_POST['confirm_password'] ?? '';
 
@@ -32,7 +33,33 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit();
 }
 
+if ($currentPassword === '') {
+    $_SESSION['error'] = 'Current password is required';
+    header('Location: ../Controllers/BranchManagerProfileController.php');
+    exit();
+}
+
 $conn = Connect();
+$currentUser = getUserById($conn, $id);
+
+if (!$currentUser) {
+    Close($conn);
+    $_SESSION['error'] = 'User not found';
+    header('Location: ../Controllers/BranchManagerProfileController.php');
+    exit();
+}
+
+$storedPassword = $currentUser['password_hash'] ?? '';
+$isPasswordValid = ($storedPassword === $currentPassword)
+    || (!empty($storedPassword) && password_verify($currentPassword, $storedPassword));
+
+if (!$isPasswordValid) {
+    Close($conn);
+    $_SESSION['error'] = 'Current password is incorrect';
+    header('Location: ../Controllers/BranchManagerProfileController.php');
+    exit();
+}
+
 $existingUser = getUserByEmail($conn, $email);
 
 if ($existingUser && $existingUser['id'] != $id) {
@@ -45,6 +72,13 @@ if ($existingUser && $existingUser['id'] != $id) {
 if ($newPassword != '' && $newPassword != $confirmPassword) {
     Close($conn);
     $_SESSION['error'] = 'Passwords do not match';
+    header('Location: ../Controllers/BranchManagerProfileController.php');
+    exit();
+}
+
+if ($newPassword != '' && strlen($newPassword) < 8) {
+    Close($conn);
+    $_SESSION['error'] = 'New password must be at least 8 characters long';
     header('Location: ../Controllers/BranchManagerProfileController.php');
     exit();
 }

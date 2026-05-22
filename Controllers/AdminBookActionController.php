@@ -2,6 +2,10 @@
 
 session_start();
 
+// Start output buffering to prevent accidental whitespace or notices
+// from corrupting JSON responses. We'll clear buffers before sending JSON.
+if (!ob_get_level()) ob_start();
+
 $expectsJson = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
     || (isset($_POST['ajax']) && $_POST['ajax'] === '1')
     || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
@@ -10,6 +14,8 @@ if (!function_exists('adminBookActionRespond')) {
     function adminBookActionRespond($expectsJson, $success, $message, $extra = array(), $statusCode = 200)
     {
         if ($expectsJson) {
+            // Clear any accidental output
+            while (ob_get_level()) { ob_end_clean(); }
             header('Content-Type: application/json; charset=utf-8');
             http_response_code($statusCode);
             echo json_encode(array_merge(array(

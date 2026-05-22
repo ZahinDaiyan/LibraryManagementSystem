@@ -262,7 +262,7 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 </ul>
 
 <br>
-<script src="../js/admin_ajax.js?v=<?= time() ?>"></script>
+<!-- Removed admin_ajax.js to disable AJAX; using normal form submissions -->
 <a href="../../Controllers/LogoutController.php"><button style="margin-top: 10px;">Logout</button></a>
 
 </body>

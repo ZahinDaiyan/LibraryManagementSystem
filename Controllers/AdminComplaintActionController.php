@@ -18,6 +18,16 @@ $errors = [];
 $success = false;
 $message = 'Failed to update complaint.';
 
+$allowed_statuses = array('pending', 'in_review', 'resolved');
+if (!in_array($status, $allowed_statuses, true)) {
+    $status = 'in_review';
+}
+
+// A complaint should not stay pending after an admin response is submitted.
+if (!empty(trim($admin_response)) && $status === 'pending') {
+    $status = 'in_review';
+}
+
 if (empty($admin_response) && $status === 'resolved') {
     $errors['admin_response'] = "Please provide a response before resolving the complaint.";
 }
