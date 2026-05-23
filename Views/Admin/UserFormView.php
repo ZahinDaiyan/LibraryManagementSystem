@@ -1,15 +1,21 @@
 <?php
 session_start();
 
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
     exit();
 }
 
-$user = $_SESSION['edit_user'] ?? null;
-$branches = $_SESSION['branches'] ?? [];
-$errors = $_SESSION['form_errors'] ?? [];
-$old_data = $_SESSION['old_data'] ?? [];
+$user = $user ?? $_SESSION['edit_user'] ?? null;
+$branches = $branches ?? $_SESSION['branches'] ?? [];
+$errors = $errors ?? $_SESSION['form_errors'] ?? [];
+$old_data = $old_data ?? $_SESSION['old_data'] ?? [];
 
 unset($_SESSION['form_errors'], $_SESSION['old_data']);
 
@@ -25,11 +31,14 @@ $title = $user ? "Edit User" : "Add New User";
 <body>
 
 <h2><?= $title ?></h2>
-<a href="UserListView.php">← Back to List</a>
+<a href="<?= Url::route('/admin/users') ?>">← Back to List</a>
 <hr>
+<?php if (!empty($errors['general'])): ?>
+    <p style="color:red;"><?= htmlspecialchars($errors['general']) ?></p>
+<?php endif; ?>
 <div id="adminAjaxMessage"></div>
 
-<form novalidate data-admin-ajax="1" action="../../Controllers/AdminUserActionController.php" method="POST" onsubmit="return validateUserForm(this)">
+<form novalidate data-admin-ajax="1" action="<?= Url::route($user ? '/admin/users/' . $user['id'] : '/admin/users') ?>" method="POST" onsubmit="return validateUserForm(this)">
     <input type="hidden" name="action" value="<?= $user ? 'update' : 'create' ?>">
     <?php if ($user): ?>
         <input type="hidden" name="id" value="<?= $user['id'] ?>">

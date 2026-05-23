@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\Helpers\Url;
+
 class Response
 {
     public function setStatusCode(int $code): self
@@ -12,6 +14,10 @@ class Response
 
     public function redirect(string $location): void
     {
+        if (str_starts_with($location, '/')) {
+            $location = Url::route($location);
+        }
+
         header('Location: ' . $location);
         exit;
     }

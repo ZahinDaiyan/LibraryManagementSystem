@@ -1,5 +1,10 @@
 <?php
 session_start();
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
@@ -19,19 +24,18 @@ $title = $book ? "Edit Book Details" : "Add New Book to Master Catalog";
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>">
     <title><?= $title ?></title>
 </head>
 <body>
 
 <h2><?= $title ?></h2>
-<a href="BookCatalogView.php">← Back to Catalog</a>
+<a href="<?= Url::route('/admin/books') ?>">← Back to Catalog</a>
 <hr>
 
 <div id="adminAjaxMessage"></div>
 
-<form novalidate data-admin-ajax="1" action="../../Controllers/AdminBookActionController.php" method="POST" onsubmit="return validateBookForm(this)">
-    <input type="hidden" name="action" value="<?= $book ? 'update' : 'create' ?>">
+<form novalidate action="<?= $book ? Url::route('/admin/books/' . $book['id'] . '/update') : Url::route('/admin/books') ?>" method="POST" onsubmit="return validateBookForm(this)">
     <?php if ($book): ?>
         <input type="hidden" name="id" value="<?= $book['id'] ?>">
     <?php endif; ?>
@@ -102,7 +106,7 @@ $title = $book ? "Edit Book Details" : "Add New Book to Master Catalog";
     <button type="submit"><?= $book ? 'Update Book' : 'Add to Catalog' ?></button>
 </form>
 
-<script src="../js/admin_validation.js"></script>
+<script src="<?= Url::asset('Views/js/admin_validation.js') ?>"></script>
 <!-- Removed admin_ajax.js to disable AJAX; using normal form submissions -->
 </body>
 </html>

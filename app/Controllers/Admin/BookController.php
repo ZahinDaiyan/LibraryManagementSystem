@@ -5,20 +5,32 @@ namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Core\Request;
 use App\Core\Response;
+use App\Middleware\AdminMiddleware;
 use App\Services\BookService;
 
 class BookController extends Controller
 {
     protected BookService $bookService;
+    protected AdminMiddleware $middleware;
 
     public function __construct(Request $request, Response $response)
     {
         parent::__construct($request, $response);
         $this->bookService = new BookService();
+        $this->middleware = new AdminMiddleware();
+    }
+
+    private function authorize(): bool
+    {
+        return $this->middleware->handle($this->request, $this->response);
     }
 
     public function index(): void
     {
+        if (!$this->authorize()) {
+            return;
+        }
+
         $search = $this->request->input('search', '');
         $books = $this->bookService->searchCatalog($search);
 
@@ -34,17 +46,26 @@ class BookController extends Controller
 
     public function create(): void
     {
+        if (!$this->authorize()) {
+            return;
+        }
+
         $genres = $this->bookService->getGenres();
         $this->view('Admin.BookForm', [
             'genres' => $genres,
             'book' => null,
-            'errors' => [],
-            'old_data' => [],
+            'errors' => $_SESSION['form_errors'] ?? [],
+            'old_data' => $_SESSION['old_data'] ?? [],
         ]);
+        unset($_SESSION['form_errors'], $_SESSION['old_data']);
     }
 
     public function store(): void
     {
+        if (!$this->authorize()) {
+            return;
+        }
+
         $data = $this->request->only([
             'title',
             'author',
@@ -70,19 +91,28 @@ class BookController extends Controller
 
     public function edit(int $id): void
     {
+        if (!$this->authorize()) {
+            return;
+        }
+
         $book = $this->bookService->findBook($id);
         $genres = $this->bookService->getGenres();
 
         $this->view('Admin.BookForm', [
             'genres' => $genres,
             'book' => $book,
-            'errors' => [],
-            'old_data' => [],
+            'errors' => $_SESSION['form_errors'] ?? [],
+            'old_data' => $_SESSION['old_data'] ?? [],
         ]);
+        unset($_SESSION['form_errors'], $_SESSION['old_data']);
     }
 
     public function update(int $id): void
     {
+        if (!$this->authorize()) {
+            return;
+        }
+
         $data = $this->request->only([
             'title',
             'author',
@@ -108,6 +138,10 @@ class BookController extends Controller
 
     public function delete(int $id): void
     {
+        if (!$this->authorize()) {
+            return;
+        }
+
         $this->bookService->deleteBook($id);
         $_SESSION['msg'] = 'Book removed from catalog.';
         $this->redirect('/admin/books');

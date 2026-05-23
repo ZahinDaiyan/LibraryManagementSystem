@@ -1,5 +1,10 @@
 <?php
 session_start();
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../app/Helpers/Url.php';
+}
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +14,7 @@ session_start();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
-    <link rel="stylesheet" href="css/auth.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/auth.css') ?>?v=<?= time() ?>">
     <style>
         .btn-outline {
             display: block;
@@ -37,7 +42,7 @@ session_start();
     <h2 style="margin-bottom: 24px;">Login</h2>
 
     <form
-        action="../Controllers/LoginController.php"
+        action="<?= Url::route('/login') ?>"
         method="POST"
         onsubmit="return validateLogin(this)"
         novalidate
@@ -64,7 +69,7 @@ session_start();
     <p id="msg"><?= isset($_SESSION['msg']) ? $_SESSION['msg'] : "" ?></p>
 </div>
 
-<script src="js/auth.js"></script>
+<script src="<?= Url::asset('Views/js/auth.js') ?>"></script>
 
 </body>
 </html>

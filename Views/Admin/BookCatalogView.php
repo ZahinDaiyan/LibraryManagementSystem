@@ -1,5 +1,10 @@
 <?php
 session_start();
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
@@ -11,12 +16,13 @@ $msg = $msg ?? $_SESSION['msg'] ?? '';
 unset($_SESSION['msg']);
 
 $search = $search ?? $_SESSION['admin_book_search'] ?? '';
+$baseUrl = Url::basePath();
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Master Book Catalog</title>
     <style>
         /* Force spacing and inline horizontal display */
@@ -121,18 +127,18 @@ $search = $search ?? $_SESSION['admin_book_search'] ?? '';
 
 <h2>Master Book Catalog</h2>
 <p>Admin Override: Full management of the global library collection.</p>
-<a href="dashboardView.php">← Back to Dashboard</a>
-<a href="../../Controllers/AdminBookFormController.php" class="create-btn">Add New Book to Catalog</a>
+<a href="<?= Url::route('/admin') ?>">← Back to Dashboard</a>
+<a href="<?= Url::route('/admin/books/create') ?>" class="create-btn">Add New Book to Catalog</a>
 <hr>
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 
 <div id="catalogMessage" style="margin: 12px 0;"></div>
 
-<form novalidate class="search-form" id="catalogSearchForm" action="../../Controllers/AdminBookCatalogController.php" method="POST">
+<form novalidate class="search-form" id="catalogSearchForm" action="<?= Url::route('/admin/books') ?>" method="POST">
     <input type="text" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>">
     <button type="submit">Search Catalog</button>
-    <a href="../../Controllers/AdminBookCatalogController.php" class="btn-clear">Clear</a>
+    <a href="<?= Url::route('/admin/books') ?>" class="btn-clear">Clear</a>
 </form>
 
 <br>
@@ -164,8 +170,10 @@ $search = $search ?? $_SESSION['admin_book_search'] ?? '';
         <td><?= $b['total_stock'] ?? 0 ?></td>
         <td><?= $b['total_available'] ?? 0 ?></td>
         <td>
-            <form method="POST" action="../../Controllers/AdminBookFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link">Edit Details</button></form>
-            <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminBookActionController.php" class="book-delete-form" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link-danger">Delete</button></form>
+            <a href="<?= Url::route('/admin/books/' . $b['id'] . '/edit') ?>" class="btn-link">Edit Details</a>
+            <form method="POST" action="<?= Url::route('/admin/books/' . $b['id'] . '/delete') ?>" class="book-delete-form" style="display:inline;">
+                <button type="submit" class="btn-link-danger">Delete</button>
+            </form>
         </td>
     </tr>
     <?php endforeach; ?>

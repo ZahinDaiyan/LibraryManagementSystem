@@ -1,18 +1,24 @@
 <?php
 session_start();
 
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
     exit();
 }
 
-$users = $_SESSION['admin_users'] ?? [];
+$users = $users ?? $_SESSION['admin_users'] ?? [];
 $msg = $_SESSION['msg'] ?? '';
 $error = $_SESSION['error'] ?? '';
 unset($_SESSION['msg'], $_SESSION['error']);
 
-$search = $_SESSION['admin_user_search'] ?? '';
-$role_filter = $_SESSION['admin_user_role_filter'] ?? '';
+$search = $search ?? $_SESSION['admin_user_search'] ?? '';
+$role_filter = $role_filter ?? $_SESSION['admin_user_role_filter'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -141,14 +147,14 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
 <body>
 
 <h2>Manage All User Accounts</h2>
-<a href="dashboardView.php">← Back to Dashboard</a>
-<a href="/LibraryManagementSystem/Controllers/AdminUserFormController.php" class="create-btn">Create Staff Account</a>
+<a href="<?= Url::route('/admin') ?>">← Back to Dashboard</a>
+<a href="<?= Url::route('/admin/users/create') ?>" class="create-btn">Create Staff Account</a>
 <hr>
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
 <?php if ($error) echo "<p style='color:red;'>$error</p>"; ?>
 
-<form novalidate class="search-form" action="/LibraryManagementSystem/Controllers/AdminUserController.php" method="POST">
+<form novalidate class="search-form" action="<?= Url::route('/admin/users') ?>" method="GET">
     <input type="text" id="userSearch" name="search" placeholder="Search name, email, phone..." value="<?= htmlspecialchars($search) ?>">
     
     <select id="userRole" name="role_filter">
@@ -160,7 +166,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
     </select>
 
     <button type="submit">Filter/Search</button>
-    <a href="/LibraryManagementSystem/Controllers/AdminUserController.php" class="btn-clear">Clear</a>
+    <a href="<?= Url::route('/admin/users') ?>" class="btn-clear">Clear</a>
 </form>
 
 <br>
@@ -208,7 +214,7 @@ $role_filter = $_SESSION['admin_user_role_filter'] ?? '';
             <td><?= date('M d, Y', strtotime($u['created_at'])) ?></td>
             <td>
                 <div class="user-actions">
-                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserFormController.php"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" class="btn-link">Edit Info</button></form>
+                    <a href="<?= Url::route('/admin/users/' . $u['id'] . '/edit') ?>" class="btn-link">Edit Info</a>
                     <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
                     <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
                     <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile?')" class="btn-link-danger">Delete Profile</button></form>

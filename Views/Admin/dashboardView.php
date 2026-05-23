@@ -1,5 +1,10 @@
 <?php
 session_start();
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
@@ -13,7 +18,7 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Admin Dashboard</title>
     <style>
         /* Premium Stat Card Styling */
@@ -206,13 +211,13 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 <h3>Navigation</h3>
 <ul class="admin-grid">
     <li>
-        <a href="../../Controllers/AdminUserController.php">
+        <a href="<?= Url::route('/admin/users') ?>">
             <span class="card-title">Manage All Users</span>
             <span class="card-desc">Add, edit, or disable branch manager, librarian, and member accounts.</span>
         </a>
     </li>
     <li>
-        <a href="../../Controllers/AdminBookCatalogController.php">
+        <a href="<?= Url::route('/admin/books') ?>">
             <span class="card-title">Master Book Catalog</span>
             <span class="card-desc">Catalog-wide book inventory, title details, and metadata management.</span>
         </a>
@@ -263,7 +268,7 @@ $pendingRenewals = $_SESSION['admin_pending_renewals'] ?? [];
 
 <br>
 <!-- Removed admin_ajax.js to disable AJAX; using normal form submissions -->
-<a href="../../Controllers/LogoutController.php"><button style="margin-top: 10px;">Logout</button></a>
+<a href="<?= Url::route('/logout') ?>"><button style="margin-top: 10px;">Logout</button></a>
 
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
+use App\Helpers\Url;
 use App\Helpers\View;
 
 class Controller
@@ -22,6 +23,10 @@ class Controller
 
     protected function redirect(string $path): void
     {
+        if (str_starts_with($path, '/')) {
+            $path = Url::route($path);
+        }
+
         $this->response->redirect($path);
     }
 
