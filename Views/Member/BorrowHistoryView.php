@@ -1,5 +1,16 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     header("Location: ../LoginView.php");
@@ -20,7 +31,7 @@ Close($conn);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Borrow History</title>
-    <link rel="stylesheet" href="../css/member.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/member.css') ?>">
 </head>
 <body>
 

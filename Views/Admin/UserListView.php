@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 use App\Helpers\Url;
 use App\Helpers\Csrf;
@@ -25,7 +27,7 @@ $role_filter = $role_filter ?? $_SESSION['admin_user_role_filter'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Manage All Users</title>
     <style>
         /* Force spacing and inline horizontal display */

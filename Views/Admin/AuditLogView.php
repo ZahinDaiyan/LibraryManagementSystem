@@ -12,7 +12,7 @@ $logs = $_SESSION['audit_logs'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Platform Audit Logs</title>
 </head>
 <body>

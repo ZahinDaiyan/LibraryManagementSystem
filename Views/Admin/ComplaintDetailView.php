@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
@@ -19,7 +21,7 @@ if (!$c) {
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>">
     <title>Complaint Details</title>
 </head>
 <body>

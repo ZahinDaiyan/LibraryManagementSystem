@@ -14,7 +14,7 @@ unset($_SESSION['msg']);
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Manage Announcements</title>
     <style>
         /* Styled button link for table actions */

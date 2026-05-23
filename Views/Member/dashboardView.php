@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role'])) {
     header('Location: ../LoginView.php');
@@ -21,7 +23,7 @@ $notifications = $_SESSION['notifications'] ?? [];
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Member Dashboard</title>
-    <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/member.css') ?>?v=<?= time() ?>">
     <style>
         /* Premium announcement cards with high contrast readability */
         .announcement-card {

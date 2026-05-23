@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
@@ -13,7 +15,7 @@ $status_filter = $_SESSION['admin_transfer_status_filter'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Inter-Branch Transfers</title>
     <style>
         /* Force spacing and inline horizontal display */

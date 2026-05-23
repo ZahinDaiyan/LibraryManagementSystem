@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../LoginView.php');
@@ -12,7 +14,7 @@ $reports = $_SESSION['admin_reports'] ?? [];
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>?v=<?= time() ?>">
     <title>Platform Reports</title>
     <style>
         .report-section { margin-bottom: 40px; }

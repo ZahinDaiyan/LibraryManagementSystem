@@ -1,5 +1,13 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'librarian') {
     header('Location: ../LoginView.php');
@@ -17,7 +25,7 @@ $profile = isset($_SESSION['librarian_profile']) ? $_SESSION['librarian_profile'
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Librarian Profile</title>
-    <link rel="stylesheet" href="../css/librarian.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/librarian.css') ?>">
 </head>
 
 <body class="librarian-profile-page">

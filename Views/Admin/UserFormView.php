@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 use App\Helpers\Url;
 use App\Helpers\Csrf;
@@ -26,7 +28,7 @@ $title = $user ? "Edit User" : "Add New User";
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/admin.css') ?>">
     <title><?= $title ?></title>
 </head>
 <body>

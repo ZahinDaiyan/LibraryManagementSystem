@@ -1,5 +1,13 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+use App\Helpers\Url;
+
+if (!class_exists(Url::class)) {
+    require_once __DIR__ . '/../../app/Helpers/Url.php';
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'branch_manager') {
     header('Location: ../LoginView.php');
@@ -18,7 +26,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <html>
 <head>
     <title>Staff Assignment Hub</title>
-    <link rel="stylesheet" href="../css/manager.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/manager.css') ?>">
     <style>
         .page-shell {
             max-width: 1200px;

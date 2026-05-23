@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     header("Location: ../LoginView.php");
@@ -22,7 +24,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Book Catalog</title>
-    <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/member.css') ?>?v=<?= time() ?>">
     <style>
         /* Force spacing and inline horizontal display */
         .search-form {

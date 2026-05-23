@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 use App\Helpers\Url;
 
 if (!class_exists(Url::class)) {

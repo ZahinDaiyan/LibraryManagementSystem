@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     header("Location: ../LoginView.php");
@@ -25,7 +27,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Active Loans</title>
-    <link rel="stylesheet" href="../css/member.css">
+    <link rel="stylesheet" href="<?= Url::asset('Views/css/member.css') ?>">
 </head>
 <body>
 
