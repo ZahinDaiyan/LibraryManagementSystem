@@ -1,0 +1,11 @@
+{
+  "name": "library-management-system",
+  "description": "Refactored Library Management System scaffold",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  },
+  "require": {}
+}

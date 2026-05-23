@@ -6,11 +6,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$books = $_SESSION['admin_books'] ?? [];
-$msg = $_SESSION['msg'] ?? '';
+$books = $books ?? $_SESSION['admin_books'] ?? [];
+$msg = $msg ?? $_SESSION['msg'] ?? '';
 unset($_SESSION['msg']);
 
-$search = $_SESSION['admin_book_search'] ?? '';
+$search = $search ?? $_SESSION['admin_book_search'] ?? '';
 ?>
 
 <!DOCTYPE html>

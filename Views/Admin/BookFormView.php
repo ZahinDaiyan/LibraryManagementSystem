@@ -6,10 +6,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$book = $_SESSION['edit_book'] ?? null;
-$genres = $_SESSION['genres'] ?? [];
-$errors = $_SESSION['form_errors'] ?? [];
-$old_data = $_SESSION['old_data'] ?? [];
+$book = $book ?? $_SESSION['edit_book'] ?? null;
+$genres = $genres ?? $_SESSION['genres'] ?? [];
+$errors = $errors ?? $_SESSION['form_errors'] ?? [];
+$old_data = $old_data ?? $_SESSION['old_data'] ?? [];
 
 unset($_SESSION['form_errors'], $_SESSION['old_data']);
 
