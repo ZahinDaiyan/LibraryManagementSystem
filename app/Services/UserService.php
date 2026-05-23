@@ -74,4 +74,28 @@ class UserService
         Close($conn);
         return $result;
     }
+
+    public function toggleStatus(int $id): bool
+    {
+        $conn = Connect();
+        $result = toggleUserStatus($conn, $id);
+        Close($conn);
+        return is_array($result) || $result === true;
+    }
+
+    public function changeRole(int $id, string $role): bool
+    {
+        $conn = Connect();
+        $result = updateUserRole($conn, $id, $role);
+        Close($conn);
+        return (bool)$result;
+    }
+
+    public function resetPassword(int $id, string $password): bool
+    {
+        $conn = Connect();
+        $result = updateUserPassword($conn, $id, $password);
+        Close($conn);
+        return (bool)$result;
+    }
 }

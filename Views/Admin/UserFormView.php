@@ -2,6 +2,7 @@
 session_start();
 
 use App\Helpers\Url;
+use App\Helpers\Csrf;
 
 if (!class_exists(Url::class)) {
     require_once __DIR__ . '/../../app/Helpers/Url.php';
@@ -39,6 +40,7 @@ $title = $user ? "Edit User" : "Add New User";
 <div id="adminAjaxMessage"></div>
 
 <form novalidate data-admin-ajax="1" action="<?= Url::route($user ? '/admin/users/' . $user['id'] : '/admin/users') ?>" method="POST" onsubmit="return validateUserForm(this)">
+    <input type="hidden" name="_csrf" value="<?= Csrf::token() ?>">
     <input type="hidden" name="action" value="<?= $user ? 'update' : 'create' ?>">
     <?php if ($user): ?>
         <input type="hidden" name="id" value="<?= $user['id'] ?>">

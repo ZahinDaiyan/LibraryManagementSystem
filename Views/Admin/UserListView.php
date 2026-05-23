@@ -2,6 +2,7 @@
 session_start();
 
 use App\Helpers\Url;
+use App\Helpers\Csrf;
 
 if (!class_exists(Url::class)) {
     require_once __DIR__ . '/../../app/Helpers/Url.php';
@@ -194,9 +195,8 @@ $role_filter = $role_filter ?? $_SESSION['admin_user_role_filter'] ?? '';
             <td><?= $u['name'] ?></td>
             <td><?= $u['email'] ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/AdminUserActionController.php" method="POST" style="display:inline;">
-                    <input type="hidden" name="action" value="change_role">
-                    <input type="hidden" name="id" value="<?= $u['id'] ?>">
+                <form novalidate action="<?= Url::route('/admin/users/' . $u['id'] . '/change-role') ?>" method="POST" style="display:inline;">
+                    <input type="hidden" name="_csrf" value="<?= Csrf::token() ?>">
                     <select name="role" onchange="this.form.submit()">
                         <option value="member" <?= $u['role'] === 'member' ? 'selected' : '' ?>>Member</option>
                         <option value="librarian" <?= $u['role'] === 'librarian' ? 'selected' : '' ?>>Librarian</option>
@@ -215,9 +215,15 @@ $role_filter = $role_filter ?? $_SESSION['admin_user_role_filter'] ?? '';
             <td>
                 <div class="user-actions">
                     <a href="<?= Url::route('/admin/users/' . $u['id'] . '/edit') ?>" class="btn-link">Edit Info</a>
-                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button></form>
+                    <form method="POST" action="<?= Url::route('/admin/users/' . $u['id'] . '/toggle-status') ?>">
+                        <input type="hidden" name="_csrf" value="<?= Csrf::token() ?>">
+                        <button type="submit" onclick="return confirm('Toggle status for this user?')" class="btn-link"><?= $u['is_active'] ? 'Deactivate' : 'Activate' ?></button>
+                    </form>
                     <?php if ((string)($_SESSION['id'] ?? '') !== (string)$u['id']): ?>
-                    <form method="POST" action="/LibraryManagementSystem/Controllers/AdminUserActionController.php"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="id" value="<?= $u['id'] ?>"><button type="submit" onclick="return confirm('Delete this user profile?')" class="btn-link-danger">Delete Profile</button></form>
+                    <form method="POST" action="<?= Url::route('/admin/users/' . $u['id'] . '/delete') ?>">
+                        <input type="hidden" name="_csrf" value="<?= Csrf::token() ?>">
+                        <button type="submit" onclick="return confirm('Delete this user profile?')" class="btn-link-danger">Delete Profile</button>
+                    </form>
                     <?php endif; ?>
                 </div>
             </td>

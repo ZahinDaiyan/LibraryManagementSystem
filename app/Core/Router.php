@@ -34,7 +34,8 @@ class Router
 
         foreach ($this->routes[$method] ?? [] as $route) {
             if (($params = $this->match($route['path'], $uri)) !== false) {
-                return $this->invokeHandler($route['handler'], $params, $request, $response);
+                $this->invokeHandler($route['handler'], $params, $request, $response);
+                return;
             }
         }
 
@@ -90,6 +91,12 @@ class Router
             throw new \RuntimeException('Controller method not found: ' . $method);
         }
 
-        call_user_func_array([$controller, $method], $params);
+        $refMethod = new \ReflectionMethod($controllerClass, $method);
+        $methodParams = $refMethod->getParameters();
+        if (count($methodParams) > 0 && $methodParams[0]->getType() && $methodParams[0]->getType()->getName() === 'array') {
+            call_user_func([$controller, $method], $params);
+        } else {
+            call_user_func_array([$controller, $method], $params);
+        }
     }
 }
