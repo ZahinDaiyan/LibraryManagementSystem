@@ -1,10 +1,13 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    header("Location: ../LoginView.php");
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
+
+$role = $_SESSION['role'] ?? '';
+$isLoggedIn = $role !== '';
+$isMember = $role === 'member';
+$homeHref = $isLoggedIn && $isMember ? 'dashboardView.php' : '../../index.php';
+$homeLabel = $isLoggedIn && $isMember ? '← Back to Dashboard' : '← Back to Home';
 
 $books = $_SESSION['books'] ?? [];
 $genres = $_SESSION['genres'] ?? [];
@@ -24,18 +27,86 @@ $selected_year = $_SESSION['book_year'] ?? '';
     <title>Book Catalog</title>
     <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
     <style>
-        /* Force spacing and inline horizontal display */
+        :root {
+            --catalog-bg: #0b1220;
+            --catalog-surface: rgba(19, 28, 47, 0.94);
+            --catalog-surface-soft: rgba(255, 255, 255, 0.04);
+            --catalog-line: rgba(255, 255, 255, 0.1);
+            --catalog-text: #eef2ff;
+            --catalog-muted: #a8b3c7;
+            --catalog-accent: #f59e0b;
+            --catalog-accent-strong: #fbbf24;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top right, rgba(245, 158, 11, 0.16), transparent 22%),
+                radial-gradient(circle at left top, rgba(59, 130, 246, 0.12), transparent 26%),
+                linear-gradient(180deg, #07101d 0%, #0b1220 100%);
+            color: var(--catalog-text);
+            color-scheme: dark;
+        }
+
+        .page-shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 24px 0 48px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            padding: 18px 20px;
+            border: 1px solid var(--catalog-line);
+            border-radius: 20px;
+            background: rgba(8, 15, 27, 0.78);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+        }
+
+        .page-header h2 {
+            margin: 0 0 6px;
+            font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+        }
+
+        .page-header p {
+            margin: 0;
+            color: var(--catalog-muted);
+            line-height: 1.6;
+        }
+
+        .page-header a {
+            color: var(--catalog-accent-strong);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .page-header a:hover {
+            color: #fff;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--catalog-line);
+            margin: 20px 0;
+        }
+
         .search-form {
             display: flex !important;
             flex-wrap: wrap !important;
             gap: 16px !important;
             max-width: 100% !important;
             align-items: center !important;
-            background: #1e2235 !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            border-radius: 12px !important;
-            padding: 24px !important;
+            background: var(--catalog-surface) !important;
+            border: 1px solid var(--catalog-line) !important;
+            border-radius: 18px !important;
+            padding: 20px !important;
             margin-bottom: 24px !important;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
         }
 
         .search-form input[type="text"] {
@@ -43,6 +114,11 @@ $selected_year = $_SESSION['book_year'] ?? '';
             min-width: 220px !important;
             max-width: none !important;
             margin-bottom: 0 !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: var(--catalog-text) !important;
+            border-radius: 12px !important;
+            padding: 12px 14px !important;
         }
 
         .search-form select {
@@ -50,6 +126,38 @@ $selected_year = $_SESSION['book_year'] ?? '';
             min-width: 150px !important;
             max-width: none !important;
             margin-bottom: 0 !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: var(--catalog-text) !important;
+            border-radius: 12px !important;
+            padding: 12px 14px !important;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--catalog-accent-strong) 50%), linear-gradient(135deg, var(--catalog-accent-strong) 50%, transparent 50%);
+            background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 12px) calc(50% + 2px);
+            background-size: 6px 6px, 6px 6px;
+            background-repeat: no-repeat;
+            color-scheme: dark;
+            font-family: inherit;
+            font-size: 0.98rem;
+            font-weight: 700;
+        }
+
+        .search-form select option {
+            background: #0f172a !important;
+            color: #f8fafc !important;
+            font-family: inherit;
+            font-size: 0.98rem;
+            font-weight: 600;
+        }
+
+        .search-form select:focus,
+        .search-form input[type="text"]:focus,
+        .search-form input[type="number"]:focus {
+            outline: none !important;
+            border-color: rgba(251, 191, 36, 0.65) !important;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.12) !important;
         }
 
         .search-form input[type="number"] {
@@ -57,126 +165,259 @@ $selected_year = $_SESSION['book_year'] ?? '';
             min-width: 80px !important;
             max-width: none !important;
             margin-bottom: 0 !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: var(--catalog-text) !important;
+            border-radius: 12px !important;
+            padding: 12px 14px !important;
         }
 
         .search-form button {
-            padding: 10px 24px !important;
+            padding: 12px 22px !important;
             flex: initial !important;
             width: auto !important;
             margin-bottom: 0 !important;
+            border: 0 !important;
+            border-radius: 999px !important;
+            background: linear-gradient(135deg, var(--catalog-accent), var(--catalog-accent-strong)) !important;
+            color: #111827 !important;
+            font-weight: 800 !important;
+            box-shadow: 0 12px 24px rgba(245, 158, 11, 0.2);
         }
 
         .search-form .btn-clear {
-            color: #f59e0b !important;
+            color: var(--catalog-accent-strong) !important;
             font-weight: 600 !important;
             margin-left: 8px !important;
             text-decoration: underline !important;
         }
 
         .search-form .btn-clear:hover {
-            color: #fbbf24 !important;
+            color: #fff !important;
         }
 
-        /* Styled button link for View Details */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid var(--catalog-line);
+            background: rgba(8, 15, 27, 0.78);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 840px;
+            color: var(--catalog-text);
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--catalog-muted);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        th, td {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        td {
+            color: #e8edf8;
+        }
+
+        td span[style*="No cover"] {
+            color: var(--catalog-muted) !important;
+        }
+
+        .cover-thumb {
+            width: 54px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+            box-shadow: 0 10px 16px rgba(0, 0, 0, 0.22);
+        }
+
         .btn-link {
             background: transparent !important;
-            border: 1px solid #f59e0b !important;
-            color: #f59e0b !important;
-            padding: 6px 14px !important;
-            font-size: 0.8rem !important;
-            font-weight: 500 !important;
-            border-radius: 6px !important;
+            border: 1px solid var(--catalog-accent) !important;
+            color: var(--catalog-accent-strong) !important;
+            padding: 9px 15px !important;
+            font-size: 0.85rem !important;
+            font-weight: 700 !important;
+            border-radius: 999px !important;
             cursor: pointer !important;
             transition: all 0.2s ease !important;
         }
 
         .btn-link:hover {
-            background: #f59e0b !important;
-            color: #fff !important;
+            background: linear-gradient(135deg, var(--catalog-accent), var(--catalog-accent-strong)) !important;
+            color: #111827 !important;
             text-decoration: none !important;
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.18);
+        }
+
+        .empty-row td {
+            text-align: center;
+            color: var(--catalog-muted);
+            padding: 24px !important;
+        }
+
+        .book-meta-note {
+            margin-top: 10px;
+            color: var(--catalog-muted);
+        }
+
+        .page-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        @media (max-width: 900px) {
+            .page-header {
+                padding: 16px;
+            }
+
+            .search-form {
+                padding: 16px !important;
+            }
+
+            .search-form input[type="text"],
+            .search-form select,
+            .search-form input[type="number"] {
+                min-width: 100% !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-shell {
+                width: min(100% - 20px, 1180px);
+            }
+
+            .page-header h2 {
+                font-size: 1.55rem;
+            }
+
+            .page-header p {
+                font-size: 0.95rem;
+            }
+
+            .search-form button,
+            .search-form .btn-clear {
+                width: 100% !important;
+                margin-left: 0 !important;
+                text-align: center;
+            }
+
+            .page-actions {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<h2>Available Books</h2>
+<div class="page-shell">
+    <div class="page-header">
+        <div>
+            <h2>Available Books</h2>
+            <p>Browse the catalog, inspect availability, and open any title for full details.</p>
+            <div class="book-meta-note">Public visitors can browse freely. Members can borrow after logging in.</div>
+        </div>
+        <div class="page-actions">
+            <a href="<?= $homeHref ?>"><?= $homeLabel ?></a>
+        </div>
+    </div>
 
-<a href="dashboardView.php">← Back to Dashboard</a>
+    <form novalidate class="search-form" action="../../Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
+        <input type="text" id="bookSearch" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchBooks()">
+        
+        <select id="bookGenre" name="genre_id" onchange="ajaxSearchBooks()">
+            <option value="">All Genres</option>
+            <?php foreach ($genres as $genre) { ?>
+                <option value="<?= $genre['id'] ?>" <?= $selected_genre == $genre['id'] ? 'selected' : '' ?>>
+                    <?= $genre['name'] ?>
+                </option>
+            <?php } ?>
+        </select>
 
-<hr>
+        <select id="bookBranch" name="branch_id" onchange="ajaxSearchBooks()">
+            <option value="">All Branches</option>
+            <?php foreach ($branches as $branch) { ?>
+                <option value="<?= $branch['id'] ?>" <?= $selected_branch == $branch['id'] ? 'selected' : '' ?>>
+                    <?= $branch['name'] ?>
+                </option>
+            <?php } ?>
+        </select>
 
-<form novalidate class="search-form" action="/LibraryManagementSystem/Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
-    <input type="text" id="bookSearch" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchBooks()">
-    
-    <select id="bookGenre" name="genre_id" onchange="ajaxSearchBooks()">
-        <option value="">All Genres</option>
-        <?php foreach ($genres as $genre) { ?>
-            <option value="<?= $genre['id'] ?>" <?= $selected_genre == $genre['id'] ? 'selected' : '' ?>>
-                <?= $genre['name'] ?>
-            </option>
-        <?php } ?>
-    </select>
+        <input type="number" id="bookYear" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" onkeyup="ajaxSearchBooks()" onchange="ajaxSearchBooks()">
 
-    <select id="bookBranch" name="branch_id" onchange="ajaxSearchBooks()">
-        <option value="">All Branches</option>
-        <?php foreach ($branches as $branch) { ?>
-            <option value="<?= $branch['id'] ?>" <?= $selected_branch == $branch['id'] ? 'selected' : '' ?>>
-                <?= $branch['name'] ?>
-            </option>
-        <?php } ?>
-    </select>
+        <button type="submit">Search</button>
+        <a href="../../Controllers/BookIndexController.php" class="btn-clear">Clear</a>
+    </form>
 
-    <input type="number" id="bookYear" name="year" placeholder="Year" value="<?= htmlspecialchars($selected_year) ?>" onkeyup="ajaxSearchBooks()" onchange="ajaxSearchBooks()">
+    <div class="table-wrap">
+        <table border="1" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>ISBN</th>
+                    <th>Year</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
-    <button type="submit">Search</button>
-    <a href="/LibraryManagementSystem/Controllers/BookIndexController.php" class="btn-clear">Clear</a>
-</form>
+            <tbody id="bookTableBody">
+                <?php if (empty($books)): ?>
+                    <tr class="empty-row"><td colspan="7">No books found.</td></tr>
+                <?php endif; ?>
 
-<hr>
-
-<table border="1" cellpadding="10">
-    <thead>
-        <tr>
-            <th>Cover</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>ISBN</th>
-            <th>Year</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-
-    <tbody id="bookTableBody">
-        <?php if (empty($books)): ?>
-            <tr><td colspan="7">No books found.</td></tr>
-        <?php endif; ?>
-
-        <?php foreach ($books as $book) { ?>
-        <tr>
-            <td>
-                <?php if (isset($book['cover_image_path']) && $book['cover_image_path'] != '') { ?>
-                    <img src="/LibraryManagementSystem/<?php echo htmlspecialchars($book['cover_image_path']); ?>" alt="Book Cover" width="52" style="border-radius:6px; object-fit:cover;">
-                <?php } else { ?>
-                    <span style="font-size:12px;color:#9ca3af;">No cover</span>
+                <?php foreach ($books as $book) { ?>
+                <tr>
+                    <td>
+                        <?php if (isset($book['cover_image_path']) && $book['cover_image_path'] != '') { ?>
+                            <img class="cover-thumb" src="../../<?php echo htmlspecialchars($book['cover_image_path']); ?>" alt="Book Cover">
+                        <?php } else { ?>
+                            <span style="font-size:12px;color:#9ca3af;">No cover</span>
+                        <?php } ?>
+                    </td>
+                    <td><?= htmlspecialchars($book['title']) ?></td>
+                    <td><?= htmlspecialchars($book['author']) ?></td>
+                    <td><?= htmlspecialchars($book['genre_name'] ?? 'N/A') ?></td>
+                    <td><?= htmlspecialchars($book['isbn']) ?></td>
+                    <td><?= htmlspecialchars((string)$book['published_year']) ?></td>
+                    <td>
+                        <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit" class="btn-link">View Details</button></form>
+                    </td>
+                </tr>
                 <?php } ?>
-            </td>
-            <td><?= $book['title'] ?></td>
-            <td><?= $book['author'] ?></td>
-            <td><?= $book['genre_name'] ?? 'N/A' ?></td>
-            <td><?= $book['isbn'] ?></td>
-            <td><?= $book['published_year'] ?></td>
-            <td>
-                <form method="POST" action="/LibraryManagementSystem/Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit" class="btn-link">View Details</button></form>
-            </td>
-        </tr>
-        <?php } ?>
-    </tbody>
+            </tbody>
 
-</table>
+        </table>
+    </div>
 
-<script src="../js/book_search.js"></script>
+    <script src="../js/book_search.js"></script>
+</div>
 
 </body>
 </html>

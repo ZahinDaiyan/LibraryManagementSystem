@@ -29,7 +29,7 @@ if (isset($_SESSION['role'])) {
 
 } else {
 
-    header("Location: views/LoginView.php");
+    header("Location: Views/HomeView.php");
     exit();
 }
 ?>

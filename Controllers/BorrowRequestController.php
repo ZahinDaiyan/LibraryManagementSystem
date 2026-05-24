@@ -38,9 +38,10 @@ if (!function_exists('memberBorrowRequestRespond')) {
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     if ($expectsJson) {
-        memberBorrowRequestRespond($expectsJson, false, 'Unauthorized', 0, '../Views/LoginView.php', 403);
+        memberBorrowRequestRespond($expectsJson, false, 'Please login first to borrow books.', 0, '../Views/LoginView.php', 403);
     }
 
+    $_SESSION['error'] = 'Please login first to borrow books.';
     header("Location: ../Views/LoginView.php");
     exit();
 }
@@ -53,7 +54,7 @@ $book_id = isset($_POST['book_id']) && is_numeric($_POST['book_id']) ? intval($_
 $branch_id = isset($_POST['branch_id']) && is_numeric($_POST['branch_id']) ? intval($_POST['branch_id']) : 0;
 
 if ($book_id <= 0 || $branch_id <= 0) {
-    memberBorrowRequestRespond($expectsJson, false, "Invalid borrow request.", $book_id, "/LibraryManagementSystem/Controllers/BookIndexController.php", 400);
+    memberBorrowRequestRespond($expectsJson, false, "Invalid borrow request.", $book_id, "BookIndexController.php", 400);
 }
 
 $conn = Connect();

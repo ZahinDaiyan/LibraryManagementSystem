@@ -52,20 +52,20 @@ $branchCity = isset($librarian['branch_city']) ? $librarian['branch_city'] : '';
 
 	<ul>
 		<li>
-			<a href="/LibraryManagementSystem/Controllers/LibrarianBookFormController.php?mode=add">Add New Book</a>
+			<a href="../../Controllers/LibrarianBookFormController.php?mode=add">Add New Book</a>
 		</li>
 		<li>
-			<a href="/LibraryManagementSystem/Controllers/LibrarianProfileController.php">Manage Profile</a>
+			<a href="../../Controllers/LibrarianProfileController.php">Manage Profile</a>
 		</li>
 		<li>
-			<a href="/LibraryManagementSystem/Controllers/LibrarianBookCatalogController.php">Manage Book Catalog</a>
+			<a href="../../Controllers/LibrarianBookCatalogController.php">Manage Book Catalog</a>
 		</li>
 		<li>
-			<a href="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php">Librarian Operations</a>
+			<a href="../../Controllers/LibrarianOperationsController.php">Librarian Operations</a>
 		</li>
 	</ul>
 
-	<a class="logout-link" href="/LibraryManagementSystem/Controllers/LogoutController.php">
+	<a class="logout-link" href="../../Controllers/LogoutController.php">
 		<button>Logout</button>
 	</a>
 </div>

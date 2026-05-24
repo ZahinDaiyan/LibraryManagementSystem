@@ -165,7 +165,7 @@ $search = $_SESSION['admin_book_search'] ?? '';
         <td><?= $b['total_available'] ?? 0 ?></td>
         <td>
             <form method="POST" action="../../Controllers/AdminBookFormController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link">Edit Details</button></form>
-            <form data-admin-ajax="1" method="POST" action="/LibraryManagementSystem/Controllers/AdminBookActionController.php" class="book-delete-form" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link-danger">Delete</button></form>
+            <form data-admin-ajax="1" method="POST" action="../../Controllers/AdminBookActionController.php" class="book-delete-form" style="display:inline;"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= $b['id'] ?>"><button type="submit" class="btn-link-danger">Delete</button></form>
         </td>
     </tr>
     <?php endforeach; ?>

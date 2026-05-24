@@ -90,7 +90,7 @@ $notifications = $_SESSION['notifications'] ?? [];
             <?php foreach ($notifications as $n): ?>
                 <li>
                     <?= htmlspecialchars($n['message']) ?> 
-                    <form method="POST" action="/LibraryManagementSystem/Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link">Mark as Read</button></form>
+                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link">Mark as Read</button></form>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -102,17 +102,17 @@ $notifications = $_SESSION['notifications'] ?? [];
     <div style="flex: 1;">
         <h3>Features</h3>
         <ul>
-            <li><a href="/LibraryManagementSystem/Controllers/BookIndexController.php">Browse Books</a></li>
-            <li><a href="../../controllers/MyLoansController.php">Active Loans</a></li>
-            <li><a href="../../controllers/BorrowHistoryController.php">Borrow History</a></li>
-            <li><a href="../../controllers/ReservationController.php">My Reservations</a></li>
-            <li><a href="../../controllers/ReadingListController.php">Reading List</a></li>
-            <li><a href="../../controllers/ProfileController.php">My Profile</a></li>
-            <li><a href="../../controllers/FineController.php">My Fines</a></li>
-            <li><a href="../../controllers/MemberComplaintController.php">Support & Complaints</a></li>
+            <li><a href="../../Controllers/BookIndexController.php">Browse Books</a></li>
+            <li><a href="../../Controllers/MyLoansController.php">Active Loans</a></li>
+            <li><a href="../../Controllers/BorrowHistoryController.php">Borrow History</a></li>
+            <li><a href="../../Controllers/ReservationController.php">My Reservations</a></li>
+            <li><a href="../../Controllers/ReadingListController.php">Reading List</a></li>
+            <li><a href="../../Controllers/ProfileController.php">My Profile</a></li>
+            <li><a href="../../Controllers/FineController.php">My Fines</a></li>
+            <li><a href="../../Controllers/MemberComplaintController.php">Support & Complaints</a></li>
         </ul>
         <br>
-        <a href="../../controllers/LogoutController.php"><button>Logout</button></a>
+        <a href="../../Controllers/LogoutController.php"><button>Logout</button></a>
     </div>
 
     <div style="flex: 2; border-left: 1px solid #ccc; padding-left: 20px;">

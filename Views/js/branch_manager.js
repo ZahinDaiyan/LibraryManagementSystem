@@ -179,7 +179,7 @@ function loadOverdueAlerts() {
     message.innerText = "Loading overdue alerts...";
 
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/LibraryManagementSystem/Controllers/BranchManagerOverdueAlertsApiController.php?threshold_days=" + encodeURIComponent(threshold), true);
+    xhr.open("GET", "../../Controllers/BranchManagerOverdueAlertsApiController.php?threshold_days=" + encodeURIComponent(threshold), true);
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState !== 4) {

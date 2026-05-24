@@ -33,13 +33,13 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Librarian Operations</title>
-    <link rel="stylesheet" href="/LibraryManagementSystem/Views/css/librarian.css">
+    <link rel="stylesheet" href="../../Views/css/librarian.css">
 </head>
 <body>
 
 <h2>Librarian Operations</h2>
 <p>Branch: <?php echo isset($branch['branch_name']) ? $branch['branch_name'] : 'Unassigned'; ?></p>
-<a href="/LibraryManagementSystem/Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
+<a href="../../Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
 
 <div id="librarianOpsMessage" style="margin:12px 0;color:#1f2937;"></div>
 <?php if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?><p><?php echo $_SESSION['error']; ?></p><?php } ?>
@@ -47,7 +47,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
 
 <hr>
 <h3>Genres</h3>
-<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
     <input type="hidden" name="action" value="create_genre">
     <input type="text" name="name" placeholder="New genre name">
     <button type="submit">Add Genre</button>
@@ -58,7 +58,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
         <tr>
             <td><?php echo $genre['name']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateGenreForm(this)">
                     <input type="hidden" name="action" value="rename_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <input type="text" name="name" value="<?php echo $genre['name']; ?>">
@@ -66,7 +66,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
                 </form>
             </td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="delete_genre">
                     <input type="hidden" name="genre_id" value="<?php echo $genre['id']; ?>">
                     <button type="submit">Delete</button>
@@ -85,7 +85,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $row['title']; ?></td>
             <td><?php echo $row['isbn']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="save_inventory">
                     <input type="hidden" name="book_id" value="<?php echo $row['book_id']; ?>">
                     <input type="number" name="total_copies" value="<?php echo $row['total_copies']; ?>">
@@ -113,13 +113,13 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $request['member_name']; ?></td>
             <td><?php echo $request['book_title']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="approve">
                     <button type="submit">Approve</button>
                 </form>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="decision_request">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $request['id']; ?>">
                     <input type="hidden" name="decision" value="reject">
@@ -145,12 +145,12 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $rr['book_title']; ?></td>
             <td><?php echo $rr['due_date']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/RenewalDecisionController.php" method="POST" style="display:inline;">
+                <form novalidate action="../../Controllers/RenewalDecisionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="request_id" value="<?php echo $rr['id']; ?>">
                     <input type="hidden" name="decision" value="approved">
                     <button type="submit">Approve</button>
                 </form>
-                <form novalidate action="/LibraryManagementSystem/Controllers/RenewalDecisionController.php" method="POST" style="display:inline;">
+                <form novalidate action="../../Controllers/RenewalDecisionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="request_id" value="<?php echo $rr['id']; ?>">
                     <input type="hidden" name="decision" value="rejected">
                     <button type="submit">Reject</button>
@@ -177,7 +177,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $record['status']; ?></td>
             <td><?php echo $record['due_date']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="process_return">
                     <input type="hidden" name="borrow_record_id" value="<?php echo $record['id']; ?>">
                     <button type="submit">Mark Returned</button>
@@ -190,7 +190,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
 
 <hr>
 <h3>Issue Manual Fine</h3>
-<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateFineForm(this)">
     <input type="hidden" name="action" value="issue_fine">
     <input type="number" name="borrow_record_id" placeholder="Borrow record ID">
     <input type="number" name="member_id" placeholder="Member ID">
@@ -200,7 +200,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
 </form>
 
 <h3>Confirm Fine Payments</h3>
-<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
     <input type="hidden" name="action" value="pay_fine">
     <input type="number" name="fine_id" placeholder="Fine ID">
     <button type="submit">Mark Paid</button>
@@ -218,7 +218,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $fine['amount']; ?></td>
             <td><?php echo $fine['reason']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="action" value="pay_fine">
                     <input type="hidden" name="fine_id" value="<?php echo $fine['id']; ?>">
                     <button type="submit">Mark Paid</button>
@@ -230,7 +230,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
 
 <hr>
 <h3>Active Loans</h3>
-<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST">
+<form novalidate action="../../Controllers/LibrarianOperationsController.php" method="POST">
     <select name="loan_filter">
         <option value="">All</option>
         <option value="overdue">Overdue</option>
@@ -271,7 +271,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $member['email']; ?></td>
             <td><?php echo $member['phone']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">
+                <form novalidate action="../../Controllers/LibrarianOperationsController.php" method="POST" style="display:inline;">
                     <input type="hidden" name="member_id" value="<?php echo $member['id']; ?>">
                     <button type="submit">View History</button>
                 </form>
@@ -319,7 +319,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
             <td><?php echo $reservation['member_name']; ?></td>
             <td><?php echo $reservation['book_title']; ?></td>
             <td>
-                <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST">
+                <form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST">
                     <input type="hidden" name="action" value="fulfill_reservation">
                     <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                     <button type="submit">Fulfil</button>
@@ -396,7 +396,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
 
 <hr>
 <h3>Announcements</h3>
-<form novalidate action="/LibraryManagementSystem/Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
+<form novalidate action="../../Controllers/LibrarianOperationsActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="create_announcement">
     <input type="number" name="branch_id" placeholder="Branch ID or leave blank">
     <input type="text" name="title" placeholder="Title">
@@ -409,7 +409,7 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
     <?php } ?>
 </ul>
 
-<script src="/LibraryManagementSystem/Views/js/librarian_validation.js"></script>
+<script src="../../Views/js/librarian_validation.js"></script>
 <script>
 function selectMemberSuggestion(name) {
     document.getElementById('member_query').value = name;
@@ -417,7 +417,7 @@ function selectMemberSuggestion(name) {
     searchMembersAjax(name);
 }
 </script>
-<script src="/LibraryManagementSystem/Views/js/librarian_search.js"></script>
-<script src="/LibraryManagementSystem/Views/js/librarian_operations.js"></script>
+<script src="../../Views/js/librarian_search.js"></script>
+<script src="../../Views/js/librarian_operations.js"></script>
 </body>
 </html>

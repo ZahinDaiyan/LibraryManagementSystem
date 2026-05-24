@@ -30,7 +30,7 @@ $title_text = $a ? "Edit Announcement" : "Create New Announcement";
 
 <div id="adminAjaxMessage"></div>
 
-<form novalidate data-admin-ajax="1" action="/LibraryManagementSystem/Controllers/AdminAnnouncementActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
+<form novalidate data-admin-ajax="1" action="../../Controllers/AdminAnnouncementActionController.php" method="POST" onsubmit="return validateAnnouncementForm(this)">
     <input type="hidden" name="action" value="<?= $a ? 'update' : 'create' ?>">
     <?php if ($a): ?>
         <input type="hidden" name="id" value="<?= $a['id'] ?>">

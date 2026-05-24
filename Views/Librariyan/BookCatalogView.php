@@ -24,11 +24,11 @@ $books = isset($_SESSION['catalog_books']) ? $_SESSION['catalog_books'] : array(
 
 <h2>Master Book Catalog</h2>
 
-<a href="/LibraryManagementSystem/Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
+<a href="../../Controllers/LibrarianDashboardController.php">Back to Dashboard</a>
 
 <br><br>
 
-<a href="/LibraryManagementSystem/Controllers/LibrarianBookFormController.php?mode=add">Add New Book</a>
+<a href="../../Controllers/LibrarianBookFormController.php?mode=add">Add New Book</a>
 
 <?php if (isset($_SESSION['error']) && $_SESSION['error'] != '') { ?>
     <p><?php echo $_SESSION['error']; ?></p>
@@ -72,17 +72,17 @@ $books = isset($_SESSION['catalog_books']) ? $_SESSION['catalog_books'] : array(
             <td><?php echo $book['available_copies']; ?></td>
             <td><?php echo $book['status_label']; ?></td>
             <td>
-                <a href="/LibraryManagementSystem/Controllers/LibrarianBookFormController.php?mode=edit&id=<?php echo $book['id']; ?>">Edit</a>
+                <a href="../../Controllers/LibrarianBookFormController.php?mode=edit&id=<?php echo $book['id']; ?>">Edit</a>
 
                 <?php if ($book['status_label'] === 'Retired/Unavailable') { ?>
-                    <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianBookRestoreController.php" method="POST" style="display:inline;">
+                    <form novalidate action="../../Controllers/LibrarianBookRestoreController.php" method="POST" style="display:inline;">
                         <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
                         <label for="copies_<?php echo $book['id']; ?>">Copies:</label>
                         <input type="number" id="copies_<?php echo $book['id']; ?>" name="copies" value="1" min="1" style="width:60px;">
                         <button type="submit">Make Available</button>
                     </form>
                 <?php } else { ?>
-                    <form novalidate action="/LibraryManagementSystem/Controllers/LibrarianBookRetireController.php" method="POST" style="display:inline;">
+                    <form novalidate action="../../Controllers/LibrarianBookRetireController.php" method="POST" style="display:inline;">
                         <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
                         <button type="submit">Mark Unavailable</button>
                     </form>

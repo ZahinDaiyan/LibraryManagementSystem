@@ -25,7 +25,7 @@ if (!$c) {
 <body>
 
 <h2>Complaint Details</h2>
-<a href="/LibraryManagementSystem/Controllers/AdminComplaintController.php">← Back to List</a>
+<a href="../../Controllers/AdminComplaintController.php">← Back to List</a>
 <hr>
 
 <div id="adminAjaxMessage"></div>

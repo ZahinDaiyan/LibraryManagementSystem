@@ -19,7 +19,7 @@ function ajaxSearchUsers() {
                     const selectedManager = (u.role === 'branch_manager') ? 'selected' : '';
                     const selectedAdmin = (u.role === 'admin') ? 'selected' : '';
 
-                    const roleForm = "<form novalidate action='/LibraryManagementSystem/Controllers/AdminUserActionController.php' method='POST' style='display:inline;'>" +
+                    const roleForm = "<form novalidate action='../../Controllers/AdminUserActionController.php' method='POST' style='display:inline;'>" +
                         "<input type='hidden' name='action' value='change_role'>" +
                         "<input type='hidden' name='id' value='" + u.id + "'>" +
                         "<select name='role' onchange='this.form.submit()'>" +
@@ -35,11 +35,11 @@ function ajaxSearchUsers() {
                     const statusHtml = "<b style='color: " + statusColor + ";'>" + statusText + "</b>";
 
                     const toggleBtnText = u.is_active ? 'Deactivate' : 'Activate';
-                    const actionsHtml = "<form method='POST' action='/LibraryManagementSystem/Controllers/AdminUserFormController.php' style='display:inline;'>" +
+                    const actionsHtml = "<form method='POST' action='../../Controllers/AdminUserFormController.php' style='display:inline;'>" +
                         "<input type='hidden' name='id' value='" + u.id + "'>" +
                         "<button type='submit' class='btn-link'>Edit Info</button>" +
                     "</form> " +
-                    "<form method='POST' action='/LibraryManagementSystem/Controllers/AdminUserActionController.php' style='display:inline;'>" +
+                    "<form method='POST' action='../../Controllers/AdminUserActionController.php' style='display:inline;'>" +
                         "<input type='hidden' name='action' value='toggle_status'>" +
                         "<input type='hidden' name='id' value='" + u.id + "'>" +
                         "<button type='submit' onclick=\"return confirm('Toggle status for this user?')\" class='btn-link'>" + toggleBtnText + "</button>" +
@@ -59,7 +59,7 @@ function ajaxSearchUsers() {
             tbody.innerHTML = display;
         }
     };
-    xhttp.open("POST", "/LibraryManagementSystem/Controllers/AdminUserSearchApiController.php", true);
+    xhttp.open("POST", "../../Controllers/AdminUserSearchApiController.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("search=" + encodeURIComponent(searchVal) + "&role_filter=" + encodeURIComponent(roleVal));
 }

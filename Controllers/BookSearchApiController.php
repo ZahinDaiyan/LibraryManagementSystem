@@ -2,12 +2,6 @@
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    http_response_code(403);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit();
-}
-
 require_once '../Models/DB.php';
 require_once '../Models/BookModel.php';
 

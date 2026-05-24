@@ -6,18 +6,6 @@ $expectsJson = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER[
     || (isset($_POST['ajax']) && $_POST['ajax'] === '1')
     || (isset($_SERVER['HTTP_ACCEPT']) && stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
-    if ($expectsJson) {
-        header('Content-Type: application/json; charset=utf-8');
-        http_response_code(403);
-        echo json_encode(array('success' => false, 'message' => 'Unauthorized'));
-        exit();
-    }
-
-    header("Location: ../Views/LoginView.php");
-    exit();
-}
-
 require_once '../models/DB.php';
 require_once '../models/BookModel.php';
 require_once '../models/ReadingListModel.php';
@@ -34,7 +22,7 @@ if ($id <= 0) {
     }
 
     $_SESSION['error'] = "Invalid book selection.";
-    header("Location: /LibraryManagementSystem/Controllers/BookIndexController.php");
+    header("Location: BookIndexController.php");
     exit();
 }
 
@@ -44,7 +32,8 @@ $book = getBookById($conn, $id);
 $availability = getBookAvailabilityByBranches($conn, $id);
 $reviews = getBookReviews($conn, $id);
 $rating_info = getBookAverageRating($conn, $id);
-$in_reading_list = isInReadingList($conn, $_SESSION['id'], $id);
+$memberId = isset($_SESSION['id']) ? (int)$_SESSION['id'] : 0;
+$in_reading_list = $memberId > 0 ? isInReadingList($conn, $memberId, $id) : false;
 
 Close($conn);
 

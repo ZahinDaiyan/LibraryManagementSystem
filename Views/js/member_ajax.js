@@ -3,7 +3,7 @@ function memberAjaxResolveRedirect(redirect) {
         return '';
     }
 
-    if (/^https?:\/\//i.test(redirect) || redirect.indexOf('/LibraryManagementSystem/') === 0) {
+    if (/^https?:\/\//i.test(redirect) || redirect.indexOf('../../') === 0) {
         return redirect;
     }
 
@@ -11,7 +11,7 @@ function memberAjaxResolveRedirect(redirect) {
         return redirect;
     }
 
-    return '/LibraryManagementSystem/Controllers/' + redirect;
+    return '../../Controllers/' + redirect;
 }
 
 function memberAjaxSupportsAction(action) {

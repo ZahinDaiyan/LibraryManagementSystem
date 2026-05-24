@@ -22,7 +22,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <body>
 
 <h2>Branch Manager Profile</h2>
-<a href="/LibraryManagementSystem/Controllers/BranchManagerDashboardController.php">Back to Dashboard</a>
+<a href="../../Controllers/BranchManagerDashboardController.php">Back to Dashboard</a>
 <hr>
 
 <?php if ($msg) echo "<p style='color:green;'>$msg</p>"; ?>
@@ -41,7 +41,7 @@ unset($_SESSION['msg'], $_SESSION['error']);
 <hr>
 
 <h3>Update Profile</h3>
-<form novalidate action="/LibraryManagementSystem/Controllers/BranchManagerProfileUpdateController.php" method="POST" onsubmit="return validateManagerProfile(this)">
+<form novalidate action="../../Controllers/BranchManagerProfileUpdateController.php" method="POST" onsubmit="return validateManagerProfile(this)">
     <p>
         <label>Name:</label><br>
         <input type="text" name="name" value="<?= htmlspecialchars($profile['name'] ?? '') ?>">

@@ -8,12 +8,13 @@ function ajaxSearchBooks() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         if (xhttp.status === 200) {
-            const books = JSON.parse(xhttp.responseText);
+            const response = JSON.parse(xhttp.responseText);
+            const books = Array.isArray(response) ? response : (response.books || []);
             let display = "";
 
             function getCoverCell(book) {
                 if (book.cover_image_path && String(book.cover_image_path).trim() !== "") {
-                    return "<img src='/LibraryManagementSystem/" + book.cover_image_path + "' alt='Book Cover' width='52' style='border-radius:6px;object-fit:cover;'>";
+                    return "<img src='../../" + book.cover_image_path + "' alt='Book Cover' width='52' style='border-radius:6px;object-fit:cover;'>";
                 }
 
                 return "<span style='font-size:12px;color:#9ca3af;'>No cover</span>";
@@ -40,6 +41,8 @@ function ajaxSearchBooks() {
                 }
             }
             tbody.innerHTML = display;
+        } else {
+            console.error("Book search failed:", xhttp.status, xhttp.responseText);
         }
     };
     xhttp.open("POST", "../../Controllers/BookSearchApiController.php", true);
