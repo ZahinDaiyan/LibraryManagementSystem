@@ -7,13 +7,18 @@ class Url
     public static function basePath(): string
     {
         $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-        $dir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+        $path = trim($scriptName, '/');
 
-        if ($dir === '.' || $dir === '/') {
+        if ($path === '') {
             return '';
         }
 
-        return $dir;
+        $segments = explode('/', $path);
+        if (count($segments) <= 1) {
+            return '';
+        }
+
+        return '/' . $segments[0];
     }
 
     public static function route(string $path): string

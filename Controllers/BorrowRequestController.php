@@ -38,9 +38,10 @@ if (!function_exists('memberBorrowRequestRespond')) {
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'member') {
     if ($expectsJson) {
-        memberBorrowRequestRespond($expectsJson, false, 'Unauthorized', 0, '../Views/LoginView.php', 403);
+        memberBorrowRequestRespond($expectsJson, false, 'Please login first to borrow books.', 0, '../Views/LoginView.php', 403);
     }
 
+    $_SESSION['error'] = 'Please login first to borrow books.';
     header("Location: ../Views/LoginView.php");
     exit();
 }

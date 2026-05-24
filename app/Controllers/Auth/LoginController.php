@@ -31,7 +31,7 @@ class LoginController extends Controller
 
         if ($email === '' || $password === '') {
             $_SESSION['error'] = 'Please fill all fields';
-            $this->redirect('/');
+            $this->redirect('/login');
             return;
         }
 
@@ -44,11 +44,12 @@ class LoginController extends Controller
             $_SESSION['id'] = $user['id'];
             $_SESSION['name'] = $user['name'];
             $_SESSION['role'] = $user['role'] === 'manager' ? 'branch_manager' : $user['role'];
+            unset($_SESSION['error'], $_SESSION['msg']);
             $this->redirect('/');
         }
 
         $_SESSION['error'] = 'Invalid Credentials';
-        $this->redirect('/');
+        $this->redirect('/login');
     }
 
     public function logout(): void

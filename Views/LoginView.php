@@ -41,6 +41,7 @@ if (!class_exists(Url::class)) {
 <body>
 
 <div class="auth-container">
+    <a href="<?= Url::route('/') ?>" style="display:inline-block; margin-bottom: 18px; color: #9a9fbf; text-decoration:none;">← Back to home</a>
     <h2 style="margin-bottom: 24px;">Login</h2>
 
     <form

@@ -8,7 +8,8 @@ function ajaxSearchBooks() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         if (xhttp.status === 200) {
-            const books = JSON.parse(xhttp.responseText);
+            const response = JSON.parse(xhttp.responseText);
+            const books = Array.isArray(response) ? response : (response.books || []);
             let display = "";
 
             function getCoverCell(book) {
@@ -40,9 +41,11 @@ function ajaxSearchBooks() {
                 }
             }
             tbody.innerHTML = display;
+        } else {
+            console.error("Book search failed:", xhttp.status, xhttp.responseText);
         }
     };
-    xhttp.open("POST", "../../Controllers/BookSearchApiController.php", true);
+    xhttp.open("POST", "/LibraryManagementSystem/Controllers/BookSearchApiController.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("search=" + encodeURIComponent(searchVal) + 
                "&genre_id=" + encodeURIComponent(genreVal) + 
