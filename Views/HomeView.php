@@ -3,6 +3,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/includes/i18n.php';
+
+$lang = app_current_language();
+
 require_once '../Models/DB.php';
 require_once '../Models/BookModel.php';
 require_once '../Models/AnnouncementModel.php';
@@ -20,14 +24,15 @@ $basePath = '..';
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= htmlspecialchars($lang) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Library Home</title>
+    <title><?= app_translate('home.brand_title') ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #08111f;
@@ -57,6 +62,10 @@ $basePath = '..';
                 radial-gradient(circle at 85% 15%, rgba(246, 183, 60, 0.18), transparent 24%),
                 linear-gradient(180deg, #050b14 0%, var(--bg) 42%, #0a1321 100%);
             min-height: 100vh;
+        }
+
+        body.lang-bn {
+            font-family: 'Noto Sans Bengali', 'Manrope', sans-serif;
         }
 
         a {
@@ -475,53 +484,58 @@ $basePath = '..';
         }
     </style>
 </head>
-<body>
+<body class="<?= $lang === 'bn' ? 'lang-bn' : 'lang-en' ?>">
     <div class="page-shell">
         <header class="topbar">
             <div class="brand">
                 <div class="brand-mark">L</div>
                 <div>
-                    <div>Library Management System</div>
-                    <div style="font-size: 0.88rem; color: var(--muted); font-weight: 600;">Discover, borrow, and stay informed</div>
+                    <div><?= app_translate('home.brand_title') ?></div>
+                    <div style="font-size: 0.88rem; color: var(--muted); font-weight: 600;"><?= app_translate('home.brand_tagline') ?></div>
                 </div>
             </div>
 
             <nav class="nav-links" aria-label="Primary navigation">
-                <a href="#featured-books">Featured Books</a>
-                <a href="#announcements">Announcements</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
+                <a href="#featured-books"><?= app_translate('home.nav.featured') ?></a>
+                <a href="#announcements"><?= app_translate('home.nav.announcements') ?></a>
+                <a href="#about"><?= app_translate('home.nav.about') ?></a>
+                <a href="#contact"><?= app_translate('home.nav.contact') ?></a>
             </nav>
 
-            <a class="btn btn-login" href="LoginView.php">Login</a>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <a class="btn btn-login" href="<?= app_language_url('LoginView.php') ?>"><?= app_translate('home.login') ?></a>
+                <div class="lang-switch" aria-label="<?= app_translate('language.switch') ?>" style="display:inline-flex; gap:8px;">
+                    <a class="btn btn-outline" style="padding:10px 14px;" href="<?= app_language_url('HomeView.php', 'en') ?>"><?= app_translate('language.english') ?></a>
+                    <a class="btn btn-outline" style="padding:10px 14px;" href="<?= app_language_url('HomeView.php', 'bn') ?>"><?= app_translate('language.bengali') ?></a>
+                </div>
+            </div>
         </header>
 
         <section class="hero">
             <div class="hero-copy">
-                <div class="eyebrow">Welcome to the library</div>
-                <h1>A calmer way to explore your next read.</h1>
+                <div class="eyebrow"><?= app_translate('home.hero.badge') ?></div>
+                <h1><?= app_translate('home.hero.title') ?></h1>
                 <p>
-                    Browse the catalog, check live availability, read announcements, and log in only when you are ready to borrow.
-                    The library is open to visitors and members alike, with a clean experience across mobile and desktop.
+                    <?= app_translate('home.hero.description') ?>
                 </p>
 
                 <div class="hero-actions">
-                    <a class="btn btn-login" href="<?= $basePath ?>/Controllers/BookIndexController.php">Browse Books</a>
-                    <a class="btn btn-outline" href="#announcements">See News</a>
+                    <a class="btn btn-login" href="<?= $basePath ?>/Controllers/BookIndexController.php"><?= app_translate('home.hero.browse') ?></a>
+                    <a class="btn btn-outline" href="#announcements"><?= app_translate('home.hero.news') ?></a>
                 </div>
 
                 <div class="hero-stats">
                     <div class="stat">
                         <strong><?= count($featuredBooks) ?></strong>
-                        <span>Featured titles curated from the collection</span>
+                        <span><?= app_translate('home.stat.featured') ?></span>
                     </div>
                     <div class="stat">
                         <strong><?= count($announcements) ?></strong>
-                        <span>Latest announcements and library updates</span>
+                        <span><?= app_translate('home.stat.announcements') ?></span>
                     </div>
                     <div class="stat">
                         <strong>24/7</strong>
-                        <span>Catalog access for browsing and discovery</span>
+                        <span><?= app_translate('home.stat.access') ?></span>
                     </div>
                 </div>
             </div>
@@ -530,20 +544,24 @@ $basePath = '..';
                 <div class="panel-image"></div>
                 <div class="mini-grid">
                     <div class="mini-card">
-                        <strong>Browse books</strong>
-                        Search by title, author, ISBN, genre, or branch availability.
+                        <strong><?= app_translate('home.panel.browse.title') ?></strong>
+                        <?= app_translate('home.panel.browse.body') ?>
                     </div>
                     <div class="mini-card">
-                        <strong>Borrow safely</strong>
-                        Visitors are sent to login before borrowing, with a clear message.
+                        <strong><?= app_translate('home.panel.borrow.title') ?></strong>
+                        <?= app_translate('home.panel.borrow.body') ?>
                     </div>
                     <div class="mini-card">
-                        <strong>Stay updated</strong>
-                        See branch and system announcements without signing in.
+                        <strong><?= app_translate('home.panel.news.title') ?></strong>
+                        <?= app_translate('home.panel.news.body') ?>
                     </div>
                     <div class="mini-card">
-                        <strong>Role-aware access</strong>
-                        Members and librarians land in the right dashboard after login.
+                        <strong><?= app_translate('home.panel.roles.title') ?></strong>
+                        <?= app_translate('home.panel.roles.body') ?>
+                    </div>
+                    <div class="mini-card">
+                        <strong><?= app_translate('home.panel.language.title') ?></strong>
+                        <?= app_translate('home.panel.language.body') ?>
                     </div>
                 </div>
             </aside>
@@ -552,15 +570,15 @@ $basePath = '..';
         <section class="section" id="featured-books">
             <div class="section-header">
                 <div>
-                    <h2>Featured Books</h2>
-                    <p>Highlighted titles with live availability so visitors can browse before they sign in.</p>
+                    <h2><?= app_translate('home.featured.title') ?></h2>
+                    <p><?= app_translate('home.featured.body') ?></p>
                 </div>
-                <a href="<?= $basePath ?>/Controllers/BookIndexController.php">View full catalog</a>
+                <a href="<?= $basePath ?>/Controllers/BookIndexController.php"><?= app_translate('home.featured.catalog') ?></a>
             </div>
 
             <div class="section-card">
                 <?php if (empty($featuredBooks)): ?>
-                    <div class="empty-state">No books are available yet.</div>
+                    <div class="empty-state"><?= app_translate('home.featured.empty') ?></div>
                 <?php else: ?>
                     <div class="grid-books">
                         <?php foreach ($featuredBooks as $book): ?>
@@ -591,7 +609,7 @@ $basePath = '..';
 
                                 <form class="inline-form" method="POST" action="<?= $basePath ?>/Controllers/BookDetailsController.php">
                                     <input type="hidden" name="id" value="<?= (int)($book['id'] ?? 0) ?>">
-                                    <button type="submit" class="btn btn-outline">View Details</button>
+                                    <button type="submit" class="btn btn-outline"><?= app_translate('home.featured.details') ?></button>
                                 </form>
                             </article>
                         <?php endforeach; ?>
@@ -603,14 +621,14 @@ $basePath = '..';
         <section class="section" id="announcements">
             <div class="section-header">
                 <div>
-                    <h2>Announcements & News</h2>
-                    <p>Quick updates from the library, including branch notices and system-wide news.</p>
+                    <h2><?= app_translate('home.announcements.title') ?></h2>
+                    <p><?= app_translate('home.announcements.body') ?></p>
                 </div>
             </div>
 
             <div class="section-card announcements">
                 <?php if (empty($announcements)): ?>
-                    <div class="empty-state">No announcements published yet.</div>
+                    <div class="empty-state"><?= app_translate('home.announcements.empty') ?></div>
                 <?php else: ?>
                     <?php foreach ($announcements as $announcement): ?>
                         <article class="announcement-card">
@@ -630,31 +648,29 @@ $basePath = '..';
 
         <section class="section two-col">
             <div class="about-box" id="about">
-                <h2 style="margin-bottom: 12px;">About the library</h2>
+                <h2 style="margin-bottom: 12px;"><?= app_translate('home.about.title') ?></h2>
                 <p>
-                    Our library system is designed for visitors who want to explore the catalog and for members who want
-                    a smooth path into borrowing, reviews, and their personal dashboard.
+                    <?= app_translate('home.about.body1') ?>
                 </p>
                 <p>
-                    The current setup keeps the existing database structure, role-based access, and branch inventory data intact
-                    while improving the first impression and the public browsing flow.
+                    <?= app_translate('home.about.body2') ?>
                 </p>
             </div>
 
             <div class="contact-box" id="contact">
-                <h2 style="margin-bottom: 12px;">Contact & footer</h2>
-                <p><strong>Library Desk:</strong> support@library.local</p>
-                <p><strong>Phone:</strong> +1 (555) 010-2048</p>
-                <p><strong>Hours:</strong> Mon - Sat, 8:00 AM to 8:00 PM</p>
+                <h2 style="margin-bottom: 12px;"><?= app_translate('home.contact.title') ?></h2>
+                <p><strong><?= app_translate('home.contact.desk') ?></strong> support@library.local</p>
+                <p><strong><?= app_translate('home.contact.phone') ?></strong> +1 (555) 010-2048</p>
+                <p><strong><?= app_translate('home.contact.hours') ?></strong> Mon - Sat, 8:00 AM to 8:00 PM</p>
                 <p style="margin-bottom: 0;">
-                    Need to borrow a book? Open a title, check branch availability, and log in when you are ready.
+                    <?= app_translate('home.contact.body') ?>
                 </p>
             </div>
         </section>
 
         <footer>
-            <div>Library Management System</div>
-            <div style="margin-top: 8px;">Browse books, check availability, and stay informed before you sign in.</div>
+            <div><?= app_translate('home.footer.line1') ?></div>
+            <div style="margin-top: 8px;"><?= app_translate('home.footer.line2') ?></div>
         </footer>
     </div>
 </body>

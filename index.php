@@ -2,6 +2,16 @@
 
 session_start();
 
+require_once 'Views/includes/i18n.php';
+
+app_current_language();
+
+$redirectPath = 'Views/HomeView.php';
+
+if (isset($_GET['lang']) && $_GET['lang'] !== '') {
+  $redirectPath .= '?lang=' . rawurlencode($_GET['lang']);
+}
+
 if (isset($_SESSION['role'])) {
 
     $role = $_SESSION['role'];
@@ -29,7 +39,7 @@ if (isset($_SESSION['role'])) {
 
 } else {
 
-    header("Location: Views/HomeView.php");
+  header("Location: " . $redirectPath);
     exit();
 }
 ?>

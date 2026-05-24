@@ -3,11 +3,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/../includes/i18n.php';
+
+$lang = app_current_language();
+
 $role = $_SESSION['role'] ?? '';
 $isLoggedIn = $role !== '';
 $isMember = $role === 'member';
 $homeHref = $isLoggedIn && $isMember ? 'dashboardView.php' : '../../index.php';
-$homeLabel = $isLoggedIn && $isMember ? '← Back to Dashboard' : '← Back to Home';
+$homeLabel = $isLoggedIn && $isMember ? app_translate('member.book.back_dashboard') : app_translate('member.book.back_home');
 
 $books = $_SESSION['books'] ?? [];
 $genres = $_SESSION['genres'] ?? [];
@@ -20,11 +24,14 @@ $selected_year = $_SESSION['book_year'] ?? '';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="<?= htmlspecialchars($lang) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Book Catalog</title>
+    <title><?= app_translate('member.book.title') ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
     <style>
         :root {
@@ -45,6 +52,10 @@ $selected_year = $_SESSION['book_year'] ?? '';
                 linear-gradient(180deg, #07101d 0%, #0b1220 100%);
             color: var(--catalog-text);
             color-scheme: dark;
+        }
+
+        body.lang-bn {
+            font-family: 'Noto Sans Bengali', var(--font-body, sans-serif);
         }
 
         .page-shell {
@@ -86,6 +97,25 @@ $selected_year = $_SESSION['book_year'] ?? '';
         }
 
         .page-header a:hover {
+            color: #fff;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .lang-switch a {
+            color: var(--catalog-accent-strong);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 8px 12px;
+            border-radius: 999px;
+            text-decoration: none;
+        }
+
+        .lang-switch a.active {
+            background: rgba(245, 158, 11, 0.14);
             color: #fff;
         }
 
@@ -332,28 +362,32 @@ $selected_year = $_SESSION['book_year'] ?? '';
     </style>
 </head>
 
-<body>
+<body class="<?= $lang === 'bn' ? 'lang-bn' : 'lang-en' ?>">
 
 <div class="page-shell">
     <div class="page-header">
         <div>
-            <h2>Available Books</h2>
-            <p>Browse the catalog, inspect availability, and open any title for full details.</p>
-            <div class="book-meta-note">Public visitors can browse freely. Members can borrow after logging in.</div>
+            <h2><?= app_translate('member.book.title') ?></h2>
+            <p><?= app_translate('home.panel.browse.body') ?></p>
+            <div class="book-meta-note"><?= app_translate('home.panel.caption') ?></div>
         </div>
         <div class="page-actions">
-            <a href="<?= $homeHref ?>"><?= $homeLabel ?></a>
+            <div class="lang-switch" aria-label="<?= app_translate('language.switch') ?>">
+                <a class="<?= $lang === 'en' ? 'active' : '' ?>" href="<?= app_language_url('BookIndexView.php', 'en') ?>"><?= app_translate('language.english') ?></a>
+                <a class="<?= $lang === 'bn' ? 'active' : '' ?>" href="<?= app_language_url('BookIndexView.php', 'bn') ?>"><?= app_translate('language.bengali') ?></a>
+            </div>
+            <a href="<?= htmlspecialchars($homeHref) ?>"><?= htmlspecialchars($homeLabel) ?></a>
         </div>
     </div>
 
     <form novalidate class="search-form" action="../../Controllers/BookIndexController.php" method="POST" onsubmit="event.preventDefault(); ajaxSearchBooks();">
         <input type="text" id="bookSearch" name="search" placeholder="Search title, author, ISBN..." value="<?= htmlspecialchars($search) ?>" onkeyup="ajaxSearchBooks()">
-        
+
         <select id="bookGenre" name="genre_id" onchange="ajaxSearchBooks()">
             <option value="">All Genres</option>
             <?php foreach ($genres as $genre) { ?>
                 <option value="<?= $genre['id'] ?>" <?= $selected_genre == $genre['id'] ? 'selected' : '' ?>>
-                    <?= $genre['name'] ?>
+                    <?= htmlspecialchars($genre['name']) ?>
                 </option>
             <?php } ?>
         </select>
@@ -362,7 +396,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
             <option value="">All Branches</option>
             <?php foreach ($branches as $branch) { ?>
                 <option value="<?= $branch['id'] ?>" <?= $selected_branch == $branch['id'] ? 'selected' : '' ?>>
-                    <?= $branch['name'] ?>
+                    <?= htmlspecialchars($branch['name']) ?>
                 </option>
             <?php } ?>
         </select>
@@ -395,7 +429,7 @@ $selected_year = $_SESSION['book_year'] ?? '';
                 <?php foreach ($books as $book) { ?>
                 <tr>
                     <td>
-                        <?php if (isset($book['cover_image_path']) && $book['cover_image_path'] != '') { ?>
+                        <?php if (!empty($book['cover_image_path'])) { ?>
                             <img class="cover-thumb" src="../../<?php echo htmlspecialchars($book['cover_image_path']); ?>" alt="Book Cover">
                         <?php } else { ?>
                             <span style="font-size:12px;color:#9ca3af;">No cover</span>
@@ -407,12 +441,14 @@ $selected_year = $_SESSION['book_year'] ?? '';
                     <td><?= htmlspecialchars($book['isbn']) ?></td>
                     <td><?= htmlspecialchars((string)$book['published_year']) ?></td>
                     <td>
-                        <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $book['id'] ?>"><button type="submit" class="btn-link">View Details</button></form>
+                        <form method="POST" action="../../Controllers/BookDetailsController.php" style="display:inline;">
+                            <input type="hidden" name="id" value="<?= $book['id'] ?>">
+                            <button type="submit" class="btn-link">View Details</button>
+                        </form>
                     </td>
                 </tr>
                 <?php } ?>
             </tbody>
-
         </table>
     </div>
 

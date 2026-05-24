@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/../includes/i18n.php';
+
+$lang = app_current_language();
+
 if (!isset($_SESSION['role'])) {
     header('Location: ../LoginView.php');
     exit();
@@ -16,13 +20,20 @@ $notifications = $_SESSION['notifications'] ?? [];
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="<?= htmlspecialchars($lang) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Member Dashboard</title>
+    <title><?= app_translate('member.dashboard.title') ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/member.css?v=<?= time() ?>">
     <style>
+        body.lang-bn {
+            font-family: 'Noto Sans Bengali', var(--font-body, sans-serif);
+        }
+
         /* Premium announcement cards with high contrast readability */
         .announcement-card {
             background: #1a1d2e !important;
@@ -74,23 +85,59 @@ $notifications = $_SESSION['notifications'] ?? [];
             background: #f59e0b !important;
             color: #fff !important;
         }
+
+        .member-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .lang-switch a {
+            color: #f59e0b;
+            text-decoration: none;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 8px 12px;
+            border-radius: 999px;
+        }
+
+        .lang-switch a.active {
+            background: rgba(245, 158, 11, 0.14);
+            color: #fff;
+        }
     </style>
 </head>
-<body>
+<body class="<?= $lang === 'bn' ? 'lang-bn' : 'lang-en' ?>">
 
-<h2>Member Dashboard</h2>
-<p>Welcome, <?php echo $_SESSION['name']; ?></p>
+<div class="member-topbar">
+    <div>
+        <h2><?= app_translate('member.dashboard.title') ?></h2>
+        <p><?= app_translate('member.dashboard.welcome', array('name' => htmlspecialchars($_SESSION['name']))) ?></p>
+    </div>
+    <div class="lang-switch" aria-label="<?= app_translate('language.switch') ?>">
+        <a class="<?= $lang === 'en' ? 'active' : '' ?>" href="<?= app_language_url('dashboardView.php', 'en') ?>"><?= app_translate('language.english') ?></a>
+        <a class="<?= $lang === 'bn' ? 'active' : '' ?>" href="<?= app_language_url('dashboardView.php', 'bn') ?>"><?= app_translate('language.bengali') ?></a>
+    </div>
+</div>
 
 <hr>
 
 <?php if (!empty($notifications)): ?>
     <div style="background-color: #fff3cd; border: 1px solid #ffeeba; padding: 10px; margin-bottom: 20px;">
-        <h3>Notifications</h3>
+        <h3><?= app_translate('member.dashboard.notifications') ?></h3>
         <ul>
             <?php foreach ($notifications as $n): ?>
                 <li>
                     <?= htmlspecialchars($n['message']) ?> 
-                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link">Mark as Read</button></form>
+                    <form method="POST" action="../../Controllers/NotificationActionController.php" style="display:inline;"><input type="hidden" name="id" value="<?= $n['id'] ?>"><button type="submit" class="btn-link"><?= app_translate('member.action.read') ?></button></form>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -100,25 +147,25 @@ $notifications = $_SESSION['notifications'] ?? [];
 <div style="display: flex; gap: 40px;">
 
     <div style="flex: 1;">
-        <h3>Features</h3>
+        <h3><?= app_translate('member.dashboard.features') ?></h3>
         <ul>
-            <li><a href="../../Controllers/BookIndexController.php">Browse Books</a></li>
-            <li><a href="../../Controllers/MyLoansController.php">Active Loans</a></li>
-            <li><a href="../../Controllers/BorrowHistoryController.php">Borrow History</a></li>
-            <li><a href="../../Controllers/ReservationController.php">My Reservations</a></li>
-            <li><a href="../../Controllers/ReadingListController.php">Reading List</a></li>
-            <li><a href="../../Controllers/ProfileController.php">My Profile</a></li>
-            <li><a href="../../Controllers/FineController.php">My Fines</a></li>
-            <li><a href="../../Controllers/MemberComplaintController.php">Support & Complaints</a></li>
+            <li><a href="../../Controllers/BookIndexController.php"><?= app_translate('member.feature.browse') ?></a></li>
+            <li><a href="../../Controllers/MyLoansController.php"><?= app_translate('member.feature.loans') ?></a></li>
+            <li><a href="../../Controllers/BorrowHistoryController.php"><?= app_translate('member.feature.history') ?></a></li>
+            <li><a href="../../Controllers/ReservationController.php"><?= app_translate('member.feature.reservations') ?></a></li>
+            <li><a href="../../Controllers/ReadingListController.php"><?= app_translate('member.feature.reading') ?></a></li>
+            <li><a href="../../Controllers/ProfileController.php"><?= app_translate('member.feature.profile') ?></a></li>
+            <li><a href="../../Controllers/FineController.php"><?= app_translate('member.feature.fines') ?></a></li>
+            <li><a href="../../Controllers/MemberComplaintController.php"><?= app_translate('member.feature.support') ?></a></li>
         </ul>
         <br>
-        <a href="../../Controllers/LogoutController.php"><button>Logout</button></a>
+        <a href="../../Controllers/LogoutController.php"><button><?= app_translate('member.dashboard.logout') ?></button></a>
     </div>
 
     <div style="flex: 2; border-left: 1px solid #ccc; padding-left: 20px;">
-        <h3>Library Announcements</h3>
+        <h3><?= app_translate('member.dashboard.announcements') ?></h3>
         <?php if (empty($announcements)): ?>
-            <p>No announcements.</p>
+            <p><?= app_translate('member.dashboard.none') ?></p>
         <?php endif; ?>
         <?php foreach ($announcements as $a): ?>
             <div class="announcement-card">

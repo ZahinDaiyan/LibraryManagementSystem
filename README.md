@@ -468,6 +468,7 @@ Branch Manager Login → Dashboard (Branch Stats)
 - Book browsing with advanced search (title, author, ISBN, genre)
 - Filtering by branch, publication year, availability
 - Detailed book information with reviews and ratings
+- Bangla/English language switching for the member UI
 - Borrow request submission with availability checking
 - Active loan tracking with overdue highlighting
 - Loan renewal (with reservation conflict check)
