@@ -32,8 +32,9 @@ $renewalRequests = isset($data['renewal_requests']) ? $data['renewal_requests'] 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/LibraryManagemetSystem/Views/Librariyan/">
     <title>Librarian Operations</title>
-    <link rel="stylesheet" href="../../Views/css/librarian.css">
+    <link rel="stylesheet" href="../css/librarian.css">
 </head>
 <body>
 
