@@ -5,3 +5,374 @@
     --accent: #3b82f6;
     --accent-strong: #93c5fd;
 }
+
+body {
+    color: var(--text);
+}
+
+body > h2,
+body > p,
+body > h3,
+body > hr,
+body > table,
+body > form,
+body > ul,
+body > a,
+body > .manager-shell {
+    max-width: 1360px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.manager-shell {
+    display: grid;
+    gap: 20px;
+}
+
+.manager-header,
+.manager-panel,
+.manager-card,
+.manager-table-wrap,
+.manager-note,
+.manager-links,
+.manager-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.manager-header {
+    padding: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.manager-kicker {
+    color: var(--accent-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.manager-title {
+    margin-bottom: 8px;
+}
+
+.manager-subtitle {
+    color: var(--muted);
+}
+
+.manager-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.manager-link,
+.manager-secondary-link,
+.manager-chip-link,
+.manager-nav-link,
+.manager-outline-link,
+.manager-back-link,
+.manager-logout-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    border: 1px solid transparent;
+}
+
+.manager-link,
+.manager-nav-link,
+.manager-chip-link {
+    background: rgba(var(--accent-rgb), 0.14);
+    color: var(--accent-strong);
+    border-color: rgba(var(--accent-rgb), 0.22);
+}
+
+.manager-secondary-link,
+.manager-outline-link,
+.manager-back-link,
+.manager-logout-link {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.manager-link:hover,
+.manager-secondary-link:hover,
+.manager-chip-link:hover,
+.manager-nav-link:hover,
+.manager-outline-link:hover,
+.manager-back-link:hover,
+.manager-logout-link:hover {
+    transform: translateY(-1px);
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.metric-card {
+    padding: 20px;
+    display: grid;
+    gap: 10px;
+    min-height: 132px;
+}
+
+.metric-label {
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.metric-value {
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.metric-value.is-accent {
+    color: var(--accent-strong);
+}
+
+.metric-value.is-success {
+    color: var(--success);
+}
+
+.metric-value.is-danger {
+    color: var(--danger);
+}
+
+.manager-section,
+.manager-panel,
+.manager-table-wrap {
+    padding: 22px;
+}
+
+.manager-section h3,
+.manager-panel h3,
+.manager-table-wrap h3 {
+    margin-bottom: 14px;
+}
+
+.manager-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.manager-note {
+    padding: 14px 16px;
+    color: var(--muted-strong);
+}
+
+.manager-note.success {
+    border-color: rgba(var(--success-rgb), 0.25);
+    background: rgba(var(--success-rgb), 0.08);
+    color: #baf7ce;
+}
+
+.manager-note.error {
+    border-color: rgba(var(--danger-rgb), 0.25);
+    background: rgba(var(--danger-rgb), 0.08);
+    color: #fecaca;
+}
+
+.manager-table-wrap {
+    overflow-x: auto;
+}
+
+.manager-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.manager-table th,
+.manager-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    vertical-align: top;
+    text-align: left;
+}
+
+.manager-table th {
+    color: #f8fafc;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.manager-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.manager-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.status-pill.is-active {
+    background: rgba(var(--success-rgb), 0.14);
+    color: #86efac;
+}
+
+.status-pill.is-inactive {
+    background: rgba(var(--danger-rgb), 0.14);
+    color: #fca5a5;
+}
+
+.action-group,
+.inline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.action-group form,
+.inline-actions form {
+    margin: 0;
+}
+
+.btn-approve,
+.btn-reject,
+.btn-neutral,
+.btn-compact {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.btn-approve {
+    background: rgba(var(--success-rgb), 0.14);
+    color: #86efac;
+    border-color: rgba(var(--success-rgb), 0.22);
+}
+
+.btn-reject {
+    background: rgba(var(--danger-rgb), 0.14);
+    color: #fca5a5;
+    border-color: rgba(var(--danger-rgb), 0.22);
+}
+
+.btn-neutral,
+.btn-compact {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.manager-links {
+    padding: 20px 22px;
+}
+
+.manager-links ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    padding: 0;
+}
+
+.manager-links li {
+    margin: 0;
+}
+
+.manager-links a {
+    width: 100%;
+}
+
+.manager-form {
+    display: grid;
+    gap: 14px;
+}
+
+.manager-form p {
+    margin: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.manager-form label {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.manager-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.manager-form .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.manager-form .form-errors {
+    color: #fca5a5;
+    font-size: 0.88rem;
+}
+
+.manager-logout {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.manager-logout a {
+    display: inline-flex;
+}
+
+.manager-logout button {
+    min-width: 130px;
+}
+
+@media (max-width: 768px) {
+    .manager-header {
+        padding: 18px;
+    }
+
+    .manager-section,
+    .manager-panel,
+    .manager-table-wrap,
+    .manager-links {
+        padding: 18px;
+    }
+
+    .manager-links ul,
+    .metric-grid,
+    .manager-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .manager-table th,
+    .manager-table td {
+        padding: 12px;
+    }
+}
