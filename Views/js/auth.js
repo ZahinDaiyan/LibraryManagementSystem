@@ -60,8 +60,8 @@ function validateRegister(form) {
     if (password === "") {
         document.getElementById('passwordErr').innerText = "Password is required";
         isValid = false;
-    } else if (password.length < 6) {
-        document.getElementById('passwordErr').innerText = "Password must be at least 6 characters";
+    } else if (password.length < 8 || !/[0-9]/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+        document.getElementById('passwordErr').innerText = "Password must be 8+ characters and include at least one number and one symbol";
         isValid = false;
     }
 

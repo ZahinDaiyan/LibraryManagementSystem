@@ -69,6 +69,152 @@ $lang = app_current_language();
             background: #f59e0b;
             color: #fff;
         }
+
+        .password-section {
+            margin-bottom: 6px;
+        }
+
+        .password-input-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-input-wrap input {
+            width: 100%;
+            padding-right: 96px;
+            box-sizing: border-box;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            color: #cbd5e1;
+            border-radius: 999px;
+            padding: 6px 10px;
+            min-width: 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .password-toggle:hover {
+            color: #fff;
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .password-strength {
+            margin-top: 10px;
+            padding: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 14px;
+            background: #10192a;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        }
+
+        .password-strength-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 0.92rem;
+            color: #e5e7eb;
+        }
+
+        .password-strength-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .password-strength-bar {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.18);
+            overflow: hidden;
+        }
+
+        .password-strength-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            transition: width 0.2s ease, background-color 0.2s ease;
+        }
+
+        .password-checklist {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .password-checklist li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .password-checklist li::before {
+            content: "";
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(148, 163, 184, 0.55);
+            background: transparent;
+            flex: 0 0 18px;
+            box-sizing: border-box;
+        }
+
+        .password-checklist li.met {
+            color: #86efac;
+        }
+
+        .password-checklist li.met::before {
+            content: "\2713";
+            color: #06281c;
+            background: #22c55e;
+            border-color: #22c55e;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .password-strength[data-strength="weak"] .password-strength-fill {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .password-strength[data-strength="medium"] .password-strength-fill {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .password-strength[data-strength="strong"] .password-strength-fill {
+            width: 100%;
+            background: #22c55e;
+        }
+
+        .password-strength[data-strength="weak"] .password-strength-label {
+            color: #f87171;
+        }
+
+        .password-strength[data-strength="medium"] .password-strength-label {
+            color: #fbbf24;
+        }
+
+        .password-strength[data-strength="strong"] .password-strength-label {
+            color: #4ade80;
+        }
     </style>
 </head>
 
@@ -104,8 +250,27 @@ $lang = app_current_language();
         <span id="phoneErr"></span>
 
         <label for="password"><?= app_translate('auth.password') ?></label>
-        <input type="password" name="password" id="password">
-        <span id="passwordErr"></span>
+        <div class="password-section">
+            <div class="password-input-wrap">
+                <input type="password" name="password" id="password" aria-describedby="passwordErr passwordStrength">
+                <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password" aria-pressed="false">Show Password</button>
+            </div>
+            <span id="passwordErr"></span>
+            <div class="password-strength" id="passwordStrength" data-strength="weak">
+                <div class="password-strength-head">
+                    <span>Password strength</span>
+                    <span class="password-strength-label" id="passwordStrengthLabel">Weak</span>
+                </div>
+                <div class="password-strength-bar" aria-hidden="true">
+                    <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                </div>
+                <ul class="password-checklist" id="passwordChecklist">
+                    <li data-rule="length">At least 8 characters</li>
+                    <li data-rule="number">Contains at least one number</li>
+                    <li data-rule="symbol">Contains at least one symbol</li>
+                </ul>
+            </div>
+        </div>
 
         <label for="confirmPassword"><?= app_translate('auth.confirm_password') ?></label>
         <input type="password" name="confirmPassword" id="confirmPassword">
@@ -129,6 +294,74 @@ $lang = app_current_language();
 </div>
 
 <script src="js/auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var passwordInput = document.getElementById('password');
+        var confirmPasswordInput = document.getElementById('confirmPassword');
+        var toggleButton = document.getElementById('passwordToggle');
+        var strengthBox = document.getElementById('passwordStrength');
+        var strengthLabel = document.getElementById('passwordStrengthLabel');
+        var checklistItems = document.querySelectorAll('#passwordChecklist li');
+
+        function hasNumber(value) {
+            return /[0-9]/.test(value);
+        }
+
+        function hasSymbol(value) {
+            return /[^A-Za-z0-9]/.test(value);
+        }
+
+        function updateStrength() {
+            var value = passwordInput.value;
+            var lengthOk = value.length >= 8;
+            var numberOk = hasNumber(value);
+            var symbolOk = hasSymbol(value);
+            var strength = 'weak';
+
+            if (lengthOk && numberOk && symbolOk) {
+                strength = 'strong';
+            } else if (lengthOk && (numberOk || symbolOk)) {
+                strength = 'medium';
+            }
+
+            strengthBox.dataset.strength = strength;
+            strengthLabel.textContent = strength.charAt(0).toUpperCase() + strength.slice(1);
+
+            checklistItems.forEach(function (item) {
+                var rule = item.dataset.rule;
+                var met = false;
+
+                if (rule === 'length') {
+                    met = lengthOk;
+                } else if (rule === 'number') {
+                    met = numberOk;
+                } else if (rule === 'symbol') {
+                    met = symbolOk;
+                }
+
+                item.classList.toggle('met', met);
+            });
+        }
+
+        function togglePassword() {
+            var isHidden = passwordInput.type === 'password';
+            var nextType = isHidden ? 'text' : 'password';
+
+            passwordInput.type = nextType;
+            if (confirmPasswordInput) {
+                confirmPasswordInput.type = nextType;
+            }
+            toggleButton.textContent = isHidden ? 'Hide Password' : 'Show Password';
+            toggleButton.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+            toggleButton.setAttribute('aria-pressed', String(isHidden));
+        }
+
+        passwordInput.addEventListener('input', updateStrength);
+        toggleButton.addEventListener('click', togglePassword);
+
+        updateStrength();
+    });
+</script>
 
 </body>
 </html>
